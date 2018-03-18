@@ -1,10 +1,12 @@
 package appiumrunner.unesc.net.appiumrunner.states;
 
+import java.io.Serializable;
+
 /**
  * Created by fabri on 18/03/2018.
  */
 
-public class BaseState {
+public class BaseState<T> implements Serializable {
     private boolean focusedState;
     private boolean visibility;
     private boolean enabled;
@@ -14,23 +16,33 @@ public class BaseState {
         return elementIdState;
     }
 
-    public void setElementId(int elementIdState) {
+    public T setElementId(int elementIdState) {
         this.elementIdState = elementIdState;
+        return (T) this;
     }
 
-    public void setFocusedState(boolean focusedState) {
+    public T setFocusedState(boolean focusedState) {
         this.focusedState = focusedState;
+        return (T) this;
     }
 
-    public void setVisibility(boolean visibility) {
+    public T setVisibility(boolean visibility) {
         this.visibility = visibility;
+        return (T) this;
     }
 
     public boolean isEnabled() {
         return enabled;
     }
 
-    public void setEnabled(boolean enabled) {
+    public T setEnabled(boolean enabled) {
         this.enabled = enabled;
+        return (T) this;
+    }
+
+
+    public void record() {
+
+
     }
 }

@@ -7,7 +7,7 @@ import appiumrunner.unesc.net.appiumrunner.states.ListViewState;
  * Created by fabri on 18/03/2018.
  */
 
-public class ActivityRecorder {
+public class Recorder {
     public void createStateAssertion(BaseState listViewState) {
 
     }
@@ -19,4 +19,5 @@ public class ActivityRecorder {
     public void createWaitForState(ListViewState listViewState) {
 
     }
+
 }
