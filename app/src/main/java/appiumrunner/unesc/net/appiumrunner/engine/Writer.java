@@ -6,7 +6,7 @@ package appiumrunner.unesc.net.appiumrunner.engine;
 
 public class Writer {
 
-    public void writeTest(ITest test) {
+    public void writeTest() {
 
     }
 }

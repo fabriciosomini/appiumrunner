@@ -1,16 +1,24 @@
 package appiumrunner.unesc.net.appiumrunner.states;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  * Created by fabri on 18/03/2018.
  */
 
 public class BaseState<T> implements Serializable {
+    private static ArrayList<BaseState> steps;
     private boolean focusedState;
-    private boolean visibility;
-    private boolean enabled;
+    private boolean visibility = true;
+    private boolean enabled = true;
     private int elementIdState;
+
+    public BaseState() {
+        if (steps == null) {
+            steps = new ArrayList<>();
+        }
+    }
 
     public int getElementIdState() {
         return elementIdState;
@@ -42,7 +50,9 @@ public class BaseState<T> implements Serializable {
 
 
     public void record() {
+        steps.add(this);
+        if (steps.size() > 0) {
 
-
+        }
     }
 }
