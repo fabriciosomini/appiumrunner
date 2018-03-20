@@ -10,6 +10,15 @@ public class Setup {
     private String deviceName;
     private String platformName;
     private String appActivity;
+    private boolean useDefaultTearDown;
+
+    public boolean isUseDefaultTearDown() {
+        return useDefaultTearDown;
+    }
+
+    public void setUseDefaultTearDown(boolean useDefaultTearDown) {
+        this.useDefaultTearDown = useDefaultTearDown;
+    }
 
     public String getPlatformVersion() {
         return platformVersion;

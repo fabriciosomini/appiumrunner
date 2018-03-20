@@ -10,11 +10,9 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import appiumrunner.unesc.net.appiumrunner.R;
-import appiumrunner.unesc.net.appiumrunner.engine.Recorder;
+import appiumrunner.unesc.net.appiumrunner.engine.Registro;
 import appiumrunner.unesc.net.appiumrunner.states.ApplicationState;
-import appiumrunner.unesc.net.appiumrunner.states.ButtonState;
-import appiumrunner.unesc.net.appiumrunner.states.TextViewState;
-import appiumrunner.unesc.net.appiumrunner.states.ViewState;
+import appiumrunner.unesc.net.appiumrunner.states.Estado;
 
 public class HomeFragment extends Fragment {
     FragmentManager fragmentManager;
@@ -29,9 +27,9 @@ public class HomeFragment extends Fragment {
         TextView userTxtView = view.findViewById(R.id.userTxtView);
 
         String userName = userTxtView.getText().toString();
-        final Recorder recorder = new Recorder();
+        final Registro registro = new Registro();
 
-        // recorder.createDB("burger.db");
+        // registro.createDB("burger.db");
 
         openSearchListBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -44,10 +42,7 @@ public class HomeFragment extends Fragment {
                         .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
                         .commit();
 
-                ViewState viewState = new ViewState();
-                viewState.setElementId(R.id.search_fragment)
-                        .setVisibility(true)
-                        .record();
+                registro.stop();
 
             }
         });
@@ -55,16 +50,16 @@ public class HomeFragment extends Fragment {
         //----------------------------------------------------------------
 
         ApplicationState applicationState = new ApplicationState();
-        TextViewState textViewState = new TextViewState();
+        Estado textViewEstado = new Estado(registro);
 
         applicationState.addInfo("userName", userName);
 
-        textViewState.setText((String) applicationState.getInfo("userName"));
+        textViewEstado.setTextState((String) applicationState.getInfo("userName"));
 
-        ButtonState buttonState = new ButtonState();
-        buttonState.setElementId(R.id.openSearchListBtn)
+        Estado buttonEstado = new Estado(registro);
+        buttonEstado.setElementId(R.id.openSearchListBtn)
                 .setFocusedState(false)
-                .setHint("ABRIR LISTA")
+                .setHintState("ABRIR LISTA")
                 .record();
 
 

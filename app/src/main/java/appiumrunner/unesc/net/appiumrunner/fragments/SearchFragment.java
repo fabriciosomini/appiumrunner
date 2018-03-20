@@ -16,8 +16,8 @@ import android.widget.ListView;
 import java.util.ArrayList;
 
 import appiumrunner.unesc.net.appiumrunner.R;
-import appiumrunner.unesc.net.appiumrunner.states.EditTextState;
-import appiumrunner.unesc.net.appiumrunner.states.ListViewState;
+import appiumrunner.unesc.net.appiumrunner.engine.Registro;
+import appiumrunner.unesc.net.appiumrunner.states.Estado;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -40,15 +40,15 @@ public class SearchFragment extends Fragment {
         EditText searchEditTxt = view.findViewById(R.id.searchEditTxt);
         ListView listView = view.findViewById(android.R.id.list);
         final ArrayList<String> items = new ArrayList<>();
-
+        final Registro registro = new Registro();
 
         ArrayAdapter<String> stringArrayAdapter = new ArrayAdapter<String>(getContext(),
                 android.R.layout.simple_list_item_1,
                 items);
         listView.setAdapter(stringArrayAdapter);
 
-        final EditTextState editTextState = new EditTextState();
-        editTextState.setElementId(R.id.searchEditTxt)
+        final Estado editTextEstado = new Estado(registro);
+        editTextEstado.setElementId(R.id.searchEditTxt)
                 .setFocusedState(false)
                 .setTextState(null)
                 .setHintState("Pesquisar")
@@ -64,7 +64,7 @@ public class SearchFragment extends Fragment {
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
                 String text = charSequence.toString();
-                editTextState.setElementId(R.id.searchEditTxt)
+                editTextEstado.setElementId(R.id.searchEditTxt)
                         .setFocusedState(true)
                         .setTextState(text)
                         .setHintState(null)
@@ -72,9 +72,8 @@ public class SearchFragment extends Fragment {
 
                 int size = items.size();
 
-                ListViewState listViewState = new ListViewState();
-                listViewState.setElementId(android.R.id.list)
-                        .setVisibility(true)
+                Estado listViewEstado = new Estado(registro);
+                listViewEstado.setElementId(android.R.id.list)
                         .setCount(size)
                         .record();
             }
