@@ -59,7 +59,7 @@ public class Estado implements Serializable {
         return this;
     }
 
-    public boolean record() {
+    public boolean commit() {
 
         if (elementId == null) {
             stateMessage = "É necessário especificar o identificador do elemento";

@@ -60,7 +60,7 @@ public class HomeFragment extends Fragment {
         buttonEstado.setElementId(R.id.openSearchListBtn)
                 .setFocusedState(false)
                 .setHintState("ABRIR LISTA")
-                .record();
+                .commit();
 
 
         return view;

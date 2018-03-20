@@ -52,7 +52,7 @@ public class SearchFragment extends Fragment {
                 .setFocusedState(false)
                 .setTextState(null)
                 .setHintState("Pesquisar")
-                .record();
+                .commit();
 
         searchEditTxt.addTextChangedListener(new TextWatcher() {
             @Override
@@ -68,14 +68,14 @@ public class SearchFragment extends Fragment {
                         .setFocusedState(true)
                         .setTextState(text)
                         .setHintState(null)
-                        .record();
+                        .commit();
 
                 int size = items.size();
 
                 Estado listViewEstado = new Estado(registro);
                 listViewEstado.setElementId(android.R.id.list)
                         .setCount(size)
-                        .record();
+                        .commit();
             }
 
             @Override

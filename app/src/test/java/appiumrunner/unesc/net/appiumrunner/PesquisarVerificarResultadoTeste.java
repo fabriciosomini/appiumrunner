@@ -24,7 +24,7 @@ public class PesquisarVerificarResultadoTeste {
 
     @Before
     public void setup() {
-        File appDir = new File(".\\app\\build\\outputs\\apk\\debug\\");
+        File appDir = new File(".\\app\\commit\\outputs\\apk\\debug\\");
         File app = new File(appDir, "app-debug.apk");
 
         DesiredCapabilities capabilities = new DesiredCapabilities();
