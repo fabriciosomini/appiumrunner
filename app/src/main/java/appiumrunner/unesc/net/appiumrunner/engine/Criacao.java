@@ -1,5 +1,7 @@
 package appiumrunner.unesc.net.appiumrunner.engine;
 
+import android.util.Log;
+
 import java.io.File;
 
 /**
@@ -7,13 +9,15 @@ import java.io.File;
  */
 
 public class Criacao {
-    File testFile;
+    File arquivoTest;
 
     public Criacao() {
-        // testFile = new File();
+        // arquivoTest = new File();
     }
 
-    public void write(String testScript) {
+    public void criar(String script) {
+
+        Log.d("SCRIPT", script);
 
     }
 

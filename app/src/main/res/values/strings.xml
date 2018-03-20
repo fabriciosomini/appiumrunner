@@ -1,8 +1,17 @@
 <resources>
     <string name="app_name">AppiumRunner</string>
-    <string name="user_name">USER NAME</string>
-    <string name="open_search_list">ABRIR LISTA</string>
+    <string name="user_name">DEFAULT_USER_NAME</string>
+    <string name="open_search_list">CONTAS À PAGAR</string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="hint_search">Pesquisar</string>
+    <string name="customer_name">Nome Cliente</string>
+    <string name="cpf">CPF</string>
+    <string name="state">Estado</string>
+    <string name="ship_load">Volume Carga</string>
+    <string name="active_customer">Cliente Ativo</string>
+    <string name="land_vehicle">Veículo Agrícola</string>
+    <string name="food_cargo">Carga Alimentícia</string>
+    <string name="toxic_cargo">Carga Toxica</string>
+    <string name="alive_cargo">Carga Viva</string>
 </resources>

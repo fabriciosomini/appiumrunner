@@ -10,6 +10,7 @@ public class Setup {
     private String deviceName;
     private String platformName;
     private String appActivity;
+    private String appDirectory;
     private boolean useDefaultTearDown;
 
     public boolean isUseDefaultTearDown() {

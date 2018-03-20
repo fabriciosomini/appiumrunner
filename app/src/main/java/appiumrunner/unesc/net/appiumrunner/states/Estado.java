@@ -10,69 +10,86 @@ import appiumrunner.unesc.net.appiumrunner.engine.Registro;
  */
 
 public class Estado implements Serializable {
-    private static ArrayList<Estado> steps;
+    private static ArrayList<Estado> passos;
     private final Registro registro;
-    private Boolean focusedState;
-    private Integer elementId;
+    private Verificao verificacao;
+    private boolean estadoFoco;
+    private String identificadorElemento;
     private String stateMessage;
-    private String textState;
-    private String hintState;
-    private Integer count;
+    private String estadoTexto;
+    private String estadoDica;
+    private int estadoContagem;
 
     public Estado(Registro registro) {
         this.registro = registro;
-        if (steps == null) {
-            steps = new ArrayList<>();
-        }
+    }
+
+    public Verificao getVerificacao() {
+        return verificacao;
+    }
+
+    public Boolean getEstadoFoco() {
+        return estadoFoco;
+    }
+
+    public Estado setEstadoFoco(boolean estadoFoco) {
+        this.estadoFoco = estadoFoco;
+        return this;
+    }
+
+    public String getEstadoTexto() {
+        return estadoTexto;
+    }
+
+    public Estado setEstadoTexto(String estadoTexto) {
+        this.estadoTexto = estadoTexto;
+        return this;
     }
 
     public String getStateMessage() {
         return stateMessage;
     }
 
-    public int getElementId() {
-        return elementId;
+    public String getIdentificadorElemento() {
+        return identificadorElemento;
     }
 
-    public Estado setElementId(int elementIdState) {
-        this.elementId = elementIdState;
+    public Estado setIdentificadorElemento(String identificador) {
+
+        this.identificadorElemento = identificador;
         return this;
     }
 
-    public Estado setFocusedState(boolean focusedState) {
-        this.focusedState = focusedState;
+    public Estado setEstadoDica(String estadoDica) {
+        this.estadoDica = estadoDica;
         return this;
     }
 
-    public Estado setTextState(String textState) {
-        this.textState = textState;
+    public Estado setEstadoContagem(Integer estadoContagem) {
+        this.estadoContagem = estadoContagem;
         return this;
     }
 
-    public Estado setHintState(String hintState) {
-        this.hintState = hintState;
+    public Estado verificar(Verificao verificao) {
+        this.verificacao = verificao;
         return this;
     }
 
-    public Estado setCount(Integer count) {
-        this.count = count;
-        return this;
-    }
+    public boolean build() {
 
-    public boolean commit() {
-
-        if (elementId == null) {
+        if (identificadorElemento == null) {
             stateMessage = "É necessário especificar o identificador do elemento";
             return false;
-        }
-        steps.add(this);
-        if (steps.size() > 0) {
-            stateMessage = "";
         }
 
         registro.registrar(this);
 
         return true;
+    }
+
+    public enum Verificao {
+        FINAL_ESTADO,
+        POR_PROPRIEDA_ESTADO
     }
 
 
