@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
 
         Button openSearchListBtn = findViewById(R.id.openCustomerServicesBtn);
         TextView userTxtView = findViewById(R.id.userTxtView);
+        userTxtView.setText("Fabricio Somini");
 
         String userName = userTxtView.getText().toString();
         final Registro registro = new Registro();
