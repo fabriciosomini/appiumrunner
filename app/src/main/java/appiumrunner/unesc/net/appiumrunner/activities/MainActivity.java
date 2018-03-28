@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         Setup setup = new Setup();
         setup.setAppActivity(this.getClass().getName());
         setup.setDeviceName("adroid");
-        setup.setPlatformVersion("7.1.2");
+        setup.setPlatformVersion("4.4.4");
         setup.setUseDefaultTearDown(true);
         setup.setPackageName(getPackageName());
         setup.setAppiumServerAddress("http://127.0.0.1:4723/wd/hub");
