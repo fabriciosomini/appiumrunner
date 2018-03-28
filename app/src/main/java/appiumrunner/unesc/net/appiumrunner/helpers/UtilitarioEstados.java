@@ -45,8 +45,17 @@ public class UtilitarioEstados {
 
     }
 
+    public static void verificarEstadoCampoToggle(Registro registro, String motorista_ativo, Estado.Foco foco, boolean ativo) {
+
+    }
+
+    public static void verificarEstadoCampoSelecaoUnica(Registro registro, String identificador, Estado.Foco foco, int opcao) {
+
+    }
+
 
     //Reproduzir
+
     public static void reproduzirEstadoCampoTexto(Registro registro, String identificador, Estado.Foco foco, String texto) {
 
         if (texto == null) {
@@ -91,5 +100,13 @@ public class UtilitarioEstados {
                 .setEstadoProgresso(progresso)
                 .reproduzirPassos()
                 .build();
+    }
+
+    public static void reproduzirEstadoCampoToggle(Registro registro, String identificador, boolean ativo) {
+
+    }
+
+    public static void reproduzirEstadoCampoSelecaoUnica(Registro registro, String identificador, int opcao) {
+
     }
 }

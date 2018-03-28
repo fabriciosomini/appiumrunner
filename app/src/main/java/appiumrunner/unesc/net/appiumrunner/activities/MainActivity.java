@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
                 if (++estadoMotoristaSelected > 1) {
                     final String newValue = (String) estadoMotorista.getItemAtPosition(i);
                     UtilitarioEstados.reproduzirEstadoCampoSelecao(registro, "estado_motorista", newValue);
-                    UtilitarioEstados.verificarEstadoCampoSelecao(registro, "estado_motorista", Estado.Foco.IGNORAR, newValue);
+                    UtilitarioEstados.verificarEstadoCampoSelecao(registro, "estado_motorista", Estado.Foco.FOCADO, newValue);
                 }
             }
 
@@ -126,10 +126,10 @@ public class MainActivity extends AppCompatActivity {
         });
 
         volumeCarga.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            int pos = 0;
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                //TODO: Pesquisar em que ponto deve ser inserido a Reprodução e verificação do volumeCarga
-                UtilitarioEstados.reproduzirEstadoCampoBarraProgresso(registro, "volume_carga", i);
+                pos = i;
             }
 
             @Override
@@ -140,6 +140,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
 
+                UtilitarioEstados.reproduzirEstadoCampoBarraProgresso(registro, "volume_carga", pos);
+                UtilitarioEstados.verificarEstadoCampoBarraProgresso(registro, "volume_carga", Estado.Foco.FOCADO, pos);
+
             }
         });
 
@@ -147,14 +150,19 @@ public class MainActivity extends AppCompatActivity {
         tipoCarga.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
-                //TODO: Adicionar Verificação e Reprodução - tipoCarga
+
+                UtilitarioEstados.reproduzirEstadoCampoSelecaoUnica(registro, "tipo_carga", i);
+                UtilitarioEstados.verificarEstadoCampoSelecaoUnica(registro, "tipo_carga", Estado.Foco.FOCADO, i);
+
             }
         });
 
         motoristaAtivo.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                //TODO: Adicionar Verificação e Reprodução - motoristaAtivo
+
+                UtilitarioEstados.reproduzirEstadoCampoToggle(registro, "motorista_ativo", true);
+                UtilitarioEstados.verificarEstadoCampoToggle(registro, "motorista_ativo", Estado.Foco.FOCADO, true);
             }
         });
 
@@ -167,11 +175,10 @@ public class MainActivity extends AppCompatActivity {
                 abrirListaMercadorias.requestFocusFromTouch();
 
                 UtilitarioEstados.reproduzirEstadoCampoBotao(registro, "abrir_lista_mercadorias");
+                registro.stop();
 
                 Intent i = new Intent(getBaseContext(), SearchActivity.class);
                 startActivity(i);
-
-                registro.stop();
 
             }
         });
