@@ -2,37 +2,46 @@ package appiumrunner.unesc.net.appiumrunner.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import appiumrunner.unesc.net.appiumrunner.R;
 import appiumrunner.unesc.net.appiumrunner.engine.Registro;
-import appiumrunner.unesc.net.appiumrunner.states.ApplicationState;
 import appiumrunner.unesc.net.appiumrunner.states.Estado;
 
 import static appiumrunner.unesc.net.appiumrunner.application.AppiumRunnerApplication.TESTSETUP;
 
 public class MainActivity extends AppCompatActivity {
-    FragmentManager fragmentManager = getSupportFragmentManager();
+
+    private Registro registro;
+    private TextView userTxtView;
+    private Button openSearchListBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        registro = new Registro();
 
         setTestSetup();
+        setEventosInterface();
+        registrarEstadoTextoNomeUsuario(registro);
+        registrarEstadoBotaoContasPagar(registro);
 
-        Button openSearchListBtn = findViewById(R.id.openCustomerServicesBtn);
-        TextView userTxtView = findViewById(R.id.userTxtView);
-        userTxtView.setText("Fabricio Somini");
 
-        String userName = userTxtView.getText().toString();
-        final Registro registro = new Registro();
+    }
 
-        // registro.createDB("burger.db");
+    private void setEventosInterface() {
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
+        openSearchListBtn = findViewById(R.id.openCustomerServicesBtn);
+        userTxtView = findViewById(R.id.userTxtView);
+
+        userTxtView.setText(getString(R.string.company_name));
 
         openSearchListBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -45,22 +54,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //----------------------------------------------------------------
-
-        ApplicationState applicationState = new ApplicationState();
-        Estado textViewEstado = new Estado(registro);
-
-        applicationState.addInfo("userName", userName);
-
-        textViewEstado.setEstadoTexto((String) applicationState.getInfo("userName"));
-
-        Estado buttonEstado = new Estado(registro);
-        buttonEstado.setIdentificadorElemento("openCustomerServicesBtn")
-                .setEstadoFoco(false)
-                .setEstadoTexto(getResources().getString(R.string.open_search_list))
-                .verificar(Estado.Verificao.FINAL_ESTADO)
-                .build();
-
+        EditText nomeMotorista = findViewById(R.id.nome_motorista);
 
     }
 
@@ -70,4 +64,22 @@ public class MainActivity extends AppCompatActivity {
         TESTSETUP.setPlatformVersion("7.1.1");
         TESTSETUP.setUseDefaultTearDown(true);
     }
+
+    private void registrarEstadoTextoNomeUsuario(Registro registro) {
+        String userName = userTxtView.getText().toString();
+        Estado textViewEstado = new Estado(registro);
+        textViewEstado.setEstadoTexto(userName);
+
+    }
+
+    private void registrarEstadoBotaoContasPagar(Registro registro) {
+        Estado buttonEstado = new Estado(registro);
+        buttonEstado.setIdentificadorElemento("openCustomerServicesBtn")
+                .setEstadoFoco(false)
+                .setEstadoTexto(getResources().getString(R.string.open_cargo_list))
+                .verificar(Estado.Verificao.FINAL_ESTADO)
+                .build();
+    }
+
+
 }

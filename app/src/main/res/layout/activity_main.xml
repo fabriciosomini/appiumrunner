@@ -29,12 +29,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:layout_marginEnd="8dp"
-                android:text="@string/open_search_list"
+                android:text="@string/open_cargo_list"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
 
             <EditText
-                android:id="@+id/customerName"
+                android:id="@+id/nome_motorista"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
@@ -53,7 +53,7 @@
                 android:layout_height="18dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
-                android:text="@string/customer_name"
+                android:text="@string/driver_name"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0"
                 app:layout_constraintStart_toStartOf="parent"
@@ -70,7 +70,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/customerName" />
+                app:layout_constraintTop_toBottomOf="@+id/nome_motorista" />
 
             <EditText
                 android:id="@+id/customerCpf"
@@ -122,17 +122,38 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/customerState" />
 
-            <SeekBar
-                android:id="@+id/customerShipLoad"
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/container_cargo_vol"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="35dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:max="100"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/label3" />
+                app:layout_constraintTop_toBottomOf="@+id/label3">
+
+                <TextView
+                    android:id="@+id/textView3"
+                    android:layout_width="35dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:text="0%"
+                    android:textAlignment="textEnd"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
+                <SeekBar
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/textView3"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </android.support.constraint.ConstraintLayout>
 
             <CheckBox
                 android:id="@+id/checkBox"
@@ -141,7 +162,7 @@
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:text="@string/land_vehicle"
+                android:text="@string/double_cargo"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0"
                 app:layout_constraintStart_toStartOf="parent"
@@ -169,7 +190,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:text="@string/active_customer"
+                android:text="@string/is_active"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/checkBox" />
 
@@ -182,8 +203,12 @@
                 android:layout_marginTop="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/customerShipLoad">
+                app:layout_constraintTop_toBottomOf="@+id/container_cargo_vol">
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/cargo_type" />
                 <RadioButton
                     android:id="@+id/radioButton1"
                     android:layout_width="wrap_content"
