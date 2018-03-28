@@ -3,8 +3,6 @@ package appiumrunner.unesc.net.appiumrunner.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
@@ -54,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void registrarEstadoInicialTela() {
-        UtilitarioEstados.verificarEstadoCampoTexto(registro, "nome_motorista", Estado.Foco.SEM_FOCO, null);
+        UtilitarioEstados.verificarEstadoCampoTexto(registro, "nome_motorista", Estado.Foco.FOCADO, null);
         UtilitarioEstados.verificarEstadoCampoTexto(registro, "driver_cpf", Estado.Foco.SEM_FOCO, null);
         UtilitarioEstados.verificarEstadoCampoSelecao(registro, "driver_state", Estado.Foco.IGNORAR, getEstados().get(0));
     }
@@ -75,45 +73,39 @@ public class MainActivity extends AppCompatActivity {
         nomeEmpresa.setText(getString(R.string.company_name));
         estadoMotorista.setAdapter(getEstadoAdapter());
 
-        nomeMotorista.addTextChangedListener(new TextWatcher() {
+        nomeMotorista.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            public void onFocusChange(View view, boolean hasFocus) {
 
-            }
+                if (hasFocus) {
+                    String text = nomeMotorista.getText().toString();
+                    UtilitarioEstados.reproduzirEstadoCampoTexto(registro, "nome_motorista", Estado.Foco.FOCADO, text);
+                    UtilitarioEstados.verificarEstadoCampoTexto(registro, "nome_motorista", Estado.Foco.FOCADO, text);
 
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                } else {
+                    String text = nomeMotorista.getText().toString();
+                    UtilitarioEstados.reproduzirEstadoCampoTexto(registro, "nome_motorista", Estado.Foco.SEM_FOCO, text);
+                    UtilitarioEstados.verificarEstadoCampoTexto(registro, "nome_motorista", Estado.Foco.SEM_FOCO, text);
 
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-                String text = editable.toString();
-                UtilitarioEstados.reproduzirEstadoCampoTexto(registro, "nome_motorista", Estado.Foco.FOCADO, text);
-                UtilitarioEstados.verificarEstadoCampoTexto(registro, "nome_motorista", Estado.Foco.FOCADO, text);
-
+                }
             }
         });
 
-        cpfMotorista.addTextChangedListener(new TextWatcher() {
+        cpfMotorista.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            public void onFocusChange(View view, boolean hasFocus) {
 
-            }
+                if (hasFocus) {
+                    String text = nomeMotorista.getText().toString();
+                    UtilitarioEstados.reproduzirEstadoCampoTexto(registro, "cpf_motorista", Estado.Foco.FOCADO, text);
+                    UtilitarioEstados.verificarEstadoCampoTexto(registro, "cpf_motorista", Estado.Foco.FOCADO, text);
 
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                } else {
+                    String text = nomeMotorista.getText().toString();
+                    UtilitarioEstados.reproduzirEstadoCampoTexto(registro, "cpf_motorista", Estado.Foco.SEM_FOCO, text);
+                    UtilitarioEstados.verificarEstadoCampoTexto(registro, "cpf_motorista", Estado.Foco.SEM_FOCO, text);
 
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-                String text = editable.toString();
-                UtilitarioEstados.reproduzirEstadoCampoTexto(registro, "cpf_motorista", Estado.Foco.FOCADO, text);
-                UtilitarioEstados.verificarEstadoCampoTexto(registro, "cpf_motorista", Estado.Foco.FOCADO, text);
-
+                }
             }
         });
 
@@ -170,6 +162,9 @@ public class MainActivity extends AppCompatActivity {
         abrirListaMercadorias.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                //Altera o foco para o botão, solucionando o problema de não disparar o evento onFocusChange
+                abrirListaMercadorias.requestFocusFromTouch();
 
                 UtilitarioEstados.reproduzirEstadoCampoBotao(registro, "abrir_lista_mercadorias");
 
