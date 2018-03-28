@@ -3,7 +3,7 @@ package appiumrunner.unesc.net.appiumrunner.states;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import appiumrunner.unesc.net.appiumrunner.engine.Registro;
+import appiumrunner.unesc.net.appiumrunner.engine.Registrador;
 
 /**
  * Created by fabri on 18/03/2018.
@@ -11,7 +11,7 @@ import appiumrunner.unesc.net.appiumrunner.engine.Registro;
 
 public class Estado implements Serializable {
     private static ArrayList<Estado> passos;
-    private final Registro registro;
+    private final Registrador registrador;
     private Verificao verificacao;
     private Foco estadoFoco;
     private String identificadorElemento;
@@ -22,8 +22,8 @@ public class Estado implements Serializable {
     private boolean reproduzirPassos;
     private int estadoProgresso;
 
-    public Estado(Registro registro) {
-        this.registro = registro;
+    public Estado(Registrador registrador) {
+        this.registrador = registrador;
     }
 
 
@@ -96,7 +96,7 @@ public class Estado implements Serializable {
             return false;
         }
 
-        registro.registrar(this);
+        registrador.registrar(this);
         return true;
 
     }

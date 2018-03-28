@@ -12,17 +12,17 @@ import android.widget.ListView;
 import java.util.ArrayList;
 
 import appiumrunner.unesc.net.appiumrunner.R;
-import appiumrunner.unesc.net.appiumrunner.engine.Registro;
+import appiumrunner.unesc.net.appiumrunner.engine.Registrador;
+import appiumrunner.unesc.net.appiumrunner.engine.Setup;
 import appiumrunner.unesc.net.appiumrunner.helpers.UtilitarioEstados;
 import appiumrunner.unesc.net.appiumrunner.states.Estado;
 
-import static appiumrunner.unesc.net.appiumrunner.application.AppiumRunnerApplication.TESTSETUP;
 
 public class SearchActivity extends AppCompatActivity {
 
     private EditText searchEditTxt;
     private ListView listView;
-    private Registro registro;
+    private Registrador registrador;
 
 
     @Override
@@ -30,11 +30,20 @@ public class SearchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
+        Setup setup = new Setup();
+        setup.setAppActivity(this.getClass().getName());
+        setup.setDeviceName("adroid");
+        setup.setPlatformVersion("7.1.2");
+        setup.setUseDefaultTearDown(true);
+        setup.setPackageName(getPackageName());
+        setup.setAppiumServerAddress("http://127.0.0.1:4723/wd/hub");
+        setup.setAppPath(".\\build\\outputs\\apk\\debug\\", "app-debug.apk");
+
+        registrador = new Registrador(setup);
+
         searchEditTxt = findViewById(R.id.searchEditTxt);
         listView = findViewById(android.R.id.list);
-        registro = new Registro();
 
-        setTestSetup();
         setEventosInterface();
         registrarEstadoInicialTela();
 
@@ -43,7 +52,7 @@ public class SearchActivity extends AppCompatActivity {
 
 
     private void registrarEstadoInicialTela() {
-        UtilitarioEstados.verificarEstadoCampoTexto(registro,
+        UtilitarioEstados.verificarEstadoCampoTexto(registrador,
                 "searchEditTxt",
                 Estado.Foco.SEM_FOCO, getString(R.string.hint_search)
         );
@@ -75,7 +84,7 @@ public class SearchActivity extends AppCompatActivity {
             public void afterTextChanged(Editable editable) {
 
                 String text = editable.toString();
-                UtilitarioEstados.verificarEstadoCampoTexto(registro, "searchEditTxt", Estado.Foco.FOCADO, text);
+                UtilitarioEstados.verificarEstadoCampoTexto(registrador, "searchEditTxt", Estado.Foco.FOCADO, text);
 
             }
         });
@@ -94,10 +103,4 @@ public class SearchActivity extends AppCompatActivity {
         return itemsLista;
     }
 
-    private void setTestSetup() {
-        TESTSETUP.setAppActivity(this.getClass().getName());
-        TESTSETUP.setDeviceName("adroid");
-        TESTSETUP.setPlatformVersion("7.1.1");
-        TESTSETUP.setUseDefaultTearDown(true);
-    }
 }

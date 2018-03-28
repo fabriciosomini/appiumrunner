@@ -1,17 +1,17 @@
 package appiumrunner.unesc.net.appiumrunner.helpers;
 
-import appiumrunner.unesc.net.appiumrunner.engine.Registro;
+import appiumrunner.unesc.net.appiumrunner.engine.Registrador;
 import appiumrunner.unesc.net.appiumrunner.states.Estado;
 
 public class UtilitarioEstados {
 
     //Verificar
-    public static void verificarEstadoCampoTexto(Registro registro, String identificador, Estado.Foco foco, String texto) {
+    public static void verificarEstadoCampoTexto(Registrador registrador, String identificador, Estado.Foco foco, String texto) {
         if (texto == null) {
             texto = "";
         }
 
-        Estado estado = new Estado(registro);
+        Estado estado = new Estado(registrador);
         estado.setIdentificadorElemento(identificador)
                 .setEstadoTexto(new StringBuilder(texto))
                 .setEstadoFoco(foco)
@@ -21,9 +21,9 @@ public class UtilitarioEstados {
 
     }
 
-    public static void verificarEstadoCampoBarraProgresso(Registro registro, String identificador, Estado.Foco foco, int progresso) {
+    public static void verificarEstadoCampoBarraProgresso(Registrador registrador, String identificador, Estado.Foco foco, int progresso) {
 
-        Estado estado = new Estado(registro);
+        Estado estado = new Estado(registrador);
         estado.setIdentificadorElemento(identificador)
                 .setEstadoProgresso(progresso)
                 .setEstadoFoco(foco)
@@ -32,11 +32,11 @@ public class UtilitarioEstados {
 
     }
 
-    public static void verificarEstadoCampoSelecao(Registro registro, String identificador, Estado.Foco foco, String opcao) {
+    public static void verificarEstadoCampoSelecao(Registrador registrador, String identificador, Estado.Foco foco, String opcao) {
         if (opcao == null) {
             opcao = "";
         }
-        Estado estado = new Estado(registro);
+        Estado estado = new Estado(registrador);
         estado.setIdentificadorElemento(identificador)
                 .setEstadoSelecao(new StringBuilder(opcao))
                 .setEstadoFoco(foco)
@@ -45,24 +45,24 @@ public class UtilitarioEstados {
 
     }
 
-    public static void verificarEstadoCampoToggle(Registro registro, String motorista_ativo, Estado.Foco foco, boolean ativo) {
+    public static void verificarEstadoCampoToggle(Registrador registrador, String motorista_ativo, Estado.Foco foco, boolean ativo) {
 
     }
 
-    public static void verificarEstadoCampoSelecaoUnica(Registro registro, String identificador, Estado.Foco foco, int opcao) {
+    public static void verificarEstadoCampoSelecaoUnica(Registrador registrador, String identificador, Estado.Foco foco, int opcao) {
 
     }
 
 
     //Reproduzir
 
-    public static void reproduzirEstadoCampoTexto(Registro registro, String identificador, Estado.Foco foco, String texto) {
+    public static void reproduzirEstadoCampoTexto(Registrador registrador, String identificador, Estado.Foco foco, String texto) {
 
         if (texto == null) {
             texto = "";
         }
 
-        Estado estado = new Estado(registro);
+        Estado estado = new Estado(registrador);
         estado.setIdentificadorElemento(identificador)
                 .setEstadoTexto(new StringBuilder(texto))
                 .setEstadoFoco(foco)
@@ -72,21 +72,21 @@ public class UtilitarioEstados {
 
     }
 
-    public static void reproduzirEstadoCampoBotao(Registro registro, String identificador) {
-        Estado estado = new Estado(registro);
+    public static void reproduzirEstadoCampoBotao(Registrador registrador, String identificador) {
+        Estado estado = new Estado(registrador);
         estado.setIdentificadorElemento(identificador)
                 .setEstadoFoco(Estado.Foco.FOCADO)
                 .reproduzirPassos()
                 .build();
     }
 
-    public static void reproduzirEstadoCampoSelecao(Registro registro, String identificador, String opcao) {
+    public static void reproduzirEstadoCampoSelecao(Registrador registrador, String identificador, String opcao) {
 
         if (opcao == null) {
             opcao = "";
         }
 
-        Estado estado = new Estado(registro);
+        Estado estado = new Estado(registrador);
         estado.setIdentificadorElemento(identificador)
                 .setEstadoSelecao(new StringBuilder(opcao))
                 .reproduzirPassos()
@@ -94,19 +94,19 @@ public class UtilitarioEstados {
 
     }
 
-    public static void reproduzirEstadoCampoBarraProgresso(Registro registro, String identificador, int progresso) {
-        Estado estado = new Estado(registro);
+    public static void reproduzirEstadoCampoBarraProgresso(Registrador registrador, String identificador, int progresso) {
+        Estado estado = new Estado(registrador);
         estado.setIdentificadorElemento(identificador)
                 .setEstadoProgresso(progresso)
                 .reproduzirPassos()
                 .build();
     }
 
-    public static void reproduzirEstadoCampoToggle(Registro registro, String identificador, boolean ativo) {
+    public static void reproduzirEstadoCampoToggle(Registrador registrador, String identificador, boolean ativo) {
 
     }
 
-    public static void reproduzirEstadoCampoSelecaoUnica(Registro registro, String identificador, int opcao) {
+    public static void reproduzirEstadoCampoSelecaoUnica(Registrador registrador, String identificador, int opcao) {
 
     }
 }

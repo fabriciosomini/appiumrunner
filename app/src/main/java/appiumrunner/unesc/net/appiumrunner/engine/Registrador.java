@@ -13,16 +13,26 @@ import appiumrunner.unesc.net.appiumrunner.states.Estado;
 //TODO: toggle - reproduzir e verificar
 //TODO: seekbar - reproduzir e verificar
 //TODO: radiogroup - reproduzir e verificar
-public class Registro {
+public class Registrador {
 
+    private final Setup setup;
+    private final String nomeTeste;
     private Criacao criacao;
 
     private String script = "";
+    private String fullScript = "";
 
     private boolean autoSave;
+    private String teardownScript;
 
-    public Registro() {
+    public Registrador(Setup setup) {
+        this.setup = setup;
         criacao = new Criacao();
+        nomeTeste = gerarNomeTeste();
+    }
+
+    private String gerarNomeTeste() {
+        return "ClasseTesteTCC3";
     }
 
     public void enableAutoSave(boolean autoSave) {
@@ -32,15 +42,17 @@ public class Registro {
     //TODO: Adicionar suporte ao método findElement
     public void registrar(Estado estado) {
 
+        String elementName = estado.getIdentificadorElemento();
+        String elementId = /*setup.getPackageName() + ":id/" +*/ elementName;
+
         Estado.Verificao verificao = estado.getVerificacao();
         StringBuilder estadoTexto = estado.getEstadoTexto();
         StringBuilder estadoSelecao = estado.getEstadoSelecao();
         boolean reproduzirPassos = estado.getReproduzirPassos();
         Estado.Foco estadoFoco = estado.getEstadoFoco();
 
-        String elementName = estado.getIdentificadorElemento();
 
-        String findElementByid = getFindElementByIdMethod(elementName, elementName);
+        String findElementByid = getFindElementByIdMethod(elementId, elementName);
         String click = getClickMethod(elementName);
         String scrollToExact = getScrollToExactMethod(elementName, getSafeString(estadoSelecao));
         String clear = getClearMethod(elementName);
@@ -187,8 +199,8 @@ public class Registro {
         return method;
     }
 
-    private String getFindElementByIdMethod(String elementName, String variableName) {
-        String method = "\n" + "WebElement " + variableName + " = driver.findElement(By.id(\"" + elementName + "\"));";
+    private String getFindElementByIdMethod(String elementId, String variableName) {
+        String method = "\n" + "WebElement " + variableName + " = driver.findElement(By.id(\"" + elementId + "\"));";
 
         return method;
     }
@@ -200,9 +212,101 @@ public class Registro {
     }
 
 
-    public void stop() {
-        criacao.criar(script);
+    public void parar() {
+
+        fullScript = criarSetup();
+        fullScript += criarScript();
+
+
+        if (setup.isUseDefaultTearDown()) {
+            teardownScript = createTeardown();
+        }
+
+        fullScript += teardownScript;
+
+        fullScript = criarClasseTeste();
+
+        criacao.criar(fullScript);
         script = "";
         criacao = new Criacao();
+    }
+
+    private String criarClasseTeste() {
+
+        String packageName = setup.getPackageName();
+        fullScript = fullScript.replace("\n", "\n\t");
+        String classe = "package " + packageName + ";"
+                + "\n" + "import org.junit.After;"
+                + "\n" + "import org.junit.Assert;"
+                + "\n" + "import org.junit.Before;"
+                + "\n" + "import org.junit.Test;"
+                + "\n" + "import org.openqa.selenium.By;"
+                + "\n" + "import org.openqa.selenium.WebDriver;"
+                + "\n" + "import org.openqa.selenium.WebElement;"
+                + "\n" + "import org.openqa.selenium.remote.DesiredCapabilities;"
+                + "\n" + "import org.openqa.selenium.remote.RemoteWebDriver;"
+                + "\n" + "import java.io.File;"
+                + "\n" + "import java.net.MalformedURLException;"
+                + "\n" + "import java.net.URL;"
+                + "\n" + "import java.util.concurrent.TimeUnit;"
+                + "\n" + "import io.appium.java_client.remote.MobileCapabilityType;"
+                + "\n\n" + "public class " + nomeTeste + " {"
+                + "\n\t" + "private WebDriver driver = null;"
+                + fullScript
+                + "\n" + "}";
+
+        return classe;
+    }
+
+    private String criarScript() {
+
+        script = script.replace("\n", "\n\t");
+        script = "\n\n" + "@Test"
+                + "\n" + "public void teste() throws Exception {"
+                + "\n" + script
+                + "\n" + "}";
+        return script;
+    }
+
+    private String createTeardown() {
+        String teardown =
+                "\n\n" + "@After"
+                        + "\n" + "public void tearDown() {"
+                        + "\n\t" + "if (driver != null) {"
+                        + "\n\t" + "driver.quit();"
+                        + "\n\t" + "}"
+                        + "\n" + "}";
+        return teardown;
+    }
+
+    private String criarSetup() {
+        String activity = setup.getAppActivity();
+        String platformVersion = setup.getPlatformVersion();
+        String deviceName = setup.getDeviceName();
+        String appPath = setup.getAppPath();
+        String apkName = setup.getApkName();
+        String appiumServerAddress = setup.getAppiumServerAddress();
+
+        appPath = appPath.replace("\\", "\\\\");
+        fullScript =
+                "\n" + "@Before"
+                        + "\n" + "public void setup() {"
+                        + "\n\t" + "File app = new File(\"" + appPath + "\", \"" + apkName + "\");"
+                        + "\n\t" + "DesiredCapabilities capabilities = new DesiredCapabilities();"
+                        + "\n\t" + "capabilities.setCapability(MobileCapabilityType.PLATFORM_VERSION, \"" + platformVersion + "\");"
+                        + "\n\t" + "capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, \"" + deviceName + "\");"
+                        + "\n\t" + "capabilities.setCapability(MobileCapabilityType.PLATFORM_NAME, \"Android\");"
+                        + "\n\t" + "capabilities.setCapability(MobileCapabilityType.APP_ACTIVITY,\"" + activity + "\");"
+                        + "\n\t" + "capabilities.setCapability(MobileCapabilityType.APP, app.getAbsolutePath());"
+                        + "\n"
+                        + "\n\t" + "try {"
+                        + "\n\t\t" + "driver = new RemoteWebDriver(new URL(\"" + appiumServerAddress + "\"), capabilities);"
+                        + "\n\t" + "} catch (MalformedURLException e) {"
+                        + "\n\t\t" + "e.printStackTrace();"
+                        + "\n\t" + "}"
+                        + "\n\t" + "driver.manage().timeouts().implicitlyWait(80, TimeUnit.SECONDS);"
+                        + "\n" + "}";
+
+        return fullScript;
     }
 }

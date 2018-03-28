@@ -20,15 +20,15 @@ import android.widget.ToggleButton;
 import java.util.ArrayList;
 
 import appiumrunner.unesc.net.appiumrunner.R;
-import appiumrunner.unesc.net.appiumrunner.engine.Registro;
+import appiumrunner.unesc.net.appiumrunner.engine.Registrador;
+import appiumrunner.unesc.net.appiumrunner.engine.Setup;
 import appiumrunner.unesc.net.appiumrunner.helpers.UtilitarioEstados;
 import appiumrunner.unesc.net.appiumrunner.states.Estado;
 
-import static appiumrunner.unesc.net.appiumrunner.application.AppiumRunnerApplication.TESTSETUP;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Registro registro;
+    private Registrador registrador;
     private TextView nomeEmpresa;
     private Button abrirListaMercadorias;
     private EditText nomeMotorista;
@@ -43,18 +43,27 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        registro = new Registro();
 
-        setTestSetup();
+        Setup setup = new Setup();
+        setup.setAppActivity(this.getClass().getName());
+        setup.setDeviceName("adroid");
+        setup.setPlatformVersion("7.1.2");
+        setup.setUseDefaultTearDown(true);
+        setup.setPackageName(getPackageName());
+        setup.setAppiumServerAddress("http://127.0.0.1:4723/wd/hub");
+        setup.setAppPath(".\\build\\outputs\\apk\\debug\\", "app-debug.apk");
+
+        registrador = new Registrador(setup);
+
         setEventosInterface();
         registrarEstadoInicialTela();
 
     }
 
     private void registrarEstadoInicialTela() {
-        UtilitarioEstados.verificarEstadoCampoTexto(registro, "nome_motorista", Estado.Foco.FOCADO, null);
-        UtilitarioEstados.verificarEstadoCampoTexto(registro, "driver_cpf", Estado.Foco.SEM_FOCO, null);
-        UtilitarioEstados.verificarEstadoCampoSelecao(registro, "driver_state", Estado.Foco.IGNORAR, getEstados().get(0));
+        UtilitarioEstados.verificarEstadoCampoTexto(registrador, "nome_motorista", Estado.Foco.FOCADO, null);
+        UtilitarioEstados.verificarEstadoCampoTexto(registrador, "driver_cpf", Estado.Foco.SEM_FOCO, null);
+        UtilitarioEstados.verificarEstadoCampoSelecao(registrador, "driver_state", Estado.Foco.IGNORAR, getEstados().get(0));
     }
 
 
@@ -79,13 +88,13 @@ public class MainActivity extends AppCompatActivity {
 
                 if (hasFocus) {
                     String text = nomeMotorista.getText().toString();
-                    UtilitarioEstados.reproduzirEstadoCampoTexto(registro, "nome_motorista", Estado.Foco.FOCADO, text);
-                    UtilitarioEstados.verificarEstadoCampoTexto(registro, "nome_motorista", Estado.Foco.FOCADO, text);
+                    UtilitarioEstados.reproduzirEstadoCampoTexto(registrador, "nome_motorista", Estado.Foco.FOCADO, text);
+                    UtilitarioEstados.verificarEstadoCampoTexto(registrador, "nome_motorista", Estado.Foco.FOCADO, text);
 
                 } else {
                     String text = nomeMotorista.getText().toString();
-                    UtilitarioEstados.reproduzirEstadoCampoTexto(registro, "nome_motorista", Estado.Foco.SEM_FOCO, text);
-                    UtilitarioEstados.verificarEstadoCampoTexto(registro, "nome_motorista", Estado.Foco.SEM_FOCO, text);
+                    UtilitarioEstados.reproduzirEstadoCampoTexto(registrador, "nome_motorista", Estado.Foco.SEM_FOCO, text);
+                    UtilitarioEstados.verificarEstadoCampoTexto(registrador, "nome_motorista", Estado.Foco.SEM_FOCO, text);
 
                 }
             }
@@ -97,13 +106,13 @@ public class MainActivity extends AppCompatActivity {
 
                 if (hasFocus) {
                     String text = nomeMotorista.getText().toString();
-                    UtilitarioEstados.reproduzirEstadoCampoTexto(registro, "cpf_motorista", Estado.Foco.FOCADO, text);
-                    UtilitarioEstados.verificarEstadoCampoTexto(registro, "cpf_motorista", Estado.Foco.FOCADO, text);
+                    UtilitarioEstados.reproduzirEstadoCampoTexto(registrador, "cpf_motorista", Estado.Foco.FOCADO, text);
+                    UtilitarioEstados.verificarEstadoCampoTexto(registrador, "cpf_motorista", Estado.Foco.FOCADO, text);
 
                 } else {
                     String text = nomeMotorista.getText().toString();
-                    UtilitarioEstados.reproduzirEstadoCampoTexto(registro, "cpf_motorista", Estado.Foco.SEM_FOCO, text);
-                    UtilitarioEstados.verificarEstadoCampoTexto(registro, "cpf_motorista", Estado.Foco.SEM_FOCO, text);
+                    UtilitarioEstados.reproduzirEstadoCampoTexto(registrador, "cpf_motorista", Estado.Foco.SEM_FOCO, text);
+                    UtilitarioEstados.verificarEstadoCampoTexto(registrador, "cpf_motorista", Estado.Foco.SEM_FOCO, text);
 
                 }
             }
@@ -114,8 +123,8 @@ public class MainActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 if (++estadoMotoristaSelected > 1) {
                     final String newValue = (String) estadoMotorista.getItemAtPosition(i);
-                    UtilitarioEstados.reproduzirEstadoCampoSelecao(registro, "estado_motorista", newValue);
-                    UtilitarioEstados.verificarEstadoCampoSelecao(registro, "estado_motorista", Estado.Foco.FOCADO, newValue);
+                    UtilitarioEstados.reproduzirEstadoCampoSelecao(registrador, "estado_motorista", newValue);
+                    UtilitarioEstados.verificarEstadoCampoSelecao(registrador, "estado_motorista", Estado.Foco.FOCADO, newValue);
                 }
             }
 
@@ -140,8 +149,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
 
-                UtilitarioEstados.reproduzirEstadoCampoBarraProgresso(registro, "volume_carga", pos);
-                UtilitarioEstados.verificarEstadoCampoBarraProgresso(registro, "volume_carga", Estado.Foco.FOCADO, pos);
+                UtilitarioEstados.reproduzirEstadoCampoBarraProgresso(registrador, "volume_carga", pos);
+                UtilitarioEstados.verificarEstadoCampoBarraProgresso(registrador, "volume_carga", Estado.Foco.FOCADO, pos);
 
             }
         });
@@ -151,8 +160,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
 
-                UtilitarioEstados.reproduzirEstadoCampoSelecaoUnica(registro, "tipo_carga", i);
-                UtilitarioEstados.verificarEstadoCampoSelecaoUnica(registro, "tipo_carga", Estado.Foco.FOCADO, i);
+                UtilitarioEstados.reproduzirEstadoCampoSelecaoUnica(registrador, "tipo_carga", i);
+                UtilitarioEstados.verificarEstadoCampoSelecaoUnica(registrador, "tipo_carga", Estado.Foco.FOCADO, i);
 
             }
         });
@@ -161,8 +170,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
 
-                UtilitarioEstados.reproduzirEstadoCampoToggle(registro, "motorista_ativo", true);
-                UtilitarioEstados.verificarEstadoCampoToggle(registro, "motorista_ativo", Estado.Foco.FOCADO, true);
+                UtilitarioEstados.reproduzirEstadoCampoToggle(registrador, "motorista_ativo", true);
+                UtilitarioEstados.verificarEstadoCampoToggle(registrador, "motorista_ativo", Estado.Foco.FOCADO, true);
             }
         });
 
@@ -174,8 +183,8 @@ public class MainActivity extends AppCompatActivity {
                 //Altera o foco para o botão, solucionando o problema de não disparar o evento onFocusChange
                 abrirListaMercadorias.requestFocusFromTouch();
 
-                UtilitarioEstados.reproduzirEstadoCampoBotao(registro, "abrir_lista_mercadorias");
-                registro.stop();
+                UtilitarioEstados.reproduzirEstadoCampoBotao(registrador, "abrir_lista_mercadorias");
+                registrador.parar();
 
                 Intent i = new Intent(getBaseContext(), SearchActivity.class);
                 startActivity(i);
@@ -183,14 +192,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-    }
-
-
-    private void setTestSetup() {
-        TESTSETUP.setAppActivity(this.getClass().getName());
-        TESTSETUP.setDeviceName("adroid");
-        TESTSETUP.setPlatformVersion("7.1.1");
-        TESTSETUP.setUseDefaultTearDown(true);
     }
 
 

@@ -12,6 +12,23 @@ public class Setup {
     private String appActivity;
     private String appDirectory;
     private boolean useDefaultTearDown;
+    private String apkName;
+    private String packageName;
+    private String appiumServerAddress;
+    private String appPath;
+
+    public void setAppPath(String appPath, String apkName) {
+        this.appPath = appPath;
+        this.apkName = apkName;
+    }
+
+    public String getAppPath() {
+        return appPath;
+    }
+
+    public String getApkName() {
+        return apkName;
+    }
 
     public boolean isUseDefaultTearDown() {
         return useDefaultTearDown;
@@ -53,4 +70,23 @@ public class Setup {
         this.appActivity = appActivity;
     }
 
+    public void setAppDirectory(String appDirectory) {
+        this.appDirectory = appDirectory;
+    }
+
+    public String getAppiumServerAddress() {
+        return appiumServerAddress;
+    }
+
+    public void setAppiumServerAddress(String appiumServerAddress) {
+        this.appiumServerAddress = appiumServerAddress;
+    }
+
+    public String getPackageName() {
+        return packageName;
+    }
+
+    public void setPackageName(String packageName) {
+        this.packageName = packageName;
+    }
 }
