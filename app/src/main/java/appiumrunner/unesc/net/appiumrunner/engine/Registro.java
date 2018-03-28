@@ -1,5 +1,7 @@
 package appiumrunner.unesc.net.appiumrunner.engine;
 
+import java.util.Random;
+
 import appiumrunner.unesc.net.appiumrunner.states.Estado;
 
 /**
@@ -27,34 +29,31 @@ public class Registro {
     //TODO: Adicionar suporte ao método findElement
     public void registrar(Estado estado) {
 
-        boolean estadoFoco = estado.getEstadoFoco();
-        String estadoTexto = estado.getEstadoTexto();
-        String estadoSelecao = estado.getEstadoSelecao();
         Estado.Verificao verificao = estado.getVerificacao();
+        String estadoTexto = estado.getEstadoTexto() == null ? "" : estado.getEstadoTexto();
+        String estadoSelecao = estado.getEstadoSelecao() == null ? "" : estado.getEstadoSelecao();
         boolean reproduzirPassos = estado.getReproduzirPassos();
+        boolean estadoFoco = estado.getEstadoFoco();
 
         String elementName = estado.getIdentificadorElemento();
 
-        String findElementByid = "\n" + "WebElement " + elementName + " = driver.findElement(By.id(\"" + elementName + "\"));";
-        String click = "\n" + elementName + ".click();";
-        String scrollToExact = "\n" + elementName + ".scrollToExact(\"" + estadoSelecao + "\");";
-        String clear = "\n" + elementName + ".clear();";
-        String sendKeys = "\n" + elementName + ".sendKeys(\"" + estadoTexto + "\");";
-        String selecItem = click
-                + scrollToExact
-                + "\n" + "WebElement option=driver.findElement(By.name(" + estadoTexto + "));"
-                + "\n" + "option.click();"; //TODO: O nome option é muito generico, ajustar
+        String findElementByid = getFindElementByIdMethod(elementName, elementName);
+        String click = getClickMethod(elementName);
+        String scrollToExact = getScrollToExactMethod(elementName, estadoSelecao);
+        String clear = getClearMethod(elementName);
+        String sendKeys = getSendKeysMethod(elementName, estadoTexto);
+        String selecItem = getSelectItemMethod(elementName, estadoTexto);
 
 
-        String verificaoFoco = "\n" + "Assert.assertEquals(" + elementName + ".equals(driver.switchTo().activeElement()), true);";
-        String verificaoTexto = "\n" + "Assert.assertEquals(" + elementName + ".getText(), \"" + estadoTexto + "\");";
-        String verificaoSelecao = ""; //TODO: Estudar como se verifica a seleção de um spinner
+        String verificaoFoco = getFocusAssertionMethod(elementName);
+        String verificaoTexto = getTextAssertionMethod(elementName, estadoTexto);
+        String verificaoSelecao = getSpinnerAssertionMethod(elementName, estadoSelecao);
 
         if (!script.contains(findElementByid)) {
             script += findElementByid;
         }
 
-        if (estadoSelecao != null) {
+        if (estadoSelecao != "") {
 
             if (reproduzirPassos) {
                 script += selecItem;
@@ -78,7 +77,7 @@ public class Registro {
 
         }
 
-        if (estadoTexto == null) {
+        if (estadoTexto == "") {
             if (reproduzirPassos) {
                 script += clear;
             }
@@ -104,11 +103,74 @@ public class Registro {
 
         }
 
+        script += "\n\n";
+
         if (autoSave) {
             criacao.criar(script);
         }
 
 
+    }
+
+    private String getSpinnerAssertionMethod(String elementName, String estadoSelecao) {
+        //TODO: Estudar como se verifica a seleção de um spinner
+        String method = getTextAssertionMethod(elementName, estadoSelecao);
+        return method;
+    }
+
+    private String getTextAssertionMethod(String elementName, String estadoTexto) {
+        String method = "\n" + "Assert.assertEquals(" + elementName + ".getText(), \"" + estadoTexto + "\");";
+        return method;
+    }
+
+    private String getFocusAssertionMethod(String elementName) {
+        String method = "\n" + "Assert.assertEquals(" + elementName + ".equals(driver.switchTo().activeElement()), true);";
+        return method;
+    }
+
+    private String getSelectItemMethod(String elementName, String estadoTexto) {
+        Random rand = new Random();
+        int randomNum = 10000000 + rand.nextInt((90000000 - 10000000) + 1);
+        String optionName = elementName + "Option" + randomNum;
+
+        String method = getClickMethod(elementName)
+                + getScrollToExactMethod(elementName, estadoTexto)
+                + getFindElementByNameMethod(elementName, optionName)
+                + getClickMethod(optionName);
+
+        return method;
+    }
+
+    private String getSendKeysMethod(String elementName, String estadoTexto) {
+        String method = "\n" + elementName + ".sendKeys(\"" + estadoTexto + "\");";
+        return method;
+    }
+
+    private String getClearMethod(String elementName) {
+        String method = "\n" + elementName + ".clear();";
+        return method;
+    }
+
+    private String getScrollToExactMethod(String elementName, String estadoSelecao) {
+        String method = "\n" + elementName + ".scrollToExact(\"" + estadoSelecao + "\");";
+        return method;
+    }
+
+    private String getClickMethod(String elementName) {
+        String method = "\n" + elementName + ".click();";
+        return method;
+    }
+
+    private String getFindElementByIdMethod(String elementName, String variableName) {
+        String method = "\n" + "WebElement " + variableName + " = driver.findElement(By.id(\"" + elementName + "\"));";
+
+        return method;
+    }
+
+    private String getFindElementByNameMethod(String elementName, String variableName) {
+        String method = "\n" + "WebElement " + variableName + " = driver.findElement(By.name(\"" + elementName + "\"));";
+
+        return method;
     }
 
 

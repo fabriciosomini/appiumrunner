@@ -65,4 +65,12 @@ public class UtilitarioEstados {
                 .reproduzirPassos()
                 .build();
     }
+
+    public static void reproduzirEstadoCampoBotao(Registro registro, String identificador) {
+        Estado estado = new Estado(registro);
+        estado.setIdentificadorElemento(identificador)
+                .setEstadoFoco(true)
+                .reproduzirPassos()
+                .build();
+    }
 }

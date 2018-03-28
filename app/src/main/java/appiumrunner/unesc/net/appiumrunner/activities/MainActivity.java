@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private SeekBar volumeCarga;
     private RadioGroup tipoCarga;
     private ToggleButton motoristaAtivo;
+    private int estadoMotoristaSelected = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
     private void registrarEstadoInicialTela() {
         UtilitarioEstados.verificarEstadoCampoTexto(registro, "nome_motorista", null, false);
         UtilitarioEstados.verificarEstadoCampoTexto(registro, "driver_cpf", null, false);
-        UtilitarioEstados.verificarEstadoCampoSelecao(registro, "driver_state", null);
+        UtilitarioEstados.verificarEstadoCampoSelecao(registro, "driver_state", getEstados().get(0));
     }
 
 
@@ -72,7 +73,6 @@ public class MainActivity extends AppCompatActivity {
 
         nomeEmpresa.setText(getString(R.string.company_name));
         estadoMotorista.setAdapter(getEstadoAdapter());
-
 
         nomeMotorista.addTextChangedListener(new TextWatcher() {
             @Override
@@ -119,9 +119,11 @@ public class MainActivity extends AppCompatActivity {
         estadoMotorista.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                final String newValue = (String) estadoMotorista.getItemAtPosition(i);
-                UtilitarioEstados.reproduzirEstadoCampoSelecao(registro, "estado_motorista", newValue);
-                UtilitarioEstados.verificarEstadoCampoSelecao(registro, "estado_motorista", newValue);
+                if (++estadoMotoristaSelected > 1) {
+                    final String newValue = (String) estadoMotorista.getItemAtPosition(i);
+                    UtilitarioEstados.reproduzirEstadoCampoSelecao(registro, "estado_motorista", newValue);
+                    UtilitarioEstados.verificarEstadoCampoSelecao(registro, "estado_motorista", newValue);
+                }
             }
 
             @Override
@@ -168,7 +170,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                //TODO: Adicionar  Reprodução - abrirListaMercadorias
+                UtilitarioEstados.reproduzirEstadoCampoBotao(registro, "abrir_lista_mercadorias");
 
                 Intent i = new Intent(getBaseContext(), SearchActivity.class);
                 startActivity(i);
