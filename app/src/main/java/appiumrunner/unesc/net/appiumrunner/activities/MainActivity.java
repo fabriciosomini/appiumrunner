@@ -22,7 +22,8 @@ import java.util.ArrayList;
 import appiumrunner.unesc.net.appiumrunner.R;
 import appiumrunner.unesc.net.appiumrunner.engine.Registrador;
 import appiumrunner.unesc.net.appiumrunner.engine.Setup;
-import appiumrunner.unesc.net.appiumrunner.helpers.UtilitarioEstados;
+import appiumrunner.unesc.net.appiumrunner.helpers.EstadoUtil;
+import appiumrunner.unesc.net.appiumrunner.helpers.IdUtil;
 import appiumrunner.unesc.net.appiumrunner.states.Estado;
 
 
@@ -61,9 +62,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void registrarEstadoInicialTela() {
-        UtilitarioEstados.verificarEstadoCampoTexto(registrador, "nome_motorista", Estado.Foco.FOCADO, null);
-        UtilitarioEstados.verificarEstadoCampoTexto(registrador, "driver_cpf", Estado.Foco.SEM_FOCO, null);
-        UtilitarioEstados.verificarEstadoCampoSelecao(registrador, "driver_state", Estado.Foco.IGNORAR, getEstados().get(0));
+
+        EstadoUtil.verificarEstadoCampoTexto(registrador,
+                IdUtil.getStringId(nomeMotorista),
+                Estado.Foco.FOCADO, null);
+
+        EstadoUtil.verificarEstadoCampoTexto(registrador,
+                IdUtil.getStringId(cpfMotorista),
+                Estado.Foco.SEM_FOCO, null);
+
+        EstadoUtil.verificarEstadoCampoSelecao(registrador,
+                IdUtil.getStringId(estadoMotorista),
+                Estado.Foco.IGNORAR, getEstados().get(0));
     }
 
 
@@ -71,13 +81,13 @@ public class MainActivity extends AppCompatActivity {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
         nomeEmpresa = findViewById(R.id.nome_empresa);
-        nomeMotorista = findViewById(R.id.nome_motorista);
-        cpfMotorista = findViewById(R.id.cpf_motorista);
-        estadoMotorista = findViewById(R.id.estado_motorista);
-        volumeCarga = findViewById(R.id.volume_carga);
-        tipoCarga = findViewById(R.id.tipo_carga);
-        motoristaAtivo = findViewById(R.id.motorista_ativo);
-        abrirListaMercadorias = findViewById(R.id.abrir_lista_mercadorias);
+        nomeMotorista = findViewById(R.id.nomeMotorista);
+        cpfMotorista = findViewById(R.id.cpfMotorista);
+        estadoMotorista = findViewById(R.id.estadoMotorista);
+        volumeCarga = findViewById(R.id.volumeCarga);
+        tipoCarga = findViewById(R.id.tipoCarga);
+        motoristaAtivo = findViewById(R.id.motoristaAtivo);
+        abrirListaMercadorias = findViewById(R.id.abrirListaMercadorias);
 
         nomeEmpresa.setText(getString(R.string.company_name));
         estadoMotorista.setAdapter(getEstadoAdapter());
@@ -88,13 +98,13 @@ public class MainActivity extends AppCompatActivity {
 
                 if (hasFocus) {
                     String text = nomeMotorista.getText().toString();
-                    UtilitarioEstados.reproduzirEstadoCampoTexto(registrador, "nome_motorista", Estado.Foco.FOCADO, text);
-                    UtilitarioEstados.verificarEstadoCampoTexto(registrador, "nome_motorista", Estado.Foco.FOCADO, text);
+                    EstadoUtil.reproduzirEstadoCampoTexto(registrador, IdUtil.getStringId(nomeMotorista), Estado.Foco.FOCADO, text);
+                    EstadoUtil.verificarEstadoCampoTexto(registrador, IdUtil.getStringId(nomeMotorista), Estado.Foco.FOCADO, text);
 
                 } else {
                     String text = nomeMotorista.getText().toString();
-                    UtilitarioEstados.reproduzirEstadoCampoTexto(registrador, "nome_motorista", Estado.Foco.SEM_FOCO, text);
-                    UtilitarioEstados.verificarEstadoCampoTexto(registrador, "nome_motorista", Estado.Foco.SEM_FOCO, text);
+                    EstadoUtil.reproduzirEstadoCampoTexto(registrador, IdUtil.getStringId(nomeMotorista), Estado.Foco.SEM_FOCO, text);
+                    EstadoUtil.verificarEstadoCampoTexto(registrador, IdUtil.getStringId(nomeMotorista), Estado.Foco.SEM_FOCO, text);
 
                 }
             }
@@ -106,13 +116,13 @@ public class MainActivity extends AppCompatActivity {
 
                 if (hasFocus) {
                     String text = nomeMotorista.getText().toString();
-                    UtilitarioEstados.reproduzirEstadoCampoTexto(registrador, "cpf_motorista", Estado.Foco.FOCADO, text);
-                    UtilitarioEstados.verificarEstadoCampoTexto(registrador, "cpf_motorista", Estado.Foco.FOCADO, text);
+                    EstadoUtil.reproduzirEstadoCampoTexto(registrador, IdUtil.getStringId(cpfMotorista), Estado.Foco.FOCADO, text);
+                    EstadoUtil.verificarEstadoCampoTexto(registrador, IdUtil.getStringId(cpfMotorista), Estado.Foco.FOCADO, text);
 
                 } else {
                     String text = nomeMotorista.getText().toString();
-                    UtilitarioEstados.reproduzirEstadoCampoTexto(registrador, "cpf_motorista", Estado.Foco.SEM_FOCO, text);
-                    UtilitarioEstados.verificarEstadoCampoTexto(registrador, "cpf_motorista", Estado.Foco.SEM_FOCO, text);
+                    EstadoUtil.reproduzirEstadoCampoTexto(registrador, IdUtil.getStringId(cpfMotorista), Estado.Foco.SEM_FOCO, text);
+                    EstadoUtil.verificarEstadoCampoTexto(registrador, IdUtil.getStringId(cpfMotorista), Estado.Foco.SEM_FOCO, text);
 
                 }
             }
@@ -123,8 +133,8 @@ public class MainActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 if (++estadoMotoristaSelected > 1) {
                     final String newValue = (String) estadoMotorista.getItemAtPosition(i);
-                    UtilitarioEstados.reproduzirEstadoCampoSelecao(registrador, "estado_motorista", newValue);
-                    UtilitarioEstados.verificarEstadoCampoSelecao(registrador, "estado_motorista", Estado.Foco.FOCADO, newValue);
+                    EstadoUtil.reproduzirEstadoCampoSelecao(registrador, IdUtil.getStringId(estadoMotorista), newValue);
+                    EstadoUtil.verificarEstadoCampoSelecao(registrador, IdUtil.getStringId(estadoMotorista), Estado.Foco.FOCADO, newValue);
                 }
             }
 
@@ -149,8 +159,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
 
-                UtilitarioEstados.reproduzirEstadoCampoBarraProgresso(registrador, "volume_carga", pos);
-                UtilitarioEstados.verificarEstadoCampoBarraProgresso(registrador, "volume_carga", Estado.Foco.FOCADO, pos);
+                EstadoUtil.reproduzirEstadoCampoBarraProgresso(registrador, IdUtil.getStringId(volumeCarga), pos);
+                EstadoUtil.verificarEstadoCampoBarraProgresso(registrador, IdUtil.getStringId(volumeCarga), Estado.Foco.FOCADO, pos);
 
             }
         });
@@ -160,8 +170,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
 
-                UtilitarioEstados.reproduzirEstadoCampoSelecaoUnica(registrador, "tipo_carga", i);
-                UtilitarioEstados.verificarEstadoCampoSelecaoUnica(registrador, "tipo_carga", Estado.Foco.FOCADO, i);
+                EstadoUtil.reproduzirEstadoCampoSelecaoUnica(registrador, IdUtil.getStringId(tipoCarga), i);
+                EstadoUtil.verificarEstadoCampoSelecaoUnica(registrador, IdUtil.getStringId(tipoCarga), Estado.Foco.FOCADO, i);
 
             }
         });
@@ -170,8 +180,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
 
-                UtilitarioEstados.reproduzirEstadoCampoToggle(registrador, "motorista_ativo", true);
-                UtilitarioEstados.verificarEstadoCampoToggle(registrador, "motorista_ativo", Estado.Foco.FOCADO, true);
+                EstadoUtil.reproduzirEstadoCampoToggle(registrador, IdUtil.getStringId(motoristaAtivo), true);
+                EstadoUtil.verificarEstadoCampoToggle(registrador, IdUtil.getStringId(motoristaAtivo), Estado.Foco.FOCADO, true);
             }
         });
 
@@ -183,7 +193,7 @@ public class MainActivity extends AppCompatActivity {
                 //Altera o foco para o botão, solucionando o problema de não disparar o evento onFocusChange
                 abrirListaMercadorias.requestFocusFromTouch();
 
-                UtilitarioEstados.reproduzirEstadoCampoBotao(registrador, "abrir_lista_mercadorias");
+                EstadoUtil.reproduzirEstadoCampoBotao(registrador, IdUtil.getStringId(abrirListaMercadorias));
                 registrador.parar();
 
                 Intent i = new Intent(getBaseContext(), SearchActivity.class);

@@ -14,7 +14,8 @@ import java.util.ArrayList;
 import appiumrunner.unesc.net.appiumrunner.R;
 import appiumrunner.unesc.net.appiumrunner.engine.Registrador;
 import appiumrunner.unesc.net.appiumrunner.engine.Setup;
-import appiumrunner.unesc.net.appiumrunner.helpers.UtilitarioEstados;
+import appiumrunner.unesc.net.appiumrunner.helpers.EstadoUtil;
+import appiumrunner.unesc.net.appiumrunner.helpers.IdUtil;
 import appiumrunner.unesc.net.appiumrunner.states.Estado;
 
 
@@ -52,7 +53,7 @@ public class SearchActivity extends AppCompatActivity {
 
 
     private void registrarEstadoInicialTela() {
-        UtilitarioEstados.verificarEstadoCampoTexto(registrador,
+        EstadoUtil.verificarEstadoCampoTexto(registrador,
                 "searchEditTxt",
                 Estado.Foco.SEM_FOCO, getString(R.string.hint_search)
         );
@@ -84,7 +85,7 @@ public class SearchActivity extends AppCompatActivity {
             public void afterTextChanged(Editable editable) {
 
                 String text = editable.toString();
-                UtilitarioEstados.verificarEstadoCampoTexto(registrador, "searchEditTxt", Estado.Foco.FOCADO, text);
+                EstadoUtil.verificarEstadoCampoTexto(registrador, IdUtil.getStringId(searchEditTxt), Estado.Foco.FOCADO, text);
 
             }
         });

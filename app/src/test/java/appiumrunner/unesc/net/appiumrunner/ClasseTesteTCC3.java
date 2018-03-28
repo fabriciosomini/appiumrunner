@@ -19,7 +19,6 @@ import io.appium.java_client.remote.MobileCapabilityType;
 
 public class ClasseTesteTCC3 {
     private WebDriver driver = null;
-
     @Before
     public void setup() {
         File app = new File(".\\build\\outputs\\apk\\debug\\", "app-debug.apk");
@@ -41,38 +40,38 @@ public class ClasseTesteTCC3 {
     @Test
     public void teste() {
 
-        WebElement nome_motorista = driver.findElement(By.id("appiumrunner.unesc.net.appiumrunner:id/nome_motorista"));
-        Assert.assertEquals(nome_motorista.equals(driver.switchTo().activeElement()), true);
-        Assert.assertEquals(nome_motorista.getText(), "");
+        WebElement nomeMotorista = driver.findElement(By.id("nomeMotorista"));
+        Assert.assertEquals(nomeMotorista.equals(driver.switchTo().activeElement()), true);
+        Assert.assertEquals(nomeMotorista.getText(), "");
 
 
-        WebElement driver_cpf = driver.findElement(By.id("appiumrunner.unesc.net.appiumrunner:id/driver_cpf"));
-        Assert.assertEquals(driver_cpf.equals(driver.switchTo().activeElement()), false);
-        Assert.assertEquals(driver_cpf.getText(), "");
+        WebElement cpfMotorista = driver.findElement(By.id("cpfMotorista"));
+        Assert.assertEquals(cpfMotorista.equals(driver.switchTo().activeElement()), false);
+        Assert.assertEquals(cpfMotorista.getText(), "");
 
 
-        WebElement driver_state = driver.findElement(By.id("appiumrunner.unesc.net.appiumrunner:id/driver_state"));
-        Assert.assertEquals(driver_state.getText(), "Acre - AC");
+        WebElement estadoMotorista = driver.findElement(By.id("estadoMotorista"));
+        Assert.assertEquals(estadoMotorista.getText(), "Acre - AC");
 
 
-        nome_motorista.click();
-        nome_motorista.clear();
+        nomeMotorista.click();
+        nomeMotorista.clear();
 
 
-        Assert.assertEquals(nome_motorista.equals(driver.switchTo().activeElement()), true);
-        Assert.assertEquals(nome_motorista.getText(), "");
+        Assert.assertEquals(nomeMotorista.equals(driver.switchTo().activeElement()), true);
+        Assert.assertEquals(nomeMotorista.getText(), "");
 
 
-        nome_motorista.click();
-        nome_motorista.clear();
+        nomeMotorista.click();
+        nomeMotorista.clear();
 
 
-        Assert.assertEquals(nome_motorista.equals(driver.switchTo().activeElement()), false);
-        Assert.assertEquals(nome_motorista.getText(), "");
+        Assert.assertEquals(nomeMotorista.equals(driver.switchTo().activeElement()), false);
+        Assert.assertEquals(nomeMotorista.getText(), "");
 
 
-        WebElement abrir_lista_mercadorias = driver.findElement(By.id("appiumrunner.unesc.net.appiumrunner:id/abrir_lista_mercadorias"));
-        abrir_lista_mercadorias.click();
+        WebElement abrirListaMercadorias = driver.findElement(By.id("abrirListaMercadorias"));
+        abrirListaMercadorias.click();
 
 
     }

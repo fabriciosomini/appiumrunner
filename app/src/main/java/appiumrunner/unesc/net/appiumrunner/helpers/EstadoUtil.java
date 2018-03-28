@@ -3,7 +3,7 @@ package appiumrunner.unesc.net.appiumrunner.helpers;
 import appiumrunner.unesc.net.appiumrunner.engine.Registrador;
 import appiumrunner.unesc.net.appiumrunner.states.Estado;
 
-public class UtilitarioEstados {
+public class EstadoUtil {
 
     //Verificar
     public static void verificarEstadoCampoTexto(Registrador registrador, String identificador, Estado.Foco foco, String texto) {
