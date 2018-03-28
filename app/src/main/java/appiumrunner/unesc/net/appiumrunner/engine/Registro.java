@@ -10,7 +10,6 @@ import appiumrunner.unesc.net.appiumrunner.states.Estado;
 
 
 //TODO: Verificar se todos os metodos do utilitario de estados estão aqui (ex: Verificar Barra Progresso)
-//TODO: Utilizar outro tipo de variavel (nullable) para verificar o foco
 public class Registro {
 
     private Criacao criacao;
@@ -34,7 +33,7 @@ public class Registro {
         StringBuilder estadoTexto = estado.getEstadoTexto();
         StringBuilder estadoSelecao = estado.getEstadoSelecao();
         boolean reproduzirPassos = estado.getReproduzirPassos();
-        boolean estadoFoco = estado.getEstadoFoco();
+        Estado.Foco estadoFoco = estado.getEstadoFoco();
 
         String elementName = estado.getIdentificadorElemento();
 
@@ -46,7 +45,7 @@ public class Registro {
         String selecItem = getSelectItemMethod(elementName, getSafeString(estadoSelecao));
 
 
-        String verificaoFoco = getFocusAssertionMethod(elementName);
+        String verificaoFoco = "";
         String verificaoTexto = "";
         String verificaoSelecao = "";
 
@@ -68,7 +67,9 @@ public class Registro {
 
         }
 
-        if (estadoFoco) {
+        if (estadoFoco != null) {
+
+            verificaoFoco = getFocusAssertionMethod(elementName, estadoFoco);
 
             if (reproduzirPassos) {
                 script += click;
@@ -141,8 +142,12 @@ public class Registro {
         return method;
     }
 
-    private String getFocusAssertionMethod(String elementName) {
-        String method = "\n" + "Assert.assertEquals(" + elementName + ".equals(driver.switchTo().activeElement()), true);";
+    private String getFocusAssertionMethod(String elementName, Estado.Foco foco) {
+        boolean focar = false;
+        if (foco == Estado.Foco.FOCAR) {
+            focar = true;
+        }
+        String method = "\n" + "Assert.assertEquals(" + elementName + ".equals(driver.switchTo().activeElement()), " + focar + ");";
         return method;
     }
 

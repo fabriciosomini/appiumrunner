@@ -6,7 +6,7 @@ import appiumrunner.unesc.net.appiumrunner.states.Estado;
 public class UtilitarioEstados {
 
     //TODO: Adicionar o boolean foco para os outros métodos
-    public static void verificarEstadoCampoTexto(Registro registro, String identificador, String texto, boolean foco) {
+    public static void verificarEstadoCampoTexto(Registro registro, String identificador, String texto, Estado.Foco foco) {
         if (texto == null) {
             texto = "";
         }
@@ -43,7 +43,7 @@ public class UtilitarioEstados {
 
     }
 
-    public static void reproduzirEstadoCampoTexto(Registro registro, String identificador, String texto, boolean foco) {
+    public static void reproduzirEstadoCampoTexto(Registro registro, String identificador, String texto, Estado.Foco foco) {
 
         if (texto == null) {
             texto = "";
@@ -84,7 +84,7 @@ public class UtilitarioEstados {
     public static void reproduzirEstadoCampoBotao(Registro registro, String identificador) {
         Estado estado = new Estado(registro);
         estado.setIdentificadorElemento(identificador)
-                .setEstadoFoco(true)
+                .setEstadoFoco(Estado.Foco.FOCAR)
                 .reproduzirPassos()
                 .build();
     }

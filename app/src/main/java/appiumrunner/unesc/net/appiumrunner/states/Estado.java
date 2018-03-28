@@ -13,7 +13,7 @@ public class Estado implements Serializable {
     private static ArrayList<Estado> passos;
     private final Registro registro;
     private Verificao verificacao;
-    private boolean estadoFoco;
+    private Foco estadoFoco;
     private String identificadorElemento;
     private String stateMessage;
     private StringBuilder estadoTexto;
@@ -25,6 +25,7 @@ public class Estado implements Serializable {
     public Estado(Registro registro) {
         this.registro = registro;
     }
+
 
     public StringBuilder getEstadoSelecao() {
         return estadoSelecao;
@@ -40,11 +41,11 @@ public class Estado implements Serializable {
         return verificacao;
     }
 
-    public Boolean getEstadoFoco() {
+    public Foco getEstadoFoco() {
         return estadoFoco;
     }
 
-    public Estado setEstadoFoco(boolean estadoFoco) {
+    public Estado setEstadoFoco(Foco estadoFoco) {
         this.estadoFoco = estadoFoco;
         return this;
     }
@@ -114,6 +115,12 @@ public class Estado implements Serializable {
     public enum Verificao {
         FINAL_ESTADO,
         POR_PROPRIEDADE
+    }
+
+    public enum Foco {
+        FOCAR,
+        SEM_FOCO,
+        IGNORAR
     }
 
 

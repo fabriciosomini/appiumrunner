@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import appiumrunner.unesc.net.appiumrunner.R;
 import appiumrunner.unesc.net.appiumrunner.engine.Registro;
 import appiumrunner.unesc.net.appiumrunner.helpers.UtilitarioEstados;
+import appiumrunner.unesc.net.appiumrunner.states.Estado;
 
 import static appiumrunner.unesc.net.appiumrunner.application.AppiumRunnerApplication.TESTSETUP;
 
@@ -53,8 +54,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void registrarEstadoInicialTela() {
-        UtilitarioEstados.verificarEstadoCampoTexto(registro, "nome_motorista", null, false);
-        UtilitarioEstados.verificarEstadoCampoTexto(registro, "driver_cpf", null, false);
+        UtilitarioEstados.verificarEstadoCampoTexto(registro, "nome_motorista", null, Estado.Foco.SEM_FOCO);
+        UtilitarioEstados.verificarEstadoCampoTexto(registro, "driver_cpf", null, Estado.Foco.SEM_FOCO);
         UtilitarioEstados.verificarEstadoCampoSelecao(registro, "driver_state", getEstados().get(0));
     }
 
@@ -89,8 +90,8 @@ public class MainActivity extends AppCompatActivity {
             public void afterTextChanged(Editable editable) {
 
                 String text = editable.toString();
-                UtilitarioEstados.reproduzirEstadoCampoTexto(registro, "nome_motorista", text, true);
-                UtilitarioEstados.verificarEstadoCampoTexto(registro, "nome_motorista", text, true);
+                UtilitarioEstados.reproduzirEstadoCampoTexto(registro, "nome_motorista", text, Estado.Foco.FOCAR);
+                UtilitarioEstados.verificarEstadoCampoTexto(registro, "nome_motorista", text, Estado.Foco.FOCAR);
 
             }
         });
@@ -110,8 +111,8 @@ public class MainActivity extends AppCompatActivity {
             public void afterTextChanged(Editable editable) {
 
                 String text = editable.toString();
-                UtilitarioEstados.reproduzirEstadoCampoTexto(registro, "cpf_motorista", text, true);
-                UtilitarioEstados.verificarEstadoCampoTexto(registro, "cpf_motorista", text, true);
+                UtilitarioEstados.reproduzirEstadoCampoTexto(registro, "cpf_motorista", text, Estado.Foco.FOCAR);
+                UtilitarioEstados.verificarEstadoCampoTexto(registro, "cpf_motorista", text, Estado.Foco.FOCAR);
 
             }
         });

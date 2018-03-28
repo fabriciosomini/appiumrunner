@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import appiumrunner.unesc.net.appiumrunner.R;
 import appiumrunner.unesc.net.appiumrunner.engine.Registro;
 import appiumrunner.unesc.net.appiumrunner.helpers.UtilitarioEstados;
+import appiumrunner.unesc.net.appiumrunner.states.Estado;
 
 import static appiumrunner.unesc.net.appiumrunner.application.AppiumRunnerApplication.TESTSETUP;
 
@@ -45,7 +46,7 @@ public class SearchActivity extends AppCompatActivity {
         UtilitarioEstados.verificarEstadoCampoTexto(registro,
                 "searchEditTxt",
                 getString(R.string.hint_search),
-                false);
+                Estado.Foco.SEM_FOCO);
     }
 
     private void setEventosInterface() {
@@ -74,7 +75,7 @@ public class SearchActivity extends AppCompatActivity {
             public void afterTextChanged(Editable editable) {
 
                 String text = editable.toString();
-                UtilitarioEstados.verificarEstadoCampoTexto(registro, "searchEditTxt", text, true);
+                UtilitarioEstados.verificarEstadoCampoTexto(registro, "searchEditTxt", text, Estado.Foco.FOCAR);
 
             }
         });
