@@ -8,8 +8,9 @@ import appiumrunner.unesc.net.appiumrunner.states.Estado;
  * Created by fabri on 18/03/2018.
  */
 
-//TODO: Criar metodos para trazer as funcões montada, ao invez de montar em uma linha
+
 //TODO: Verificar se todos os metodos do utilitario de estados estão aqui (ex: Verificar Barra Progresso)
+//TODO: Utilizar outro tipo de variavel (nullable) para verificar o foco
 public class Registro {
 
     private Criacao criacao;
@@ -30,8 +31,8 @@ public class Registro {
     public void registrar(Estado estado) {
 
         Estado.Verificao verificao = estado.getVerificacao();
-        String estadoTexto = estado.getEstadoTexto() == null ? "" : estado.getEstadoTexto();
-        String estadoSelecao = estado.getEstadoSelecao() == null ? "" : estado.getEstadoSelecao();
+        StringBuilder estadoTexto = estado.getEstadoTexto();
+        StringBuilder estadoSelecao = estado.getEstadoSelecao();
         boolean reproduzirPassos = estado.getReproduzirPassos();
         boolean estadoFoco = estado.getEstadoFoco();
 
@@ -39,27 +40,29 @@ public class Registro {
 
         String findElementByid = getFindElementByIdMethod(elementName, elementName);
         String click = getClickMethod(elementName);
-        String scrollToExact = getScrollToExactMethod(elementName, estadoSelecao);
+        String scrollToExact = getScrollToExactMethod(elementName, getSafeString(estadoSelecao));
         String clear = getClearMethod(elementName);
-        String sendKeys = getSendKeysMethod(elementName, estadoTexto);
-        String selecItem = getSelectItemMethod(elementName, estadoTexto);
+        String sendKeys = getSendKeysMethod(elementName, getSafeString(estadoTexto));
+        String selecItem = getSelectItemMethod(elementName, getSafeString(estadoSelecao));
 
 
         String verificaoFoco = getFocusAssertionMethod(elementName);
-        String verificaoTexto = getTextAssertionMethod(elementName, estadoTexto);
-        String verificaoSelecao = getSpinnerAssertionMethod(elementName, estadoSelecao);
+        String verificaoTexto = "";
+        String verificaoSelecao = "";
 
         if (!script.contains(findElementByid)) {
             script += findElementByid;
         }
 
-        if (estadoSelecao != "") {
+        if (estadoSelecao != null) {
+
+            verificaoSelecao = getSpinnerAssertionMethod(elementName, getSafeString(estadoSelecao));
 
             if (reproduzirPassos) {
                 script += selecItem;
             }
 
-            if (verificao == Estado.Verificao.POR_PROPRIEDA_ESTADO) {
+            if (verificao == Estado.Verificao.POR_PROPRIEDADE) {
                 script += verificaoSelecao;
             }
 
@@ -71,35 +74,42 @@ public class Registro {
                 script += click;
             }
 
-            if (verificao == Estado.Verificao.POR_PROPRIEDA_ESTADO) {
+            if (verificao == Estado.Verificao.POR_PROPRIEDADE) {
                 script += verificaoFoco;
             }
 
         }
 
-        if (estadoTexto == "") {
-            if (reproduzirPassos) {
-                script += clear;
-            }
+        if (estadoTexto != null) {
 
-            if (verificao == Estado.Verificao.POR_PROPRIEDA_ESTADO) {
-                script += verificaoTexto;
-            }
+            verificaoTexto = getTextAssertionMethod(elementName, getSafeString(estadoTexto));
 
-        } else {
 
-            if (reproduzirPassos) {
-                script += sendKeys;
-            }
+            if (estadoTexto.toString().isEmpty()) {
+                if (reproduzirPassos) {
+                    script += clear;
+                }
 
-            if (verificao == Estado.Verificao.POR_PROPRIEDA_ESTADO) {
-                script += verificaoTexto;
+                if (verificao == Estado.Verificao.POR_PROPRIEDADE) {
+                    script += verificaoTexto;
+                }
+
+            } else {
+
+                if (reproduzirPassos) {
+                    script += sendKeys;
+                }
+
+                if (verificao == Estado.Verificao.POR_PROPRIEDADE) {
+                    script += verificaoTexto;
+                }
             }
         }
 
         if (verificao == Estado.Verificao.FINAL_ESTADO) {
             script += verificaoFoco;
             script += verificaoTexto;
+            script += verificaoSelecao;
 
         }
 
@@ -110,6 +120,14 @@ public class Registro {
         }
 
 
+    }
+
+    private String getSafeString(StringBuilder stringBuilder) {
+        if (stringBuilder != null) {
+            return stringBuilder.toString();
+        } else {
+            return "";
+        }
     }
 
     private String getSpinnerAssertionMethod(String elementName, String estadoSelecao) {
@@ -176,5 +194,7 @@ public class Registro {
 
     public void stop() {
         criacao.criar(script);
+        script = "";
+        criacao = new Criacao();
     }
 }

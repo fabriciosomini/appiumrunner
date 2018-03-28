@@ -16,8 +16,8 @@ public class Estado implements Serializable {
     private boolean estadoFoco;
     private String identificadorElemento;
     private String stateMessage;
-    private String estadoTexto;
-    private String estadoSelecao;
+    private StringBuilder estadoTexto;
+    private StringBuilder estadoSelecao;
     private int estadoContagem;
     private boolean reproduzirPassos;
     private int estadoProgresso;
@@ -26,11 +26,11 @@ public class Estado implements Serializable {
         this.registro = registro;
     }
 
-    public String getEstadoSelecao() {
+    public StringBuilder getEstadoSelecao() {
         return estadoSelecao;
     }
 
-    public Estado setEstadoSelecao(String estadoSelecao) {
+    public Estado setEstadoSelecao(StringBuilder estadoSelecao) {
         this.estadoSelecao = estadoSelecao;
 
         return this;
@@ -49,11 +49,11 @@ public class Estado implements Serializable {
         return this;
     }
 
-    public String getEstadoTexto() {
+    public StringBuilder getEstadoTexto() {
         return estadoTexto;
     }
 
-    public Estado setEstadoTexto(String estadoTexto) {
+    public Estado setEstadoTexto(StringBuilder estadoTexto) {
         this.estadoTexto = estadoTexto;
         return this;
     }
@@ -113,7 +113,7 @@ public class Estado implements Serializable {
 
     public enum Verificao {
         FINAL_ESTADO,
-        POR_PROPRIEDA_ESTADO
+        POR_PROPRIEDADE
     }
 
 

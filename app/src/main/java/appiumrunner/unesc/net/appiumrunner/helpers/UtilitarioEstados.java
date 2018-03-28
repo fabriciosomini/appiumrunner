@@ -5,11 +5,15 @@ import appiumrunner.unesc.net.appiumrunner.states.Estado;
 
 public class UtilitarioEstados {
 
+    //TODO: Adicionar o boolean foco para os outros métodos
     public static void verificarEstadoCampoTexto(Registro registro, String identificador, String texto, boolean foco) {
+        if (texto == null) {
+            texto = "";
+        }
 
         Estado estado = new Estado(registro);
         estado.setIdentificadorElemento(identificador)
-                .setEstadoTexto(texto)
+                .setEstadoTexto(new StringBuilder(texto))
                 .setEstadoFoco(foco)
                 .verificar(Estado.Verificao.FINAL_ESTADO)
                 .build();
@@ -28,10 +32,12 @@ public class UtilitarioEstados {
     }
 
     public static void verificarEstadoCampoSelecao(Registro registro, String identificador, String opcao) {
-
+        if (opcao == null) {
+            opcao = "";
+        }
         Estado estado = new Estado(registro);
         estado.setIdentificadorElemento(identificador)
-                .setEstadoSelecao(opcao)
+                .setEstadoSelecao(new StringBuilder(opcao))
                 .verificar(Estado.Verificao.FINAL_ESTADO)
                 .build();
 
@@ -39,9 +45,13 @@ public class UtilitarioEstados {
 
     public static void reproduzirEstadoCampoTexto(Registro registro, String identificador, String texto, boolean foco) {
 
+        if (texto == null) {
+            texto = "";
+        }
+
         Estado estado = new Estado(registro);
         estado.setIdentificadorElemento(identificador)
-                .setEstadoTexto(texto)
+                .setEstadoTexto(new StringBuilder(texto))
                 .setEstadoFoco(foco)
                 .reproduzirPassos()
                 .build();
@@ -50,9 +60,14 @@ public class UtilitarioEstados {
     }
 
     public static void reproduzirEstadoCampoSelecao(Registro registro, String identificador, String opcao) {
+
+        if (opcao == null) {
+            opcao = "";
+        }
+
         Estado estado = new Estado(registro);
         estado.setIdentificadorElemento(identificador)
-                .setEstadoSelecao(opcao)
+                .setEstadoSelecao(new StringBuilder(opcao))
                 .reproduzirPassos()
                 .build();
 
