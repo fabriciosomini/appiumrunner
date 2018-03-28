@@ -14,7 +14,7 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/userTxtView"
+                android:id="@+id/nome_empresa"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
@@ -24,7 +24,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <Button
-                android:id="@+id/openCustomerServicesBtn"
+                android:id="@+id/abrir_lista_mercadorias"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
@@ -57,7 +57,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/userTxtView" />
+                app:layout_constraintTop_toBottomOf="@+id/nome_empresa" />
 
             <TextView
                 android:id="@+id/textView2"
@@ -73,7 +73,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/nome_motorista" />
 
             <EditText
-                android:id="@+id/customerCpf"
+                android:id="@+id/cpf_motorista"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
@@ -96,10 +96,10 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/customerCpf" />
+                app:layout_constraintTop_toBottomOf="@+id/cpf_motorista" />
 
             <Spinner
-                android:id="@+id/customerState"
+                android:id="@+id/estado_motorista"
                 android:layout_width="0dp"
                 android:layout_height="45dp"
                 android:layout_marginEnd="8dp"
@@ -120,10 +120,10 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/customerState" />
+                app:layout_constraintTop_toBottomOf="@+id/estado_motorista" />
 
             <android.support.constraint.ConstraintLayout
-                android:id="@+id/container_cargo_vol"
+                android:id="@+id/volume_carga"
                 android:layout_width="0dp"
                 android:layout_height="35dp"
                 android:layout_marginEnd="8dp"
@@ -156,7 +156,7 @@
             </android.support.constraint.ConstraintLayout>
 
             <CheckBox
-                android:id="@+id/checkBox"
+                android:id="@+id/bitrem"
                 android:layout_width="wrap_content"
                 android:layout_height="45dp"
                 android:layout_marginEnd="8dp"
@@ -166,10 +166,10 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/productType" />
+                app:layout_constraintTop_toBottomOf="@+id/tipo_carga" />
 
             <ToggleButton
-                android:id="@+id/toggleButton2"
+                android:id="@+id/motorista_ativo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
@@ -178,7 +178,7 @@
                 android:layout_marginTop="8dp"
                 android:checked="true"
                 android:text="ToggleButton"
-                app:layout_constraintBottom_toTopOf="@+id/openCustomerServicesBtn"
+                app:layout_constraintBottom_toTopOf="@+id/abrir_lista_mercadorias"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0"
                 app:layout_constraintStart_toStartOf="parent"
@@ -192,10 +192,10 @@
                 android:layout_marginTop="8dp"
                 android:text="@string/is_active"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/checkBox" />
+                app:layout_constraintTop_toBottomOf="@+id/bitrem" />
 
             <RadioGroup
-                android:id="@+id/productType"
+                android:id="@+id/tipo_carga"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
@@ -203,7 +203,7 @@
                 android:layout_marginTop="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/container_cargo_vol">
+                app:layout_constraintTop_toBottomOf="@+id/volume_carga">
 
                 <TextView
                     android:layout_width="wrap_content"

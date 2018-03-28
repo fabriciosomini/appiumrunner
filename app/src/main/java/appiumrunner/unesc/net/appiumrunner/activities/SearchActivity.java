@@ -13,7 +13,9 @@ import java.util.ArrayList;
 
 import appiumrunner.unesc.net.appiumrunner.R;
 import appiumrunner.unesc.net.appiumrunner.engine.Registro;
-import appiumrunner.unesc.net.appiumrunner.states.Estado;
+import appiumrunner.unesc.net.appiumrunner.helpers.UtilitarioEstados;
+
+import static appiumrunner.unesc.net.appiumrunner.application.AppiumRunnerApplication.TESTSETUP;
 
 public class SearchActivity extends AppCompatActivity {
 
@@ -31,14 +33,30 @@ public class SearchActivity extends AppCompatActivity {
         listView = findViewById(android.R.id.list);
         registro = new Registro();
 
+        setTestSetup();
         setEventosInterface();
-        registrarEstadoCampoPesquisaVazio();
+        registrarEstadoInicialTela();
 
 
     }
 
+
+    private void registrarEstadoInicialTela() {
+        UtilitarioEstados.verificarEstadoCampoTexto(registro,
+                "searchEditTxt",
+                getString(R.string.hint_search),
+                false);
+    }
+
     private void setEventosInterface() {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
+        final ArrayList<String> items = getItemsLista();
+
+        ArrayAdapter<String> stringArrayAdapter = new ArrayAdapter<String>(this, R.layout.simple_checkbox_item,
+                R.id.simple_checkbox_item_text, items);
+
+        listView.setAdapter(stringArrayAdapter);
 
         searchEditTxt.addTextChangedListener(new TextWatcher() {
             @Override
@@ -56,36 +74,13 @@ public class SearchActivity extends AppCompatActivity {
             public void afterTextChanged(Editable editable) {
 
                 String text = editable.toString();
-                registrarEstadoCampoPesquisaPreenchido(text);
+                UtilitarioEstados.verificarEstadoCampoTexto(registro, "searchEditTxt", text, true);
 
             }
         });
 
 
-        final ArrayList<String> items = getItemsLista();
 
-        ArrayAdapter<String> stringArrayAdapter = new ArrayAdapter<String>(this, R.layout.simple_checkbox_item,
-                R.id.simple_checkbox_item_text, items);
-
-        listView.setAdapter(stringArrayAdapter);
-    }
-
-    private void registrarEstadoCampoPesquisaPreenchido(String text) {
-        final Estado editTextEstado = new Estado(registro);
-        editTextEstado.setIdentificadorElemento("searchEditTxt")
-                .setEstadoFoco(true)
-                .setEstadoTexto(text)
-                .setEstadoDica(null)
-                .build();
-    }
-
-    private void registrarEstadoCampoPesquisaVazio() {
-        final Estado editTextEstado = new Estado(registro);
-        editTextEstado.setIdentificadorElemento("searchEditTxt")
-                .setEstadoFoco(false)
-                .setEstadoTexto(null)
-                .setEstadoDica("Pesquisar")
-                .build();
     }
 
 
@@ -96,5 +91,12 @@ public class SearchActivity extends AppCompatActivity {
         itemsLista.add("Sal 12kg");
 
         return itemsLista;
+    }
+
+    private void setTestSetup() {
+        TESTSETUP.setAppActivity(this.getClass().getName());
+        TESTSETUP.setDeviceName("adroid");
+        TESTSETUP.setPlatformVersion("7.1.1");
+        TESTSETUP.setUseDefaultTearDown(true);
     }
 }

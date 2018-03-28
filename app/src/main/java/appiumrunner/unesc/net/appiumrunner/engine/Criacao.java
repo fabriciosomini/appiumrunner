@@ -10,6 +10,7 @@ import java.io.File;
 
 public class Criacao {
     File arquivoTest;
+    String fullScript = "";
 
     public Criacao() {
         // arquivoTest = new File();

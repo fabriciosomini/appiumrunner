@@ -17,11 +17,23 @@ public class Estado implements Serializable {
     private String identificadorElemento;
     private String stateMessage;
     private String estadoTexto;
-    private String estadoDica;
+    private String estadoSelecao;
     private int estadoContagem;
+    private boolean reproduzirPassos;
+    private int estadoProgresso;
 
     public Estado(Registro registro) {
         this.registro = registro;
+    }
+
+    public String getEstadoSelecao() {
+        return estadoSelecao;
+    }
+
+    public Estado setEstadoSelecao(String estadoSelecao) {
+        this.estadoSelecao = estadoSelecao;
+
+        return this;
     }
 
     public Verificao getVerificacao() {
@@ -60,11 +72,6 @@ public class Estado implements Serializable {
         return this;
     }
 
-    public Estado setEstadoDica(String estadoDica) {
-        this.estadoDica = estadoDica;
-        return this;
-    }
-
     public Estado setEstadoContagem(Integer estadoContagem) {
         this.estadoContagem = estadoContagem;
         return this;
@@ -75,7 +82,13 @@ public class Estado implements Serializable {
         return this;
     }
 
-    public boolean build() {
+    public Estado reproduzirPassos() {
+
+        reproduzirPassos = true;
+        return this;
+    }
+
+    public Boolean build() {
 
         if (identificadorElemento == null) {
             stateMessage = "É necessário especificar o identificador do elemento";
@@ -83,9 +96,20 @@ public class Estado implements Serializable {
         }
 
         registro.registrar(this);
-
         return true;
+
     }
+
+    public boolean getReproduzirPassos() {
+        return reproduzirPassos;
+    }
+
+    public Estado setEstadoProgresso(int estadoProgresso) {
+        this.estadoProgresso = estadoProgresso;
+
+        return this;
+    }
+
 
     public enum Verificao {
         FINAL_ESTADO,
