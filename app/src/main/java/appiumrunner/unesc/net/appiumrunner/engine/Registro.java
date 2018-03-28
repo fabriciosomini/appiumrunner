@@ -67,7 +67,7 @@ public class Registro {
 
         }
 
-        if (estadoFoco != null) {
+        if (estadoFoco != null && estadoFoco != Estado.Foco.IGNORAR) {
 
             verificaoFoco = getFocusAssertionMethod(elementName, estadoFoco);
 
@@ -144,7 +144,7 @@ public class Registro {
 
     private String getFocusAssertionMethod(String elementName, Estado.Foco foco) {
         boolean focar = false;
-        if (foco == Estado.Foco.FOCAR) {
+        if (foco == Estado.Foco.FOCADO) {
             focar = true;
         }
         String method = "\n" + "Assert.assertEquals(" + elementName + ".equals(driver.switchTo().activeElement()), " + focar + ");";

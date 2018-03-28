@@ -118,7 +118,7 @@ public class Estado implements Serializable {
     }
 
     public enum Foco {
-        FOCAR,
+        FOCADO,
         SEM_FOCO,
         IGNORAR
     }

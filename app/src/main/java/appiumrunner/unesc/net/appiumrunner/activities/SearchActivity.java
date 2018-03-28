@@ -45,8 +45,8 @@ public class SearchActivity extends AppCompatActivity {
     private void registrarEstadoInicialTela() {
         UtilitarioEstados.verificarEstadoCampoTexto(registro,
                 "searchEditTxt",
-                getString(R.string.hint_search),
-                Estado.Foco.SEM_FOCO);
+                Estado.Foco.SEM_FOCO, getString(R.string.hint_search)
+        );
     }
 
     private void setEventosInterface() {
@@ -75,7 +75,7 @@ public class SearchActivity extends AppCompatActivity {
             public void afterTextChanged(Editable editable) {
 
                 String text = editable.toString();
-                UtilitarioEstados.verificarEstadoCampoTexto(registro, "searchEditTxt", text, Estado.Foco.FOCAR);
+                UtilitarioEstados.verificarEstadoCampoTexto(registro, "searchEditTxt", Estado.Foco.FOCADO, text);
 
             }
         });

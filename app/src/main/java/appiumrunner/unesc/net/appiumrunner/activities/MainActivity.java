@@ -54,9 +54,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void registrarEstadoInicialTela() {
-        UtilitarioEstados.verificarEstadoCampoTexto(registro, "nome_motorista", null, Estado.Foco.SEM_FOCO);
-        UtilitarioEstados.verificarEstadoCampoTexto(registro, "driver_cpf", null, Estado.Foco.SEM_FOCO);
-        UtilitarioEstados.verificarEstadoCampoSelecao(registro, "driver_state", getEstados().get(0));
+        UtilitarioEstados.verificarEstadoCampoTexto(registro, "nome_motorista", Estado.Foco.SEM_FOCO, null);
+        UtilitarioEstados.verificarEstadoCampoTexto(registro, "driver_cpf", Estado.Foco.SEM_FOCO, null);
+        UtilitarioEstados.verificarEstadoCampoSelecao(registro, "driver_state", Estado.Foco.IGNORAR, getEstados().get(0));
     }
 
 
@@ -90,8 +90,8 @@ public class MainActivity extends AppCompatActivity {
             public void afterTextChanged(Editable editable) {
 
                 String text = editable.toString();
-                UtilitarioEstados.reproduzirEstadoCampoTexto(registro, "nome_motorista", text, Estado.Foco.FOCAR);
-                UtilitarioEstados.verificarEstadoCampoTexto(registro, "nome_motorista", text, Estado.Foco.FOCAR);
+                UtilitarioEstados.reproduzirEstadoCampoTexto(registro, "nome_motorista", Estado.Foco.FOCADO, text);
+                UtilitarioEstados.verificarEstadoCampoTexto(registro, "nome_motorista", Estado.Foco.FOCADO, text);
 
             }
         });
@@ -111,8 +111,8 @@ public class MainActivity extends AppCompatActivity {
             public void afterTextChanged(Editable editable) {
 
                 String text = editable.toString();
-                UtilitarioEstados.reproduzirEstadoCampoTexto(registro, "cpf_motorista", text, Estado.Foco.FOCAR);
-                UtilitarioEstados.verificarEstadoCampoTexto(registro, "cpf_motorista", text, Estado.Foco.FOCAR);
+                UtilitarioEstados.reproduzirEstadoCampoTexto(registro, "cpf_motorista", Estado.Foco.FOCADO, text);
+                UtilitarioEstados.verificarEstadoCampoTexto(registro, "cpf_motorista", Estado.Foco.FOCADO, text);
 
             }
         });
@@ -123,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
                 if (++estadoMotoristaSelected > 1) {
                     final String newValue = (String) estadoMotorista.getItemAtPosition(i);
                     UtilitarioEstados.reproduzirEstadoCampoSelecao(registro, "estado_motorista", newValue);
-                    UtilitarioEstados.verificarEstadoCampoSelecao(registro, "estado_motorista", newValue);
+                    UtilitarioEstados.verificarEstadoCampoSelecao(registro, "estado_motorista", Estado.Foco.IGNORAR, newValue);
                 }
             }
 

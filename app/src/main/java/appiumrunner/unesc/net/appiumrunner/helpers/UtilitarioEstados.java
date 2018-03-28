@@ -5,8 +5,8 @@ import appiumrunner.unesc.net.appiumrunner.states.Estado;
 
 public class UtilitarioEstados {
 
-    //TODO: Adicionar o boolean foco para os outros métodos
-    public static void verificarEstadoCampoTexto(Registro registro, String identificador, String texto, Estado.Foco foco) {
+    //Verificar
+    public static void verificarEstadoCampoTexto(Registro registro, String identificador, Estado.Foco foco, String texto) {
         if (texto == null) {
             texto = "";
         }
@@ -21,29 +21,33 @@ public class UtilitarioEstados {
 
     }
 
-    public static void verificarEstadoCampoBarraProgresso(Registro registro, String identificador, int progresso) {
+    public static void verificarEstadoCampoBarraProgresso(Registro registro, String identificador, Estado.Foco foco, int progresso) {
 
         Estado estado = new Estado(registro);
         estado.setIdentificadorElemento(identificador)
                 .setEstadoProgresso(progresso)
+                .setEstadoFoco(foco)
                 .verificar(Estado.Verificao.FINAL_ESTADO)
                 .build();
 
     }
 
-    public static void verificarEstadoCampoSelecao(Registro registro, String identificador, String opcao) {
+    public static void verificarEstadoCampoSelecao(Registro registro, String identificador, Estado.Foco foco, String opcao) {
         if (opcao == null) {
             opcao = "";
         }
         Estado estado = new Estado(registro);
         estado.setIdentificadorElemento(identificador)
                 .setEstadoSelecao(new StringBuilder(opcao))
+                .setEstadoFoco(foco)
                 .verificar(Estado.Verificao.FINAL_ESTADO)
                 .build();
 
     }
 
-    public static void reproduzirEstadoCampoTexto(Registro registro, String identificador, String texto, Estado.Foco foco) {
+
+    //Reproduzir
+    public static void reproduzirEstadoCampoTexto(Registro registro, String identificador, Estado.Foco foco, String texto) {
 
         if (texto == null) {
             texto = "";
@@ -57,6 +61,14 @@ public class UtilitarioEstados {
                 .build();
 
 
+    }
+
+    public static void reproduzirEstadoCampoBotao(Registro registro, String identificador) {
+        Estado estado = new Estado(registro);
+        estado.setIdentificadorElemento(identificador)
+                .setEstadoFoco(Estado.Foco.FOCADO)
+                .reproduzirPassos()
+                .build();
     }
 
     public static void reproduzirEstadoCampoSelecao(Registro registro, String identificador, String opcao) {
@@ -77,14 +89,6 @@ public class UtilitarioEstados {
         Estado estado = new Estado(registro);
         estado.setIdentificadorElemento(identificador)
                 .setEstadoProgresso(progresso)
-                .reproduzirPassos()
-                .build();
-    }
-
-    public static void reproduzirEstadoCampoBotao(Registro registro, String identificador) {
-        Estado estado = new Estado(registro);
-        estado.setIdentificadorElemento(identificador)
-                .setEstadoFoco(Estado.Foco.FOCAR)
                 .reproduzirPassos()
                 .build();
     }
