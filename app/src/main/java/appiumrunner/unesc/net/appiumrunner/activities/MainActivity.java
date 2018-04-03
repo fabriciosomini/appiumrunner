@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
 
         EstadoUtil.verificarEstadoCampoTexto(registrador,
                 IdUtil.getStringId(nomeMotorista),
-                Estado.Foco.FOCADO, null);
+                Estado.Foco.SEM_FOCO, null);
 
         EstadoUtil.verificarEstadoCampoTexto(registrador,
                 IdUtil.getStringId(cpfMotorista),
@@ -96,12 +96,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
 
-                if (hasFocus) {
-                    String text = nomeMotorista.getText().toString();
-                    EstadoUtil.reproduzirEstadoCampoTexto(registrador, IdUtil.getStringId(nomeMotorista), Estado.Foco.FOCADO, text);
-                    EstadoUtil.verificarEstadoCampoTexto(registrador, IdUtil.getStringId(nomeMotorista), Estado.Foco.FOCADO, text);
-
-                } else {
+                if (!hasFocus) {
                     String text = nomeMotorista.getText().toString();
                     EstadoUtil.reproduzirEstadoCampoTexto(registrador, IdUtil.getStringId(nomeMotorista), Estado.Foco.SEM_FOCO, text);
                     EstadoUtil.verificarEstadoCampoTexto(registrador, IdUtil.getStringId(nomeMotorista), Estado.Foco.SEM_FOCO, text);
@@ -114,13 +109,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
 
-                if (hasFocus) {
-                    String text = nomeMotorista.getText().toString();
-                    EstadoUtil.reproduzirEstadoCampoTexto(registrador, IdUtil.getStringId(cpfMotorista), Estado.Foco.FOCADO, text);
-                    EstadoUtil.verificarEstadoCampoTexto(registrador, IdUtil.getStringId(cpfMotorista), Estado.Foco.FOCADO, text);
-
-                } else {
-                    String text = nomeMotorista.getText().toString();
+                if (!hasFocus) {
+                    String text = cpfMotorista.getText().toString();
                     EstadoUtil.reproduzirEstadoCampoTexto(registrador, IdUtil.getStringId(cpfMotorista), Estado.Foco.SEM_FOCO, text);
                     EstadoUtil.verificarEstadoCampoTexto(registrador, IdUtil.getStringId(cpfMotorista), Estado.Foco.SEM_FOCO, text);
 

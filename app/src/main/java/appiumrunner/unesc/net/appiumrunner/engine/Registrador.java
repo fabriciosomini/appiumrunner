@@ -1,7 +1,5 @@
 package appiumrunner.unesc.net.appiumrunner.engine;
 
-import java.util.Random;
-
 import appiumrunner.unesc.net.appiumrunner.states.Estado;
 
 /**
@@ -54,7 +52,7 @@ public class Registrador {
 
         String findElementByid = getFindElementByIdMethod(elementId, elementName);
         String click = getClickMethod(elementName);
-        String scrollToExact = getScrollToExactMethod(elementName, getSafeString(estadoSelecao));
+        String scrollToExact = getScrollToOptionMethod(elementName, getSafeString(estadoSelecao));
         String clear = getClearMethod(elementName);
         String sendKeys = getSendKeysMethod(elementName, getSafeString(estadoTexto));
         String selecItem = getSelectItemMethod(elementName, getSafeString(estadoSelecao));
@@ -148,7 +146,7 @@ public class Registrador {
 
     private String getSpinnerAssertionMethod(String elementName, String estadoSelecao) {
         //TODO: Estudar como se verifica a seleção de um spinner
-        String method = getTextAssertionMethod(elementName, estadoSelecao);
+        String method = "\n" + "Assert.assertEquals(" + elementName + ".findElementByAndroidUIAutomator(\"new UiSelector().index(0)\").getText(), \"" + estadoSelecao + "\");";
         return method;
     }
 
@@ -162,19 +160,15 @@ public class Registrador {
         if (foco == Estado.Foco.FOCADO) {
             focar = true;
         }
-        String method = "\n" + "Assert.assertEquals(" + elementName + ".equals(driver.switchTo().activeElement()), " + focar + ");";
+        String method = "\n" + "Assert.assertEquals(" + elementName + ".equals(" + getFocusElementMethod() + ", " + focar + ");";
         return method;
     }
 
     private String getSelectItemMethod(String elementName, String estadoTexto) {
-        Random rand = new Random();
-        int randomNum = 10000000 + rand.nextInt((90000000 - 10000000) + 1);
-        String optionName = elementName + "Option" + randomNum;
 
         String method = getClickMethod(elementName)
-                + getScrollToExactMethod(elementName, estadoTexto)
-                + getFindElementByNameMethod(elementName, optionName)
-                + getClickMethod(optionName);
+                + getScrollToOptionMethod(elementName, estadoTexto)
+                + ".click();";
 
         return method;
     }
@@ -189,8 +183,8 @@ public class Registrador {
         return method;
     }
 
-    private String getScrollToExactMethod(String elementName, String estadoSelecao) {
-        String method = "\n" + elementName + ".scrollToExact(\"" + estadoSelecao + "\");";
+    private String getScrollToOptionMethod(String elementName, String estadoSelecao) {
+        String method = "\n" + elementName + ".findElementByAndroidUIAutomator(\"new UiScrollable(new UiSelector().scrollable(true).instance(0)).scrollIntoView(new UiSelector().textContains(" + "\\" + "\"" + estadoSelecao + "\\" + "\"" + ").instance(0))\")";
         return method;
     }
 
@@ -200,14 +194,19 @@ public class Registrador {
     }
 
     private String getFindElementByIdMethod(String elementId, String variableName) {
-        String method = "\n" + "MobileElement " + variableName + " = driver.findElement(By.id(\"" + elementId + "\"));";
+        String method = "\n" + "AndroidElement " + variableName + " = driver.findElement(By.id(\"" + elementId + "\"));";
 
         return method;
     }
 
     private String getFindElementByNameMethod(String elementName, String variableName) {
-        String method = "\n" + "MobileElement " + variableName + " = driver.findElement(By.name(\"" + elementName + "\"));";
+        String method = "\n" + "AndroidElement " + variableName + " = driver.findElement(By.name(\"" + elementName + "\"));";
 
+        return method;
+    }
+
+    public String getFocusElementMethod() {
+        String method = "driver.findElementByAndroidUIAutomator(\"new UiSelector().focused(true)\"))";
         return method;
     }
 
@@ -247,10 +246,10 @@ public class Registrador {
                 + "\n" + "import java.net.URL;"
                 + "\n" + "import java.util.concurrent.TimeUnit;"
                 + "\n" + "import io.appium.java_client.android.AndroidDriver;"
-                + "\n" + "import io.appium.java_client.MobileElement;"
+                + "\n" + "import io.appium.java_client.android.AndroidElement;"
                 + "\n" + "import io.appium.java_client.remote.MobileCapabilityType;"
                 + "\n\n" + "public class " + nomeTeste + " {"
-                + "\n\t" + "private AndroidDriver<MobileElement> driver = null;"
+                + "\n\t" + "private AndroidDriver<AndroidElement> driver = null;"
                 + fullScript
                 + "\n" + "}";
 
@@ -308,4 +307,6 @@ public class Registrador {
 
         return fullScript;
     }
+
+
 }
