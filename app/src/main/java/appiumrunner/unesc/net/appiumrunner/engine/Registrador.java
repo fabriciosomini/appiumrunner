@@ -246,7 +246,7 @@ public class Registrador {
                 + "\n" + "import java.net.MalformedURLException;"
                 + "\n" + "import java.net.URL;"
                 + "\n" + "import java.util.concurrent.TimeUnit;"
-                + "\n" + "import io.appium.java_client.AppiumDriver;"
+                + "\n" + "import io.appium.java_client.android.AndroidDriver;"
                 + "\n" + "import io.appium.java_client.MobileElement;"
                 + "\n" + "import io.appium.java_client.remote.MobileCapabilityType;"
                 + "\n\n" + "public class " + nomeTeste + " {"
