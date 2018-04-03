@@ -250,7 +250,7 @@ public class Registrador {
                 + "\n" + "import io.appium.java_client.MobileElement;"
                 + "\n" + "import io.appium.java_client.remote.MobileCapabilityType;"
                 + "\n\n" + "public class " + nomeTeste + " {"
-                + "\n\t" + "private AppiumDriver<MobileElement> driver = null;"
+                + "\n\t" + "private AndroidDriver<MobileElement> driver = null;"
                 + fullScript
                 + "\n" + "}";
 
@@ -299,7 +299,7 @@ public class Registrador {
                         + "\n\t" + "capabilities.setCapability(MobileCapabilityType.APP, app.getAbsolutePath());"
                         + "\n"
                         + "\n\t" + "try {"
-                        + "\n\t\t" + "driver = new AppiumDriver(new URL(\"" + appiumServerAddress + "\"), capabilities);"
+                        + "\n\t\t" + "driver = new AndroidDriver(new URL(\"" + appiumServerAddress + "\"), capabilities);"
                         + "\n\t" + "} catch (MalformedURLException e) {"
                         + "\n\t\t" + "e.printStackTrace();"
                         + "\n\t" + "}"
