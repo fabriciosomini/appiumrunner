@@ -1,17 +1,11 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/search_fragment"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <EditText
-        android:id="@+id/focusRemover"
-        android:layout_width="1dp"
-        android:layout_height="1dp"
-        android:layout_marginTop="8dp"
-        android:background="@null"
-        android:backgroundTint="@null"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/searchEditTxt"
@@ -19,12 +13,13 @@
         android:layout_height="45dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:focusableInTouchMode="true"
         android:focusedByDefault="false"
         android:hint="@string/hint_search"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/focusRemover" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ListView
         android:id="@android:id/list"
