@@ -200,13 +200,13 @@ public class Registrador {
     }
 
     private String getFindElementByIdMethod(String elementId, String variableName) {
-        String method = "\n" + "WebElement " + variableName + " = driver.findElement(By.id(\"" + elementId + "\"));";
+        String method = "\n" + "MobileElement " + variableName + " = driver.findElement(By.id(\"" + elementId + "\"));";
 
         return method;
     }
 
     private String getFindElementByNameMethod(String elementName, String variableName) {
-        String method = "\n" + "WebElement " + variableName + " = driver.findElement(By.name(\"" + elementName + "\"));";
+        String method = "\n" + "MobileElement " + variableName + " = driver.findElement(By.name(\"" + elementName + "\"));";
 
         return method;
     }
@@ -242,7 +242,7 @@ public class Registrador {
                 + "\n" + "import org.junit.Test;"
                 + "\n" + "import org.openqa.selenium.By;"
                 + "\n" + "import org.openqa.selenium.WebDriver;"
-                + "\n" + "import org.openqa.selenium.WebElement;"
+                + "\n" + "import org.openqa.selenium.MobileElement;"
                 + "\n" + "import org.openqa.selenium.remote.DesiredCapabilities;"
                 + "\n" + "import org.openqa.selenium.remote.RemoteWebDriver;"
                 + "\n" + "import java.io.File;"
@@ -280,7 +280,7 @@ public class Registrador {
     }
 
     private String criarSetup() {
-        String activity = setup.getAppActivity();
+        //String activity = setup.getAppActivity();
         String platformVersion = setup.getPlatformVersion();
         String deviceName = setup.getDeviceName();
         String appPath = setup.getAppPath();
@@ -296,7 +296,7 @@ public class Registrador {
                         + "\n\t" + "capabilities.setCapability(MobileCapabilityType.PLATFORM_VERSION, \"" + platformVersion + "\");"
                         + "\n\t" + "capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, \"" + deviceName + "\");"
                         + "\n\t" + "capabilities.setCapability(MobileCapabilityType.PLATFORM_NAME, \"Android\");"
-                        + "\n\t" + "capabilities.setCapability(MobileCapabilityType.APP_ACTIVITY,\"" + activity + "\");"
+                        //+ "\n\t" + "capabilities.setCapability(MobileCapabilityType.APP_ACTIVITY,\"" + activity + "\");"
                         + "\n\t" + "capabilities.setCapability(MobileCapabilityType.APP, app.getAbsolutePath());"
                         + "\n"
                         + "\n\t" + "try {"
