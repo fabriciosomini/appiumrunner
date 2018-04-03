@@ -9,7 +9,7 @@ public class Setup {
     private String platformVersion;
     private String deviceName;
     private String platformName;
-    private String appActivity;
+    //private String appActivity;
     private String appDirectory;
     private boolean useDefaultTearDown;
     private String apkName;
@@ -62,13 +62,13 @@ public class Setup {
         this.platformName = platformName;
     }
 
-    public String getAppActivity() {
+    /*/public String getAppActivity() {
         return appActivity;
-    }
+    }*/
 
-    public void setAppActivity(String appActivity) {
+    /*public void setAppActivity(String appActivity) {
         this.appActivity = appActivity;
-    }
+    }*/
 
     public void setAppDirectory(String appDirectory) {
         this.appDirectory = appDirectory;

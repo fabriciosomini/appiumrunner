@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Setup setup = new Setup();
-        setup.setAppActivity(this.getClass().getName());
+        //setup.setAppActivity(this.getClass().getName());
         setup.setDeviceName("adroid");
         setup.setPlatformVersion("4.4.4");
         setup.setUseDefaultTearDown(true);

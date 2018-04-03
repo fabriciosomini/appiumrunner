@@ -1,7 +1,8 @@
 package appiumrunner.unesc.net.appiumrunner;
 
+import junit.framework.Assert;
+
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -26,7 +27,7 @@ public class ClasseTesteTCC3 {
         capabilities.setCapability(MobileCapabilityType.PLATFORM_VERSION, "7.1.2");
         capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, "adroid");
         capabilities.setCapability(MobileCapabilityType.PLATFORM_NAME, "Android");
-        capabilities.setCapability(MobileCapabilityType.APP_ACTIVITY, "appiumrunner.unesc.net.appiumrunner.activities.MainActivity");
+        //capabilities.setCapability(MobileCapabilityType.APP_ACTIVITY, "appiumrunner.unesc.net.appiumrunner.activities.MainActivity");
         capabilities.setCapability(MobileCapabilityType.APP, app.getAbsolutePath());
 
         try {
