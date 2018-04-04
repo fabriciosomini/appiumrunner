@@ -68,12 +68,12 @@ public class ClasseTesteTCC3 {
 
 
         estadoMotorista.click();
-        getElementUsingTextAndScroll("Bahia - BA").click();
-        Assert.assertEquals("Bahia - BA", estadoMotorista.findElementByAndroidUIAutomator("new UiSelector().index(0)").getText());
+        getElementUsingTextAndScroll("Goiás - GO").click();
+        Assert.assertEquals("Goiás - GO", getChildText(estadoMotorista, 0));
 
 
         AndroidElement volumeCarga = driver.findElement(By.id("volumeCarga"));
-        progressTo(volumeCarga, 41);
+        progressTo(volumeCarga, 32);
 
 
         getElementUsingIdAndScroll("abrirListaMercadorias");
@@ -81,6 +81,10 @@ public class ClasseTesteTCC3 {
         abrirListaMercadorias.click();
 
 
+    }
+
+    private String getChildText(AndroidElement element, int index) {
+        return element.findElementByAndroidUIAutomator("new UiSelector().index(" + index + ")").getText();
     }
 
     public void progressTo(AndroidElement seekBar, int progress) {

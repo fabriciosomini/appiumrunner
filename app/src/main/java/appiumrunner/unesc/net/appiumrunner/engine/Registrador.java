@@ -82,11 +82,16 @@ public class Registrador {
 
             String verificaoTexto = getTextAssertionMethod(elementName, getSafeString(estadoTexto));
             String verificaoFoco = "";
-            String verificaoSelecao = getSpinnerAssertionMethod(elementName, getSafeString(estadoSelecao));
+            String verificaoSelecao = "";
 
             if (estadoFoco != null && estadoFoco != Estado.Foco.IGNORAR) {
                 verificaoFoco = getFocusAssertionMethod(elementName, estadoFoco);
                 addExtraMethod(ExtraMethods.FOCUS);
+            }
+
+            if (estadoSelecao != null) {
+                verificaoSelecao = getSpinnerAssertionMethod(elementName, getSafeString(estadoSelecao));
+                addExtraMethod(ExtraMethods.GET_CHILD_TEXT);
             }
 
             List<Estado.TipoAcao> passos = estado.getAcoes();
@@ -262,7 +267,7 @@ public class Registrador {
 
     private String getSpinnerAssertionMethod(String elementName, String estadoSelecao) {
         //TODO: Estudar como se verifica a seleção de um spinner
-        String method = "\n" + "Assert.assertEquals(\"" + estadoSelecao + "\", " + elementName + ".findElementByAndroidUIAutomator(\"new UiSelector().index(0)\").getText()" + ");";
+        String method = "\n" + "Assert.assertEquals(\"" + estadoSelecao + "\", getChildText(" + elementName + ", 0));";
         return method;
     }
 
@@ -398,7 +403,10 @@ public class Registrador {
                     scriptMetodosExtras += getElementUsingIdAndScrollMethodDefinition();
                     break;
                 case FOCUS:
-                    scriptMetodosExtras += getFocusAssertionMethodDefition();
+                    scriptMetodosExtras += getFocusAssertionMethodDefinition();
+                    break;
+                case GET_CHILD_TEXT:
+                    scriptMetodosExtras += getChildTextMethodDefinition();
                     break;
             }
         }
@@ -481,10 +489,18 @@ public class Registrador {
         return fullScript;
     }
 
-    public String getFocusAssertionMethodDefition() {
+    public String getFocusAssertionMethodDefinition() {
         String method =
                 "\n\n" + "private boolean elementHasFocus(AndroidElement element) {"
                         + "\n\t" + "return element" + ".getCenter().equals(" + getFocusElementMethod() + ".getCenter());"
+                        + "\n" + "}";
+        return method;
+    }
+
+    public String getChildTextMethodDefinition() {
+        String method =
+                "\n\n" + "private String getChildText(AndroidElement element, int index) {"
+                        + "\n\t" + "return  element.findElementByAndroidUIAutomator(\"new UiSelector().index(\"+index+\")\").getText();"
                         + "\n" + "}";
         return method;
     }
@@ -498,7 +514,7 @@ public class Registrador {
     }
 
     private enum ExtraMethods {
-        SELECT, SCROLL, FOCUS, PROGRESS
+        SELECT, SCROLL, FOCUS, GET_CHILD_TEXT, PROGRESS
     }
 
 
