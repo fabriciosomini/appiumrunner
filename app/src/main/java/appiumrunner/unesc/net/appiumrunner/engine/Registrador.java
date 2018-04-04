@@ -85,7 +85,11 @@ public class Registrador {
             verificaoFoco = getFocusAssertionMethod(elementName, estadoFoco);
 
             if (reproduzirPassos) {
-                script += click;
+                if (estadoFoco == Estado.Foco.FOCADO) {
+                    script += click;
+                } else if (estadoFoco == Estado.Foco.SEM_FOCO) {
+                    script += getSendInputMethod(elementName, "Keys.TAB");
+                }
             }
 
             if (verificao == Estado.Verificao.POR_PROPRIEDADE) {
@@ -146,12 +150,12 @@ public class Registrador {
 
     private String getSpinnerAssertionMethod(String elementName, String estadoSelecao) {
         //TODO: Estudar como se verifica a seleção de um spinner
-        String method = "\n" + "Assert.assertEquals(" + elementName + ".findElementByAndroidUIAutomator(\"new UiSelector().index(0)\").getText(), \"" + estadoSelecao + "\");";
+        String method = "\n" + "Assert.assertEquals(\"" + estadoSelecao + "\", " + elementName + ".findElementByAndroidUIAutomator(\"new UiSelector().index(0)\").getText()" + ");";
         return method;
     }
 
     private String getTextAssertionMethod(String elementName, String estadoTexto) {
-        String method = "\n" + "Assert.assertEquals(" + elementName + ".getText(), \"" + estadoTexto + "\");";
+        String method = "\n" + "Assert.assertEquals(\"" + estadoTexto + "\", " + elementName + ".getText()" + ");";
         return method;
     }
 
@@ -160,7 +164,7 @@ public class Registrador {
         if (foco == Estado.Foco.FOCADO) {
             focar = true;
         }
-        String method = "\n" + "Assert.assertEquals(" + elementName + ".equals(" + getFocusElementMethod() + ", " + focar + ");";
+        String method = "\n" + "Assert.assertEquals(" + focar + ", " + elementName + ".getCenter().equals(" + getFocusElementMethod() + ".getCenter()));";
         return method;
     }
 
@@ -175,6 +179,11 @@ public class Registrador {
 
     private String getSendKeysMethod(String elementName, String estadoTexto) {
         String method = "\n" + elementName + ".sendKeys(\"" + estadoTexto + "\");";
+        return method;
+    }
+
+    private String getSendInputMethod(String elementName, String input) {
+        String method = "\n" + elementName + ".sendKeys(" + input + ");";
         return method;
     }
 
@@ -206,7 +215,7 @@ public class Registrador {
     }
 
     public String getFocusElementMethod() {
-        String method = "driver.findElementByAndroidUIAutomator(\"new UiSelector().focused(true)\"))";
+        String method = "driver.findElementByAndroidUIAutomator(\"new UiSelector().focused(true)\")";
         return method;
     }
 
@@ -240,6 +249,7 @@ public class Registrador {
                 + "\n" + "import org.junit.Before;"
                 + "\n" + "import org.junit.Test;"
                 + "\n" + "import org.openqa.selenium.By;"
+                + "\n" + "import org.openqa.selenium.Keys;"
                 + "\n" + "import org.openqa.selenium.remote.DesiredCapabilities;"
                 + "\n" + "import java.io.File;"
                 + "\n" + "import java.net.MalformedURLException;"
