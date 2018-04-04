@@ -5,6 +5,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.io.File;
@@ -12,15 +13,15 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
-import io.appium.java_client.AppiumDriver;
-import io.appium.java_client.MobileElement;
+import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.android.AndroidElement;
 import io.appium.java_client.remote.MobileCapabilityType;
 
 public class ClasseTesteTCC3 {
-    private AppiumDriver<MobileElement> driver = null;
+    private AndroidDriver<AndroidElement> driver = null;
     @Before
     public void setup() {
-        File app = new File(".\\build\\outputs\\apk\\debug\\", "app-debug.apk");
+        File app = new File(".\\finalizar\\outputs\\apk\\debug\\", "app-debug.apk");
         DesiredCapabilities capabilities = new DesiredCapabilities();
         capabilities.setCapability(MobileCapabilityType.PLATFORM_VERSION, "4.4.4");
         capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, "adroid");
@@ -28,7 +29,7 @@ public class ClasseTesteTCC3 {
         capabilities.setCapability(MobileCapabilityType.APP, app.getAbsolutePath());
 
         try {
-            driver = new AppiumDriver(new URL("http://127.0.0.1:4723/wd/hub"), capabilities);
+            driver = new AndroidDriver(new URL("http://127.0.0.1:4723/wd/hub"), capabilities);
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
@@ -38,21 +39,44 @@ public class ClasseTesteTCC3 {
     @Test
     public void teste() {
 
-        MobileElement nomeMotorista = driver.findElement(By.id("nomeMotorista"));
-        Assert.assertEquals(nomeMotorista.equals(driver.switchTo().activeElement()), true);
-        Assert.assertEquals(nomeMotorista.getText(), "");
+        AndroidElement nomeMotorista = driver.findElement(By.id("nomeMotorista"));
+        Assert.assertEquals(false, nomeMotorista.getCenter().equals(driver.findElementByAndroidUIAutomator("new UiSelector().focused(true)").getCenter()));
+        Assert.assertEquals("", nomeMotorista.getText());
 
 
-        MobileElement cpfMotorista = driver.findElement(By.id("cpfMotorista"));
-        Assert.assertEquals(cpfMotorista.equals(driver.switchTo().activeElement()), false);
-        Assert.assertEquals(cpfMotorista.getText(), "");
+        AndroidElement cpfMotorista = driver.findElement(By.id("cpfMotorista"));
+        Assert.assertEquals(false, cpfMotorista.equals(driver.findElementByAndroidUIAutomator("new UiSelector().focused(true)")));
+        Assert.assertEquals("", cpfMotorista.getText());
 
 
-        MobileElement estadoMotorista = driver.findElement(By.id("estadoMotorista"));
-        Assert.assertEquals(estadoMotorista.getText(), "Acre - AC");
+        AndroidElement estadoMotorista = driver.findElement(By.id("estadoMotorista"));
+        Assert.assertEquals("Acre - AC", estadoMotorista.findElementByAndroidUIAutomator("new UiSelector().index(0)").getText());
 
 
-        MobileElement abrirListaMercadorias = driver.findElement(By.id("abrirListaMercadorias"));
+        nomeMotorista.click();
+        nomeMotorista.sendKeys("abc");
+        nomeMotorista.sendKeys(Keys.TAB);
+
+        Assert.assertEquals(false, nomeMotorista.equals(driver.findElementByAndroidUIAutomator("new UiSelector().focused(true)")));
+        Assert.assertEquals("abc", nomeMotorista.getText());
+
+
+        estadoMotorista.click();
+        driver.findElementByAndroidUIAutomator("new UiScrollable(new UiSelector().scrollable(true).instance(0)).scrollIntoView(new UiSelector().textContains(\"Maranhão - MA\").instance(0))").click();
+
+
+        Assert.assertEquals("Maranhão - MA", estadoMotorista.findElementByAndroidUIAutomator("new UiSelector().index(0)").getText());
+
+
+        cpfMotorista.click();
+        cpfMotorista.sendKeys("1234");
+
+
+        Assert.assertEquals(false, cpfMotorista.equals(driver.findElementByAndroidUIAutomator("new UiSelector().focused(true)")));
+        Assert.assertEquals("1234", cpfMotorista.getText());
+
+
+        AndroidElement abrirListaMercadorias = driver.findElement(By.id("abrirListaMercadorias"));
         abrirListaMercadorias.click();
 
 

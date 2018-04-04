@@ -1,5 +1,8 @@
 package appiumrunner.unesc.net.appiumrunner.engine;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import appiumrunner.unesc.net.appiumrunner.states.Estado;
 
 /**
@@ -8,136 +11,229 @@ import appiumrunner.unesc.net.appiumrunner.states.Estado;
 
 
 //TODO: Verificar se todos os metodos do utilitario de estados estão aqui (ex: Verificar Barra Progresso)
-//TODO: toggle - reproduzir e verificar
-//TODO: seekbar - reproduzir e verificar
-//TODO: radiogroup - reproduzir e verificar
+//TODO: toggle - adicionarTeste e verificar
+//TODO: seekbar - adicionarTeste e verificar
+//TODO: radiogroup - adicionarTeste e verificar
 public class Registrador {
+
 
     private final Setup setup;
     private final String nomeTeste;
     private Criacao criacao;
 
-    private String script = "";
     private String fullScript = "";
-
     private boolean autoSave;
     private String teardownScript;
+    private ArrayList<EstadoAcesso> estados;
 
     public Registrador(Setup setup) {
         this.setup = setup;
         criacao = new Criacao();
         nomeTeste = gerarNomeTeste();
+
+    }
+
+    //TODO: Adicionar suporte ao método findElement
+    public void registrar(Estado estado) {
+
+        estados.add((EstadoAcesso) estado);
+
     }
 
     private String gerarNomeTeste() {
         return "ClasseTesteTCC3";
     }
 
-    public void enableAutoSave(boolean autoSave) {
-        this.autoSave = autoSave;
+    private String construirScriptAcoes() {
+
+        String scriptAcoes = "";
+
+        for (EstadoAcesso estado :
+                estados) {
+            List<Estado.TipoAcao> passos = estado.getAcoes();
+            Ordem ordem = getOrdem(passos);
+
+
+            for (Estado.TipoAcao acao :
+                    passos) {
+                switch (acao) {
+                    case FOCUS:
+                        construirComandoOrdem(ordem, "", "");
+                        break;
+                    case SEND_KEYS:
+                        break;
+                    case VERIFICAR:
+                        break;
+                    case REPRODUZIR:
+                        break;
+                    case SELECT_SPINNER_ITEM:
+                        break;
+                }
+            }
+
+
+          /*  String elementName = estado.getIdentificadorElemento();
+            String elementId =  elementName;
+
+            Estado.Verificao verificao = estado.getVerificacao();
+            StringBuilder estadoTexto = estado.getEstadoTexto();
+            StringBuilder estadoSelecao = estado.getEstadoSelecao();
+            boolean reproduzirPassos = estado.getReproduzirPassos();
+            Estado.Foco estadoFoco = estado.getEstadoFoco();
+
+
+            String findElementByid = getFindElementByIdMethod(elementId, elementName);
+            String click = getClickMethod(elementName);
+            String scrollToExact = getScrollToOptionMethod(elementName, getSafeString(estadoSelecao));
+            String clear = getClearMethod(elementName);
+            String sendKeys = getSendKeysMethod(elementName, getSafeString(estadoTexto));
+            String selecItem = getSelectItemMethod(elementName, getSafeString(estadoSelecao));
+
+
+            String verificaoFoco = "";
+            String verificaoTexto = "";
+            String verificaoSelecao = "";
+
+            if (!scriptAcoes.contains(findElementByid)) {
+                scriptAcoes += findElementByid;
+            }
+
+            if (estadoSelecao != null) {
+
+                verificaoSelecao = getSpinnerAssertionMethod(elementName, getSafeString(estadoSelecao));
+
+                if (reproduzirPassos) {
+                    scriptAcoes += selecItem;
+                }
+
+                if (verificao == Estado.Verificao.POR_PROPRIEDADE) {
+                    scriptAcoes += verificaoSelecao;
+                }
+
+            }
+
+            if (estadoFoco != null && estadoFoco != Estado.Foco.IGNORAR) {
+
+                verificaoFoco = getFocusAssertionMethod(elementName, estadoFoco);
+
+                if (reproduzirPassos) {
+                    if (estadoFoco == Estado.Foco.FOCADO) {
+                        scriptAcoes += click;
+                    } else if (estadoFoco == Estado.Foco.SEM_FOCO) {
+                        scriptAcoes += getSendInputMethod(elementName, "Keys.TAB");
+                    }
+                }
+
+                if (verificao == Estado.Verificao.POR_PROPRIEDADE) {
+                    scriptAcoes += verificaoFoco;
+                }
+
+            }
+
+            if (estadoTexto != null) {
+
+                verificaoTexto = getTextAssertionMethod(elementName, getSafeString(estadoTexto));
+
+
+                if (estadoTexto.toString().isEmpty()) {
+                    if (reproduzirPassos) {
+                        scriptAcoes += clear;
+                    }
+
+                    if (verificao == Estado.Verificao.POR_PROPRIEDADE) {
+                        scriptAcoes += verificaoTexto;
+                    }
+
+                } else {
+
+                    if (reproduzirPassos) {
+                        scriptAcoes += sendKeys;
+                    }
+
+                    if (verificao == Estado.Verificao.POR_PROPRIEDADE) {
+                        scriptAcoes += verificaoTexto;
+                    }
+                }
+            }
+
+
+            scriptAcoes += "\n\n";*/
+        }
+
+        return scriptAcoes;
+
+
     }
 
-    //TODO: Adicionar suporte ao método findElement
-    public void registrar(Estado estado) {
+    private String construirComandoOrdem(Ordem ordem, String reproduzir, String verificar) {
 
-        String elementName = estado.getIdentificadorElemento();
-        String elementId = /*setup.getPackageName() + ":id/" +*/ elementName;
+        switch (ordem) {
+            case REPRODUZIR:
+                return "";
 
-        Estado.Verificao verificao = estado.getVerificacao();
-        StringBuilder estadoTexto = estado.getEstadoTexto();
-        StringBuilder estadoSelecao = estado.getEstadoSelecao();
-        boolean reproduzirPassos = estado.getReproduzirPassos();
-        Estado.Foco estadoFoco = estado.getEstadoFoco();
+            case VERIFICAR:
+                return "";
 
+            case NONE:
+                return "";
 
-        String findElementByid = getFindElementByIdMethod(elementId, elementName);
-        String click = getClickMethod(elementName);
-        String scrollToExact = getScrollToOptionMethod(elementName, getSafeString(estadoSelecao));
-        String clear = getClearMethod(elementName);
-        String sendKeys = getSendKeysMethod(elementName, getSafeString(estadoTexto));
-        String selecItem = getSelectItemMethod(elementName, getSafeString(estadoSelecao));
+            case REPRODUZIR_DEPOIS_VERIFICAR:
+                return "";
 
-
-        String verificaoFoco = "";
-        String verificaoTexto = "";
-        String verificaoSelecao = "";
-
-        if (!script.contains(findElementByid)) {
-            script += findElementByid;
+            case VERIFICAR_DEPOIS_REPRODUZIR:
+                return "";
         }
 
-        if (estadoSelecao != null) {
+        return null;
 
-            verificaoSelecao = getSpinnerAssertionMethod(elementName, getSafeString(estadoSelecao));
+    }
 
-            if (reproduzirPassos) {
-                script += selecItem;
-            }
+    private Ordem getOrdem(List<Estado.TipoAcao> passos) {
 
-            if (verificao == Estado.Verificao.POR_PROPRIEDADE) {
-                script += verificaoSelecao;
-            }
+        Ordem ordem = Ordem.NONE;
 
-        }
-
-        if (estadoFoco != null && estadoFoco != Estado.Foco.IGNORAR) {
-
-            verificaoFoco = getFocusAssertionMethod(elementName, estadoFoco);
-
-            if (reproduzirPassos) {
-                if (estadoFoco == Estado.Foco.FOCADO) {
-                    script += click;
-                } else if (estadoFoco == Estado.Foco.SEM_FOCO) {
-                    script += getSendInputMethod(elementName, "Keys.TAB");
+        for (Estado.TipoAcao acao :
+                passos) {
+            if (acao == Estado.TipoAcao.REPRODUZIR) {
+                if (ordem == Ordem.NONE) {
+                    ordem = Ordem.REPRODUZIR;
+                }
+                if (ordem == Ordem.VERIFICAR) {
+                    ordem = Ordem.VERIFICAR_DEPOIS_REPRODUZIR;
                 }
             }
 
-            if (verificao == Estado.Verificao.POR_PROPRIEDADE) {
-                script += verificaoFoco;
-            }
-
-        }
-
-        if (estadoTexto != null) {
-
-            verificaoTexto = getTextAssertionMethod(elementName, getSafeString(estadoTexto));
-
-
-            if (estadoTexto.toString().isEmpty()) {
-                if (reproduzirPassos) {
-                    script += clear;
+            if (acao == Estado.TipoAcao.VERIFICAR) {
+                if (ordem == Ordem.NONE) {
+                    ordem = Ordem.VERIFICAR;
                 }
-
-                if (verificao == Estado.Verificao.POR_PROPRIEDADE) {
-                    script += verificaoTexto;
-                }
-
-            } else {
-
-                if (reproduzirPassos) {
-                    script += sendKeys;
-                }
-
-                if (verificao == Estado.Verificao.POR_PROPRIEDADE) {
-                    script += verificaoTexto;
+                if (ordem == Ordem.REPRODUZIR) {
+                    ordem = Ordem.REPRODUZIR_DEPOIS_VERIFICAR;
                 }
             }
-        }
-
-        if (verificao == Estado.Verificao.FINAL_ESTADO) {
-            script += verificaoFoco;
-            script += verificaoTexto;
-            script += verificaoSelecao;
 
         }
 
-        script += "\n\n";
+        return ordem;
+    }
 
-        if (autoSave) {
-            criacao.criar(script);
+    public void parar() {
+
+        fullScript = criarSetup();
+        fullScript += criarScript();
+
+
+        if (setup.isUseDefaultTearDown()) {
+            teardownScript = createTeardown();
         }
 
+        fullScript += teardownScript;
 
+        fullScript = criarClasseTeste();
+
+        criacao.criar(fullScript);
+
+        criacao = new Criacao();
     }
 
     private String getSafeString(StringBuilder stringBuilder) {
@@ -219,24 +315,15 @@ public class Registrador {
         return method;
     }
 
+    private String criarScript() {
 
-    public void parar() {
-
-        fullScript = criarSetup();
-        fullScript += criarScript();
-
-
-        if (setup.isUseDefaultTearDown()) {
-            teardownScript = createTeardown();
-        }
-
-        fullScript += teardownScript;
-
-        fullScript = criarClasseTeste();
-
-        criacao.criar(fullScript);
-        script = "";
-        criacao = new Criacao();
+        String scriptAcoes = construirScriptAcoes();
+        scriptAcoes = scriptAcoes.replace("\n", "\n\t");
+        scriptAcoes = "\n\n" + "@Test"
+                + "\n" + "public void teste() throws Exception {"
+                + "\n" + scriptAcoes
+                + "\n" + "}";
+        return scriptAcoes;
     }
 
     private String criarClasseTeste() {
@@ -266,14 +353,11 @@ public class Registrador {
         return classe;
     }
 
-    private String criarScript() {
-
-        script = script.replace("\n", "\n\t");
-        script = "\n\n" + "@Test"
-                + "\n" + "public void teste() throws Exception {"
-                + "\n" + script
-                + "\n" + "}";
-        return script;
+    private enum Ordem {
+        VERIFICAR_DEPOIS_REPRODUZIR,
+        REPRODUZIR_DEPOIS_VERIFICAR,
+        VERIFICAR,
+        NONE, REPRODUZIR
     }
 
     private String createTeardown() {
@@ -316,6 +400,20 @@ public class Registrador {
                         + "\n" + "}";
 
         return fullScript;
+    }
+
+    private static class EstadoAcesso extends Estado {
+
+        public EstadoAcesso(Registrador registrador) {
+            super(registrador);
+
+        }
+
+        @Override
+        public List<TipoAcao> getAcoes() {
+
+            return acoes;
+        }
     }
 
 

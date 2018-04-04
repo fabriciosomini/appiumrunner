@@ -38,7 +38,7 @@ public class SearchActivity extends AppCompatActivity {
         setup.setUseDefaultTearDown(true);
         setup.setPackageName(getPackageName());
         setup.setAppiumServerAddress("http://127.0.0.1:4723/wd/hub");
-        setup.setAppPath(".\\build\\outputs\\apk\\debug\\", "app-debug.apk");
+        setup.setAppPath(".\\finalizar\\outputs\\apk\\debug\\", "app-debug.apk");
 
         registrador = new Registrador(setup);
 
@@ -53,7 +53,7 @@ public class SearchActivity extends AppCompatActivity {
 
 
     private void registrarEstadoInicialTela() {
-        EstadoUtil.verificarEstadoCampoTexto(registrador,
+        EstadoUtil.verificarEstadoCampoTexto(
                 "searchEditTxt",
                 Estado.Foco.SEM_FOCO, getString(R.string.hint_search)
         );
@@ -85,7 +85,7 @@ public class SearchActivity extends AppCompatActivity {
             public void afterTextChanged(Editable editable) {
 
                 String text = editable.toString();
-                EstadoUtil.verificarEstadoCampoTexto(registrador, IdUtil.getStringId(searchEditTxt), Estado.Foco.FOCADO, text);
+                EstadoUtil.verificarEstadoCampoTexto(IdUtil.getStringId(searchEditTxt), Estado.Foco.FOCADO, text);
 
             }
         });

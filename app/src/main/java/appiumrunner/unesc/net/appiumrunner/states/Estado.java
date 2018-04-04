@@ -1,73 +1,77 @@
 package appiumrunner.unesc.net.appiumrunner.states;
 
-import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 import appiumrunner.unesc.net.appiumrunner.engine.Registrador;
+import appiumrunner.unesc.net.appiumrunner.models.AcaoFinal;
 
 /**
  * Created by fabri on 18/03/2018.
  */
 
-public class Estado implements Serializable {
-    private static ArrayList<Estado> passos;
+public class Estado extends AcaoFinal {
     private final Registrador registrador;
-    private Verificao verificacao;
+
+    protected List<Estado.TipoAcao> acoes;
     private Foco estadoFoco;
     private String identificadorElemento;
     private String stateMessage;
     private StringBuilder estadoTexto;
     private StringBuilder estadoSelecao;
     private int estadoContagem;
-    private boolean reproduzirPassos;
     private int estadoProgresso;
+
 
     public Estado(Registrador registrador) {
         this.registrador = registrador;
+        this.acoes = new ArrayList<>();
     }
 
+    protected List<TipoAcao> getAcoes() {
+        return acoes;
+    }
 
-    public StringBuilder getEstadoSelecao() {
+    protected StringBuilder getEstadoSelecao() {
         return estadoSelecao;
     }
 
-    public Estado setEstadoSelecao(StringBuilder estadoSelecao) {
-        this.estadoSelecao = estadoSelecao;
+    public Estado setEstadoSelecao(String estadoSelecao) {
+        this.estadoSelecao = new StringBuilder(estadoSelecao);
 
         return this;
     }
 
-    public Verificao getVerificacao() {
-        return verificacao;
-    }
 
-    public Foco getEstadoFoco() {
+    protected Foco getEstadoFoco() {
         return estadoFoco;
     }
 
     public Estado setEstadoFoco(Foco estadoFoco) {
         this.estadoFoco = estadoFoco;
+        acoes.add(TipoAcao.FOCUS);
         return this;
     }
 
-    public StringBuilder getEstadoTexto() {
+    protected StringBuilder getEstadoTexto() {
         return estadoTexto;
     }
 
-    public Estado setEstadoTexto(StringBuilder estadoTexto) {
-        this.estadoTexto = estadoTexto;
+    public Estado setEstadoTexto(String estadoTexto) {
+        this.estadoTexto = new StringBuilder(estadoTexto);
+        acoes.add(TipoAcao.SEND_KEYS);
         return this;
     }
 
-    public String getStateMessage() {
+    protected String getStateMessage() {
         return stateMessage;
     }
 
-    public String getIdentificadorElemento() {
+    protected String getIdentificadorElemento() {
         return identificadorElemento;
     }
 
-    public Estado setIdentificadorElemento(String identificador) {
+    protected Estado setIdentificadorElemento(String identificador) {
 
         this.identificadorElemento = identificador;
         return this;
@@ -76,33 +80,6 @@ public class Estado implements Serializable {
     public Estado setEstadoContagem(Integer estadoContagem) {
         this.estadoContagem = estadoContagem;
         return this;
-    }
-
-    public Estado verificar(Verificao verificao) {
-        this.verificacao = verificao;
-        return this;
-    }
-
-    public Estado reproduzirPassos() {
-
-        reproduzirPassos = true;
-        return this;
-    }
-
-    public Boolean build() {
-
-        if (identificadorElemento == null) {
-            stateMessage = "É necessário especificar o identificador do elemento";
-            return false;
-        }
-
-        registrador.registrar(this);
-        return true;
-
-    }
-
-    public boolean getReproduzirPassos() {
-        return reproduzirPassos;
     }
 
     public Estado setEstadoProgresso(int estadoProgresso) {
@@ -121,6 +98,12 @@ public class Estado implements Serializable {
         FOCADO,
         SEM_FOCO,
         IGNORAR
+    }
+
+    public enum TipoAcao {
+        FOCUS,
+        SEND_KEYS,
+        VERIFICAR, REPRODUZIR, SELECT_SPINNER_ITEM
     }
 
 
