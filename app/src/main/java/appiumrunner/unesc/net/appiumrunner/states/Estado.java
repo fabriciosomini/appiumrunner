@@ -38,7 +38,7 @@ public class Estado extends AcaoFinal {
         return estadoSelecao;
     }
 
-    public Estado setEstadoSelecao(String estadoSelecao) {
+    public Estado selecionar(String estadoSelecao) {
         this.estadoSelecao = estadoSelecao == null ? null : new StringBuilder(estadoSelecao);
         acoes.add(TipoAcao.SELECT_SPINNER_ITEM);
         return this;
@@ -49,7 +49,7 @@ public class Estado extends AcaoFinal {
         return estadoFoco;
     }
 
-    public Estado setEstadoFoco(Foco estadoFoco) {
+    public Estado focar(Foco estadoFoco) {
         this.estadoFoco = estadoFoco;
         acoes.add(TipoAcao.FOCUS);
         return this;
@@ -59,7 +59,13 @@ public class Estado extends AcaoFinal {
         return estadoTexto;
     }
 
-    public Estado setEstadoTexto(String estadoTexto) {
+    public Estado limpar() {
+
+        acoes.add(TipoAcao.SEND_KEYS);
+        return this;
+    }
+
+    public Estado escrever(String estadoTexto) {
 
         this.estadoTexto = estadoTexto == null ? null : new StringBuilder(estadoTexto);
         acoes.add(TipoAcao.SEND_KEYS);
@@ -96,6 +102,12 @@ public class Estado extends AcaoFinal {
         return this;
     }
 
+    public Estado clicar() {
+
+        acoes.add(TipoAcao.CLICK);
+        return this;
+    }
+
 
     public enum Verificao {
         FINAL_ESTADO,
@@ -111,7 +123,7 @@ public class Estado extends AcaoFinal {
     public enum TipoAcao {
         FOCUS,
         SEND_KEYS,
-        VERIFICAR, REPRODUZIR, SCROLL_TO, SELECT_SPINNER_ITEM
+        VERIFICAR, REPRODUZIR, SCROLL_TO, CLICK, SELECT_SPINNER_ITEM
     }
 
 

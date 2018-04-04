@@ -38,8 +38,8 @@ public class SearchActivity extends AppCompatActivity {
 
     private void registrarEstadoInicialTela() {
         EstadoUtil.encontrar(searchEditTxt)
-                .setEstadoFoco(Estado.Foco.SEM_FOCO)
-                .setEstadoTexto(getString(R.string.hint_search))
+                .focar(Estado.Foco.SEM_FOCO)
+                .escrever(getString(R.string.hint_search))
                 .verificar()
                 .finalizar();
     }
@@ -60,8 +60,8 @@ public class SearchActivity extends AppCompatActivity {
                 if (!hasFocus && !ignoreFocus) {
                     String text = searchEditTxt.getText().toString();
                     EstadoUtil.encontrar(searchEditTxt)
-                            .setEstadoFoco(Estado.Foco.FOCADO)
-                            .setEstadoTexto(text)
+                            .focar(Estado.Foco.FOCADO)
+                            .escrever(text)
                             .verificar()
                             .finalizar();
                 }

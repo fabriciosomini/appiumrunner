@@ -69,8 +69,12 @@ public class Registrador {
             String scrollTo = getScrollToMethodById(elementId);
 
             String verificaoTexto = getTextAssertionMethod(elementName, getSafeString(estadoTexto));
-            String verificaoFoco = getFocusAssertionMethod(elementName, estadoFoco);
+            String verificaoFoco = "";
             String verificaoSelecao = getSpinnerAssertionMethod(elementName, getSafeString(estadoSelecao));
+
+            if (estadoFoco != null && estadoFoco != Estado.Foco.IGNORAR) {
+                verificaoFoco = getFocusAssertionMethod(elementName, estadoFoco);
+            }
 
             List<Estado.TipoAcao> passos = estado.getAcoes();
 
@@ -121,6 +125,9 @@ public class Registrador {
                                 scriptAcoes = selecItem;
                             }
                             scriptCompleto += construirComandoOrdem(ordem, scriptAcoes, verificaoSelecao);
+                            break;
+                        case CLICK:
+                            scriptCompleto += click;
                             break;
                     }
                 }

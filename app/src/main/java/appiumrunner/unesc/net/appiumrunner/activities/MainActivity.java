@@ -64,20 +64,20 @@ public class MainActivity extends AppCompatActivity {
     private void registrarEstadoInicialTela() {
 
         EstadoUtil.encontrar(nomeMotorista)
-                .setEstadoFoco(Estado.Foco.SEM_FOCO)
-                .setEstadoTexto("")
+                .focar(Estado.Foco.SEM_FOCO)
+                .escrever("")
                 .verificar()
                 .finalizar();
 
         EstadoUtil.encontrar(cpfMotorista)
-                .setEstadoFoco(Estado.Foco.SEM_FOCO)
-                .setEstadoTexto("")
+                .focar(Estado.Foco.SEM_FOCO)
+                .escrever("")
                 .verificar()
                 .finalizar();
 
         EstadoUtil.encontrar(estadoMotorista)
-                .setEstadoFoco(Estado.Foco.SEM_FOCO)
-                .setEstadoTexto("")
+                .focar(Estado.Foco.SEM_FOCO)
+                .escrever("")
                 .verificar()
                 .finalizar();
 
@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
                 if (hasFocus && !ignoreFocus) {
                     if (!text.isEmpty()) {
                         EstadoUtil.encontrar(nomeMotorista)
-                                .setEstadoTexto("")
+                                .limpar()
                                 .reproduzir()
                                 .finalizar();
                     }
@@ -116,8 +116,8 @@ public class MainActivity extends AppCompatActivity {
                 if (!hasFocus && !ignoreFocus) {
 
                     EstadoUtil.encontrar(nomeMotorista)
-                            .setEstadoTexto(text)
-                            .setEstadoFoco(Estado.Foco.SEM_FOCO)
+                            .escrever(text)
+                            .focar(Estado.Foco.SEM_FOCO)
                             .reproduzir()
                             .verificar()
                             .finalizar();
@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
                 if (hasFocus && !ignoreFocus) {
                     if (!text.isEmpty()) {
                         EstadoUtil.encontrar(cpfMotorista)
-                                .setEstadoTexto("")
+                                .limpar()
                                 .reproduzir()
                                 .finalizar();
                     }
@@ -142,8 +142,8 @@ public class MainActivity extends AppCompatActivity {
                 if (!hasFocus && !ignoreFocus) {
 
                     EstadoUtil.encontrar(cpfMotorista)
-                            .setEstadoTexto(text)
-                            .setEstadoFoco(Estado.Foco.SEM_FOCO)
+                            .escrever(text)
+                            .focar(Estado.Foco.SEM_FOCO)
                             .reproduzir()
                             .verificar()
                             .finalizar();
@@ -158,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
                 if (++estadoMotoristaSelected > 1) {
                     final String newValue = (String) estadoMotorista.getItemAtPosition(i);
                     EstadoUtil.encontrar(estadoMotorista)
-                            .setEstadoSelecao(newValue)
+                            .selecionar(newValue)
                             .reproduzir()
                             .verificar()
                             .finalizar();
@@ -211,7 +211,7 @@ public class MainActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
 
                 /*EstadoUtil.encontrar(IdUtil.getStringId(motoristaAtivo))
-                        .setEstadoFoco(Estado.Foco.FOCADO);*/
+                        .focar(Estado.Foco.FOCADO);*/
 
             }
         });
@@ -227,7 +227,7 @@ public class MainActivity extends AppCompatActivity {
 
                 EstadoUtil.encontrar(abrirListaMercadorias)
                         .rolar()
-                        .setEstadoFoco(Estado.Foco.FOCADO)
+                        .clicar()
                         .reproduzir()
                         .finalizar();
 
