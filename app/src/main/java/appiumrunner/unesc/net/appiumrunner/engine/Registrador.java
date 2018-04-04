@@ -14,9 +14,9 @@ import appiumrunner.unesc.net.appiumrunner.states.Estado;
 
 
 //TODO: Verificar se todos os metodos do utilitario de estados estão aqui (ex: Verificar Barra Progresso)
-//TODO: toggle - encontrar e verificar
-//TODO: seekbar - encontrar e verificar
-//TODO: radiogroup - encontrar e verificar
+//TODO: toggle - reproduzir e verificar
+//TODO: seekbar - reproduzir e verificar
+//TODO: radiogroup - reproduzir e verificar
 public class Registrador {
 
 
@@ -266,7 +266,7 @@ public class Registrador {
     }
 
     private String getSpinnerAssertionMethod(String elementName, String estadoSelecao) {
-        //TODO: Estudar como se verifica a seleção de um spinner
+
         String method = "\n" + "Assert.assertEquals(\"" + estadoSelecao + "\", getChildText(" + elementName + ", 0));";
         return method;
     }
