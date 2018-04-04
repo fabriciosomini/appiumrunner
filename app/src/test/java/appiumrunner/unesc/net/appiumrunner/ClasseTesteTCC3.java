@@ -5,7 +5,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.io.File;
@@ -21,7 +20,7 @@ public class ClasseTesteTCC3 {
     private AndroidDriver<AndroidElement> driver = null;
     @Before
     public void setup() {
-        File app = new File(".\\finalizar\\outputs\\apk\\debug\\", "app-debug.apk");
+        File app = new File(".\\build\\outputs\\apk\\debug\\", "app-debug.apk");
         DesiredCapabilities capabilities = new DesiredCapabilities();
         capabilities.setCapability(MobileCapabilityType.PLATFORM_VERSION, "4.4.4");
         capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, "adroid");
@@ -45,37 +44,56 @@ public class ClasseTesteTCC3 {
 
 
         AndroidElement cpfMotorista = driver.findElement(By.id("cpfMotorista"));
-        Assert.assertEquals(false, cpfMotorista.equals(driver.findElementByAndroidUIAutomator("new UiSelector().focused(true)")));
+        Assert.assertEquals(false, cpfMotorista.getCenter().equals(driver.findElementByAndroidUIAutomator("new UiSelector().focused(true)").getCenter()));
         Assert.assertEquals("", cpfMotorista.getText());
 
 
         AndroidElement estadoMotorista = driver.findElement(By.id("estadoMotorista"));
-        Assert.assertEquals("Acre - AC", estadoMotorista.findElementByAndroidUIAutomator("new UiSelector().index(0)").getText());
+        Assert.assertEquals(false, estadoMotorista.getCenter().equals(driver.findElementByAndroidUIAutomator("new UiSelector().focused(true)").getCenter()));
+        Assert.assertEquals("", estadoMotorista.getText());
 
 
-        nomeMotorista.click();
-        nomeMotorista.sendKeys("abc");
-        nomeMotorista.sendKeys(Keys.TAB);
+        nomeMotorista.sendKeys("test");
+        Assert.assertEquals("test", nomeMotorista.getText());
+        driver.longPressKeyCode(66);
+        Assert.assertEquals(false, nomeMotorista.getCenter().equals(driver.findElementByAndroidUIAutomator("new UiSelector().focused(true)").getCenter()));
 
-        Assert.assertEquals(false, nomeMotorista.equals(driver.findElementByAndroidUIAutomator("new UiSelector().focused(true)")));
-        Assert.assertEquals("abc", nomeMotorista.getText());
+
+        cpfMotorista.sendKeys("14");
+        Assert.assertEquals("14", cpfMotorista.getText());
+        driver.longPressKeyCode(66);
+        Assert.assertEquals(false, cpfMotorista.getCenter().equals(driver.findElementByAndroidUIAutomator("new UiSelector().focused(true)").getCenter()));
 
 
         estadoMotorista.click();
         driver.findElementByAndroidUIAutomator("new UiScrollable(new UiSelector().scrollable(true).instance(0)).scrollIntoView(new UiSelector().textContains(\"Maranhão - MA\").instance(0))").click();
-
-
         Assert.assertEquals("Maranhão - MA", estadoMotorista.findElementByAndroidUIAutomator("new UiSelector().index(0)").getText());
 
 
-        cpfMotorista.click();
-        cpfMotorista.sendKeys("1234");
+        nomeMotorista.clear();
 
 
-        Assert.assertEquals(false, cpfMotorista.equals(driver.findElementByAndroidUIAutomator("new UiSelector().focused(true)")));
-        Assert.assertEquals("1234", cpfMotorista.getText());
+        nomeMotorista.sendKeys("abc");
+        Assert.assertEquals("abc", nomeMotorista.getText());
+        driver.longPressKeyCode(66);
+        Assert.assertEquals(false, nomeMotorista.getCenter().equals(driver.findElementByAndroidUIAutomator("new UiSelector().focused(true)").getCenter()));
 
 
+        cpfMotorista.clear();
+
+
+        cpfMotorista.sendKeys("888");
+        Assert.assertEquals("888", cpfMotorista.getText());
+        driver.longPressKeyCode(66);
+        Assert.assertEquals(false, cpfMotorista.getCenter().equals(driver.findElementByAndroidUIAutomator("new UiSelector().focused(true)").getCenter()));
+
+
+        estadoMotorista.click();
+        driver.findElementByAndroidUIAutomator("new UiScrollable(new UiSelector().scrollable(true).instance(0)).scrollIntoView(new UiSelector().textContains(\"Amazonas - AM\").instance(0))").click();
+        Assert.assertEquals("Amazonas - AM", estadoMotorista.findElementByAndroidUIAutomator("new UiSelector().index(0)").getText());
+
+
+        driver.findElementByAndroidUIAutomator("new UiScrollable(new UiSelector().scrollable(true).instance(0)).scrollIntoView(new UiSelector().resourceIdMatches(\".*abrirListaMercadorias\").instance(0))");
         AndroidElement abrirListaMercadorias = driver.findElement(By.id("abrirListaMercadorias"));
         abrirListaMercadorias.click();
 

@@ -2,8 +2,7 @@ package appiumrunner.unesc.net.appiumrunner.activities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Editable;
-import android.text.TextWatcher;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -12,10 +11,7 @@ import android.widget.ListView;
 import java.util.ArrayList;
 
 import appiumrunner.unesc.net.appiumrunner.R;
-import appiumrunner.unesc.net.appiumrunner.engine.Registrador;
-import appiumrunner.unesc.net.appiumrunner.engine.Setup;
 import appiumrunner.unesc.net.appiumrunner.helpers.EstadoUtil;
-import appiumrunner.unesc.net.appiumrunner.helpers.IdUtil;
 import appiumrunner.unesc.net.appiumrunner.states.Estado;
 
 
@@ -23,24 +19,12 @@ public class SearchActivity extends AppCompatActivity {
 
     private EditText searchEditTxt;
     private ListView listView;
-    private Registrador registrador;
-
+    private boolean ignoreFocus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
-
-        Setup setup = new Setup();
-        //setup.setAppActivity(this.getClass().getName());
-        setup.setDeviceName("adroid");
-        setup.setPlatformVersion("4.4.4");
-        setup.setUseDefaultTearDown(true);
-        setup.setPackageName(getPackageName());
-        setup.setAppiumServerAddress("http://127.0.0.1:4723/wd/hub");
-        setup.setAppPath(".\\finalizar\\outputs\\apk\\debug\\", "app-debug.apk");
-
-        registrador = new Registrador(setup);
 
         searchEditTxt = findViewById(R.id.searchEditTxt);
         listView = findViewById(android.R.id.list);
@@ -53,10 +37,11 @@ public class SearchActivity extends AppCompatActivity {
 
 
     private void registrarEstadoInicialTela() {
-        EstadoUtil.verificarEstadoCampoTexto(
-                "searchEditTxt",
-                Estado.Foco.SEM_FOCO, getString(R.string.hint_search)
-        );
+        EstadoUtil.encontrar(searchEditTxt)
+                .setEstadoFoco(Estado.Foco.SEM_FOCO)
+                .setEstadoTexto(getString(R.string.hint_search))
+                .verificar()
+                .finalizar();
     }
 
     private void setEventosInterface() {
@@ -69,31 +54,32 @@ public class SearchActivity extends AppCompatActivity {
 
         listView.setAdapter(stringArrayAdapter);
 
-        searchEditTxt.addTextChangedListener(new TextWatcher() {
+        searchEditTxt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-                String text = editable.toString();
-                EstadoUtil.verificarEstadoCampoTexto(IdUtil.getStringId(searchEditTxt), Estado.Foco.FOCADO, text);
-
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (!hasFocus && !ignoreFocus) {
+                    String text = searchEditTxt.getText().toString();
+                    EstadoUtil.encontrar(searchEditTxt)
+                            .setEstadoFoco(Estado.Foco.FOCADO)
+                            .setEstadoTexto(text)
+                            .verificar()
+                            .finalizar();
+                }
             }
         });
-
-
-
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        EstadoUtil.terminarTeste();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ignoreFocus = false;
+    }
 
     public ArrayList<String> getItemsLista() {
         ArrayList<String> itemsLista = new ArrayList<>();

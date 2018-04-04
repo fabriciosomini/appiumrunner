@@ -8,15 +8,15 @@ import appiumrunner.unesc.net.appiumrunner.states.Estado;
 public class EstadoUtil {
     private static Registrador registrador;
 
-    private static String id;
 
     public static void init(Registrador registrador) {
         EstadoUtil.registrador = registrador;
     }
 
-    public static Estado adicionarTeste(View elemento) {
-        id = IdUtil.getStringId(elemento);
-        EstadoAcesso estado = new EstadoAcesso(registrador);
+    public static Estado encontrar(View elemento) {
+        String id = IdUtil.getStringId(elemento);
+        Estado estado = new Estado(registrador);
+        estado.setIdentificadorElemento(id);
         return estado;
     }
 
@@ -24,11 +24,4 @@ public class EstadoUtil {
         registrador.parar();
     }
 
-    private static class EstadoAcesso extends Estado {
-
-        public EstadoAcesso(Registrador registrador) {
-            super(registrador);
-            this.setIdentificadorElemento(id);
-        }
-    }
 }

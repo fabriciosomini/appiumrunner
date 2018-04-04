@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private RadioGroup tipoCarga;
     private ToggleButton motoristaAtivo;
     private int estadoMotoristaSelected = 0;
+    private boolean ignoreFocus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,15 +46,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Setup setup = new Setup();
-        //setup.setAppActivity(this.getClass().getName());
         setup.setDeviceName("adroid");
         setup.setPlatformVersion("4.4.4");
         setup.setUseDefaultTearDown(true);
         setup.setPackageName(getPackageName());
         setup.setAppiumServerAddress("http://127.0.0.1:4723/wd/hub");
-        setup.setAppPath(".\\finalizar\\outputs\\apk\\debug\\", "app-debug.apk");
+        setup.setAppPath(".\\build\\outputs\\apk\\debug\\", "app-debug.apk");
 
         registrador = new Registrador(setup);
+        EstadoUtil.init(registrador);
 
         setEventosInterface();
         registrarEstadoInicialTela();
@@ -62,23 +63,24 @@ public class MainActivity extends AppCompatActivity {
 
     private void registrarEstadoInicialTela() {
 
-        EstadoUtil.adicionarTeste(nomeMotorista)
+        EstadoUtil.encontrar(nomeMotorista)
                 .setEstadoFoco(Estado.Foco.SEM_FOCO)
-                .setEstadoTexto(null)
-                .reproduzir()
+                .setEstadoTexto("")
+                .verificar()
                 .finalizar();
 
-        EstadoUtil.adicionarTeste(cpfMotorista)
+        EstadoUtil.encontrar(cpfMotorista)
                 .setEstadoFoco(Estado.Foco.SEM_FOCO)
-                .setEstadoTexto(null)
-                .reproduzir()
+                .setEstadoTexto("")
+                .verificar()
                 .finalizar();
 
-        EstadoUtil.adicionarTeste(estadoMotorista)
+        EstadoUtil.encontrar(estadoMotorista)
                 .setEstadoFoco(Estado.Foco.SEM_FOCO)
-                .setEstadoTexto(null)
-                .reproduzir()
+                .setEstadoTexto("")
+                .verificar()
                 .finalizar();
+
     }
 
 
@@ -101,16 +103,24 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
 
-                if (!hasFocus) {
-                    String text = nomeMotorista.getText().toString();
-                    EstadoUtil.adicionarTeste(nomeMotorista)
-                            .setEstadoFoco(Estado.Foco.SEM_FOCO)
+                String text = nomeMotorista.getText().toString();
+                if (hasFocus && !ignoreFocus) {
+                    if (!text.isEmpty()) {
+                        EstadoUtil.encontrar(nomeMotorista)
+                                .setEstadoTexto("")
+                                .reproduzir()
+                                .finalizar();
+                    }
+                }
+
+                if (!hasFocus && !ignoreFocus) {
+
+                    EstadoUtil.encontrar(nomeMotorista)
                             .setEstadoTexto(text)
+                            .setEstadoFoco(Estado.Foco.SEM_FOCO)
                             .reproduzir()
                             .verificar()
                             .finalizar();
-
-
 
                 }
             }
@@ -119,14 +129,24 @@ public class MainActivity extends AppCompatActivity {
         cpfMotorista.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
+                String text = cpfMotorista.getText().toString();
+                if (hasFocus && !ignoreFocus) {
+                    if (!text.isEmpty()) {
+                        EstadoUtil.encontrar(cpfMotorista)
+                                .setEstadoTexto("")
+                                .reproduzir()
+                                .finalizar();
+                    }
+                }
 
-                if (hasFocus) {
-                    EstadoUtil.adicionarTeste(cpfMotorista).setEstadoFoco(Estado.Foco.FOCADO).verificar().finalizar();
-                } else {
-                    String text = cpfMotorista.getText().toString();
-                    EstadoUtil.adicionarTeste(cpfMotorista)
+                if (!hasFocus && !ignoreFocus) {
+
+                    EstadoUtil.encontrar(cpfMotorista)
+                            .setEstadoTexto(text)
                             .setEstadoFoco(Estado.Foco.SEM_FOCO)
-                            .setEstadoTexto(text);
+                            .reproduzir()
+                            .verificar()
+                            .finalizar();
 
                 }
             }
@@ -137,7 +157,11 @@ public class MainActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 if (++estadoMotoristaSelected > 1) {
                     final String newValue = (String) estadoMotorista.getItemAtPosition(i);
-                    EstadoUtil.adicionarTeste(estadoMotorista).setEstadoSelecao(newValue);
+                    EstadoUtil.encontrar(estadoMotorista)
+                            .setEstadoSelecao(newValue)
+                            .reproduzir()
+                            .verificar()
+                            .finalizar();
 
                 }
             }
@@ -165,8 +189,8 @@ public class MainActivity extends AppCompatActivity {
             public void onStopTrackingTouch(SeekBar seekBar) {
 
 
-               /* EstadoUtil.adicionarTeste(IdUtil.getStringId(volumeCarga), pos);
-                EstadoUtil.adicionarTeste(IdUtil.getStringId(volumeCarga), Estado.Foco.FOCADO, pos);*/
+               /* EstadoUtil.encontrar(IdUtil.getStringId(volumeCarga), pos);
+                EstadoUtil.encontrar(IdUtil.getStringId(volumeCarga), Estado.Foco.FOCADO, pos);*/
 
             }
         });
@@ -176,8 +200,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
 
-                /*EstadoUtil.adicionarTeste(IdUtil.getStringId(tipoCarga), i);
-                EstadoUtil.adicionarTeste(registrador, IdUtil.getStringId(tipoCarga), Estado.Foco.FOCADO, i);*/
+                /*EstadoUtil.encontrar(IdUtil.getStringId(tipoCarga), i);
+                EstadoUtil.encontrar(registrador, IdUtil.getStringId(tipoCarga), Estado.Foco.FOCADO, i);*/
 
             }
         });
@@ -186,7 +210,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
 
-                /*EstadoUtil.adicionarTeste(IdUtil.getStringId(motoristaAtivo))
+                /*EstadoUtil.encontrar(IdUtil.getStringId(motoristaAtivo))
                         .setEstadoFoco(Estado.Foco.FOCADO);*/
 
             }
@@ -198,9 +222,12 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 //Altera o foco para o botão, solucionando o problema de não disparar o evento onFocusChange
+                ignoreFocus = true;
                 abrirListaMercadorias.requestFocusFromTouch();
 
-                EstadoUtil.adicionarTeste(abrirListaMercadorias).setEstadoFoco(Estado.Foco.FOCADO)
+                EstadoUtil.encontrar(abrirListaMercadorias)
+                        .rolar()
+                        .setEstadoFoco(Estado.Foco.FOCADO)
                         .reproduzir()
                         .finalizar();
 
@@ -214,6 +241,11 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ignoreFocus = false;
+    }
 
     public ArrayList<String> getEstados() {
         ArrayList<String> estados = new ArrayList<>();

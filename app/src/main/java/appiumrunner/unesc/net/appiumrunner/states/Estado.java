@@ -13,7 +13,7 @@ import appiumrunner.unesc.net.appiumrunner.models.AcaoFinal;
 public class Estado extends AcaoFinal {
     private final Registrador registrador;
 
-    protected List<Estado.TipoAcao> acoes;
+    private List<Estado.TipoAcao> acoes;
     private Foco estadoFoco;
     private String identificadorElemento;
     private String stateMessage;
@@ -24,26 +24,28 @@ public class Estado extends AcaoFinal {
 
 
     public Estado(Registrador registrador) {
+        super(registrador);
         this.registrador = registrador;
         this.acoes = new ArrayList<>();
+        estado = this;
     }
 
-    protected List<TipoAcao> getAcoes() {
+    public List<TipoAcao> getAcoes() {
         return acoes;
     }
 
-    protected StringBuilder getEstadoSelecao() {
+    public StringBuilder getEstadoSelecao() {
         return estadoSelecao;
     }
 
     public Estado setEstadoSelecao(String estadoSelecao) {
-        this.estadoSelecao = new StringBuilder(estadoSelecao);
-
+        this.estadoSelecao = estadoSelecao == null ? null : new StringBuilder(estadoSelecao);
+        acoes.add(TipoAcao.SELECT_SPINNER_ITEM);
         return this;
     }
 
 
-    protected Foco getEstadoFoco() {
+    public Foco getEstadoFoco() {
         return estadoFoco;
     }
 
@@ -53,12 +55,13 @@ public class Estado extends AcaoFinal {
         return this;
     }
 
-    protected StringBuilder getEstadoTexto() {
+    public StringBuilder getEstadoTexto() {
         return estadoTexto;
     }
 
     public Estado setEstadoTexto(String estadoTexto) {
-        this.estadoTexto = new StringBuilder(estadoTexto);
+
+        this.estadoTexto = estadoTexto == null ? null : new StringBuilder(estadoTexto);
         acoes.add(TipoAcao.SEND_KEYS);
         return this;
     }
@@ -67,11 +70,11 @@ public class Estado extends AcaoFinal {
         return stateMessage;
     }
 
-    protected String getIdentificadorElemento() {
+    public String getIdentificadorElemento() {
         return identificadorElemento;
     }
 
-    protected Estado setIdentificadorElemento(String identificador) {
+    public Estado setIdentificadorElemento(String identificador) {
 
         this.identificadorElemento = identificador;
         return this;
@@ -85,6 +88,11 @@ public class Estado extends AcaoFinal {
     public Estado setEstadoProgresso(int estadoProgresso) {
         this.estadoProgresso = estadoProgresso;
 
+        return this;
+    }
+
+    public Estado rolar() {
+        acoes.add(TipoAcao.SCROLL_TO);
         return this;
     }
 
@@ -103,7 +111,7 @@ public class Estado extends AcaoFinal {
     public enum TipoAcao {
         FOCUS,
         SEND_KEYS,
-        VERIFICAR, REPRODUZIR, SELECT_SPINNER_ITEM
+        VERIFICAR, REPRODUZIR, SCROLL_TO, SELECT_SPINNER_ITEM
     }
 
 
