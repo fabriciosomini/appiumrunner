@@ -41,39 +41,39 @@ public class ClasseTesteTCC3 {
     public void teste() {
 
         AndroidElement nomeMotorista = driver.findElement(By.id("nomeMotorista"));
-        Assert.assertEquals(false, nomeMotorista.getCenter().equals(driver.findElementByAndroidUIAutomator("new UiSelector().focused(true)").getCenter()));
+        Assert.assertEquals(false, elementHasFocus(nomeMotorista));
         Assert.assertEquals("", nomeMotorista.getText());
 
 
         AndroidElement cpfMotorista = driver.findElement(By.id("cpfMotorista"));
-        Assert.assertEquals(false, cpfMotorista.getCenter().equals(driver.findElementByAndroidUIAutomator("new UiSelector().focused(true)").getCenter()));
+        Assert.assertEquals(false, elementHasFocus(cpfMotorista));
         Assert.assertEquals("", cpfMotorista.getText());
 
 
         AndroidElement estadoMotorista = driver.findElement(By.id("estadoMotorista"));
-        Assert.assertEquals(false, estadoMotorista.getCenter().equals(driver.findElementByAndroidUIAutomator("new UiSelector().focused(true)").getCenter()));
+        Assert.assertEquals(false, elementHasFocus(estadoMotorista));
         Assert.assertEquals("", estadoMotorista.getText());
 
 
         nomeMotorista.click();
-        Assert.assertEquals(true, nomeMotorista.getCenter().equals(driver.findElementByAndroidUIAutomator("new UiSelector().focused(true)").getCenter()));
+        Assert.assertEquals(true, elementHasFocus(nomeMotorista));
         nomeMotorista.sendKeys("test");
         Assert.assertEquals("test", nomeMotorista.getText());
 
 
         cpfMotorista.click();
-        Assert.assertEquals(true, cpfMotorista.getCenter().equals(driver.findElementByAndroidUIAutomator("new UiSelector().focused(true)").getCenter()));
-        cpfMotorista.sendKeys("123");
-        Assert.assertEquals("123", cpfMotorista.getText());
+        Assert.assertEquals(true, elementHasFocus(cpfMotorista));
+        cpfMotorista.sendKeys("124");
+        Assert.assertEquals("124", cpfMotorista.getText());
 
 
         estadoMotorista.click();
-        getElementUsingTextAndScroll("Espírito Santo - ES").click();
-        Assert.assertEquals("Espírito Santo - ES", estadoMotorista.findElementByAndroidUIAutomator("new UiSelector().index(0)").getText());
+        getElementUsingTextAndScroll("Bahia - BA").click();
+        Assert.assertEquals("Bahia - BA", estadoMotorista.findElementByAndroidUIAutomator("new UiSelector().index(0)").getText());
 
 
         AndroidElement volumeCarga = driver.findElement(By.id("volumeCarga"));
-        progressTo(volumeCarga, 55);
+        progressTo(volumeCarga, 41);
 
 
         getElementUsingIdAndScroll("abrirListaMercadorias");
@@ -106,6 +106,10 @@ public class ClasseTesteTCC3 {
 
     public AndroidElement getElementUsingTextAndScroll(String texto) {
         return driver.findElementByAndroidUIAutomator("new UiScrollable(new UiSelector().scrollable(true).instance(0)).scrollIntoView(new UiSelector().textContains(\"" + texto + "\").instance(0))");
+    }
+
+    private boolean elementHasFocus(AndroidElement element) {
+        return element.getCenter().equals(driver.findElementByAndroidUIAutomator("new UiSelector().focused(true)").getCenter());
     }
 
     @After

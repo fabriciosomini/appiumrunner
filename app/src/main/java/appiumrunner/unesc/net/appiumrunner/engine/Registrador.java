@@ -86,12 +86,13 @@ public class Registrador {
 
             if (estadoFoco != null && estadoFoco != Estado.Foco.IGNORAR) {
                 verificaoFoco = getFocusAssertionMethod(elementName, estadoFoco);
+                addExtraMethod(ExtraMethods.FOCUS);
             }
 
             List<Estado.TipoAcao> passos = estado.getAcoes();
 
             if (passos.contains(Estado.TipoAcao.ROLAR)) {
-                scriptCompleto += scrollTo + ";";
+                scriptCompleto += scrollTo;
                 addExtraMethod(ExtraMethods.SCROLL);
             }
 
@@ -275,7 +276,7 @@ public class Registrador {
         if (foco == Estado.Foco.FOCADO) {
             focar = true;
         }
-        String method = "\n" + "Assert.assertEquals(" + focar + ", " + elementName + ".getCenter().equals(" + getFocusElementMethod() + ".getCenter()));";
+        String method = "\n" + "Assert.assertEquals(" + focar + ", elementHasFocus(" + elementName + "));";
         return method;
     }
 
@@ -353,7 +354,7 @@ public class Registrador {
 
     public String getProgressMethodDefinition() {
         String method =
-                "\n" + "public void progressTo(AndroidElement seekBar, int progress) {"
+                "\n\n" + "public void progressTo(AndroidElement seekBar, int progress) {"
                         + "\n\t" + "int width = seekBar.getSize().getWidth();"
                         + "\n\t" + "int progressToX = progress * width /100;"
                         + "\n\t" + "int startX = seekBar.getLocation().getX();"
@@ -377,7 +378,7 @@ public class Registrador {
                 + "\n" + "public void teste() throws Exception {"
                 + "\n" + scriptAcoes
                 + "\n" + "}"
-                + "\n" + criarMetodosExtras();
+                + criarMetodosExtras();
         return scriptAcoes;
     }
 
@@ -395,6 +396,9 @@ public class Registrador {
                     break;
                 case SCROLL:
                     scriptMetodosExtras += getElementUsingIdAndScrollMethodDefinition();
+                    break;
+                case FOCUS:
+                    scriptMetodosExtras += getFocusAssertionMethodDefition();
                     break;
             }
         }
@@ -477,6 +481,14 @@ public class Registrador {
         return fullScript;
     }
 
+    public String getFocusAssertionMethodDefition() {
+        String method =
+                "\n\n" + "private boolean elementHasFocus(AndroidElement element) {"
+                        + "\n\t" + "return element" + ".getCenter().equals(" + getFocusElementMethod() + ".getCenter());"
+                        + "\n" + "}";
+        return method;
+    }
+
 
     private enum Ordem {
         VERIFICAR_DEPOIS_REPRODUZIR,
@@ -486,7 +498,7 @@ public class Registrador {
     }
 
     private enum ExtraMethods {
-        SELECT, SCROLL, PROGRESS
+        SELECT, SCROLL, FOCUS, PROGRESS
     }
 
 
