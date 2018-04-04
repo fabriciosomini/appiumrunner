@@ -351,7 +351,7 @@ public class Registrador {
 
         String method =
                 "\n\n" + "public AndroidElement getElementUsingIdAndScroll(String texto){"
-                        + "\n\t" + "return driver.findElementByAndroidUIAutomator(\"new UiScrollable(new UiSelector().scrollable(true).instance(0)).scrollIntoView(new UiSelector().textContains(" + "\\" + "\"\"+texto+\"\\" + "\"" + ").instance(0))\");"
+                        + "\n\t" + "return driver.findElementByAndroidUIAutomator(\"new UiScrollable(new UiSelector().scrollable(true).instance(0)).scrollIntoView(new UiSelector().resourceIdMatches(" + "\\" + "\".*\"+texto+\"\\" + "\"" + ").instance(0))\");"
                         + "\n" + "}";
 
         return method;

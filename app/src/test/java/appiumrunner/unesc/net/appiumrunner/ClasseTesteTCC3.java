@@ -24,7 +24,7 @@ public class ClasseTesteTCC3 {
     public void setup() {
         File app = new File(".\\build\\outputs\\apk\\debug\\", "app-debug.apk");
         DesiredCapabilities capabilities = new DesiredCapabilities();
-        capabilities.setCapability(MobileCapabilityType.PLATFORM_VERSION, "4.4.4");
+        capabilities.setCapability(MobileCapabilityType.PLATFORM_VERSION, "5.0");
         capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, "adroid");
         capabilities.setCapability(MobileCapabilityType.PLATFORM_NAME, "Android");
         capabilities.setCapability(MobileCapabilityType.APP, app.getAbsolutePath());
@@ -68,12 +68,12 @@ public class ClasseTesteTCC3 {
 
 
         estadoMotorista.click();
-        getElementUsingTextAndScroll("Goiás - GO").click();
-        Assert.assertEquals("Goiás - GO", getChildText(estadoMotorista, 0));
+        getElementUsingTextAndScroll("Maranhão - MA").click();
+        Assert.assertEquals("Maranhão - MA", getChildText(estadoMotorista, 0));
 
 
         AndroidElement volumeCarga = driver.findElement(By.id("volumeCarga"));
-        progressTo(volumeCarga, 32);
+        progressTo(volumeCarga, 33);
 
 
         getElementUsingIdAndScroll("abrirListaMercadorias");
@@ -105,7 +105,7 @@ public class ClasseTesteTCC3 {
     }
 
     public AndroidElement getElementUsingIdAndScroll(String texto) {
-        return driver.findElementByAndroidUIAutomator("new UiScrollable(new UiSelector().scrollable(true).instance(0)).scrollIntoView(new UiSelector().textContains(\"" + texto + "\").instance(0))");
+        return driver.findElementByAndroidUIAutomator("new UiScrollable(new UiSelector().scrollable(true).instance(0)).scrollIntoView(new UiSelector().resourceIdMatches(\".*" + texto + "\").instance(0))");
     }
 
     public AndroidElement getElementUsingTextAndScroll(String texto) {
