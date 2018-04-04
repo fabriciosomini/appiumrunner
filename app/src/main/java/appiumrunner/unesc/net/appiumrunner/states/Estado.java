@@ -19,7 +19,12 @@ public class Estado extends AcaoFinal {
     private String stateMessage;
     private StringBuilder estadoTexto;
     private StringBuilder estadoSelecao;
-    private int estadoContagem;
+    private Integer estadoContagem;
+
+    public Integer getEstadoProgresso() {
+        return estadoProgresso;
+    }
+
     private int estadoProgresso;
 
 
@@ -32,43 +37,49 @@ public class Estado extends AcaoFinal {
 
     public Estado selecionar(String estadoSelecao) {
         this.estadoSelecao = estadoSelecao == null ? null : new StringBuilder(estadoSelecao);
-        acoes.add(TipoAcao.SELECT_SPINNER_ITEM);
+        acoes.add(TipoAcao.SELECIONAR);
         return this;
     }
 
     public Estado focar() {
         this.estadoFoco = Foco.FOCADO;
-        acoes.add(TipoAcao.FOCUS);
+        acoes.add(TipoAcao.FOCAR);
         return this;
     }
 
     public Estado limpar() {
         this.estadoTexto = new StringBuilder("");
-        acoes.add(TipoAcao.SEND_KEYS);
+        acoes.add(TipoAcao.ESCREVER);
         return this;
     }
 
     public Estado escrever(String estadoTexto) {
 
         this.estadoTexto = estadoTexto == null ? null : new StringBuilder(estadoTexto);
-        acoes.add(TipoAcao.SEND_KEYS);
+        acoes.add(TipoAcao.ESCREVER);
         return this;
     }
 
     public Estado rolar() {
-        acoes.add(TipoAcao.SCROLL_TO);
+        acoes.add(TipoAcao.ROLAR);
         return this;
     }
 
     public Estado clicar() {
         this.estadoFoco = Foco.FOCADO;
-        acoes.add(TipoAcao.CLICK);
+        acoes.add(TipoAcao.CLICAR);
         return this;
     }
 
     public Estado desfocar() {
         this.estadoFoco = Foco.SEM_FOCO;
-        acoes.add(TipoAcao.FOCUS);
+        acoes.add(TipoAcao.FOCAR);
+        return this;
+    }
+
+    public Estado progredir(int estadoProgresso) {
+        this.estadoProgresso = new Integer(estadoProgresso);
+        acoes.add(TipoAcao.PROGREDIR);
         return this;
     }
 
@@ -108,11 +119,6 @@ public class Estado extends AcaoFinal {
         return this;
     }
 
-    public Estado setEstadoProgresso(int estadoProgresso) {
-        this.estadoProgresso = estadoProgresso;
-
-        return this;
-    }
 
     public enum Verificao {
         FINAL_ESTADO,
@@ -126,9 +132,9 @@ public class Estado extends AcaoFinal {
     }
 
     public enum TipoAcao {
-        FOCUS,
-        SEND_KEYS,
-        VERIFICAR, REPRODUZIR, SCROLL_TO, CLICK, SELECT_SPINNER_ITEM
+        FOCAR,
+        ESCREVER,
+        VERIFICAR, REPRODUZIR, ROLAR, CLICAR, PROGREDIR, SELECIONAR
     }
 
 

@@ -12,9 +12,11 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
+import io.appium.java_client.TouchAction;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
 import io.appium.java_client.remote.MobileCapabilityType;
+import io.appium.java_client.touch.offset.PointOption;
 
 public class ClasseTesteTCC3 {
     private AndroidDriver<AndroidElement> driver = null;
@@ -66,38 +68,44 @@ public class ClasseTesteTCC3 {
 
 
         estadoMotorista.click();
-        driver.findElementByAndroidUIAutomator("new UiScrollable(new UiSelector().scrollable(true).instance(0)).scrollIntoView(new UiSelector().textContains(\"Alagoas - AL\").instance(0))").click();
-        Assert.assertEquals("Alagoas - AL", estadoMotorista.findElementByAndroidUIAutomator("new UiSelector().index(0)").getText());
+        getElementUsingTextAndScroll("Espírito Santo - ES").click();
+        Assert.assertEquals("Espírito Santo - ES", estadoMotorista.findElementByAndroidUIAutomator("new UiSelector().index(0)").getText());
 
 
-        nomeMotorista.clear();
+        AndroidElement volumeCarga = driver.findElement(By.id("volumeCarga"));
+        progressTo(volumeCarga, 55);
 
 
-        nomeMotorista.click();
-        Assert.assertEquals(true, nomeMotorista.getCenter().equals(driver.findElementByAndroidUIAutomator("new UiSelector().focused(true)").getCenter()));
-        nomeMotorista.sendKeys("aabb");
-        Assert.assertEquals("aabb", nomeMotorista.getText());
-
-
-        cpfMotorista.clear();
-
-
-        cpfMotorista.click();
-        Assert.assertEquals(true, cpfMotorista.getCenter().equals(driver.findElementByAndroidUIAutomator("new UiSelector().focused(true)").getCenter()));
-        cpfMotorista.sendKeys("579");
-        Assert.assertEquals("579", cpfMotorista.getText());
-
-
-        estadoMotorista.click();
-        driver.findElementByAndroidUIAutomator("new UiScrollable(new UiSelector().scrollable(true).instance(0)).scrollIntoView(new UiSelector().textContains(\"Goiás - GO\").instance(0))").click();
-        Assert.assertEquals("Goiás - GO", estadoMotorista.findElementByAndroidUIAutomator("new UiSelector().index(0)").getText());
-
-
-        driver.findElementByAndroidUIAutomator("new UiScrollable(new UiSelector().scrollable(true).instance(0)).scrollIntoView(new UiSelector().resourceIdMatches(\".*abrirListaMercadorias\").instance(0))");
+        getElementUsingIdAndScroll("abrirListaMercadorias");
         AndroidElement abrirListaMercadorias = driver.findElement(By.id("abrirListaMercadorias"));
         abrirListaMercadorias.click();
 
 
+    }
+
+    public void progressTo(AndroidElement seekBar, int progress) {
+        int width = seekBar.getSize().getWidth();
+        int progressToX = progress * width / 100;
+        int startX = seekBar.getLocation().getX();
+        int yAxis = seekBar.getLocation().getY();
+        int moveToXDirectionAt = progressToX;
+
+        PointOption from = new PointOption();
+        from.withCoordinates(startX, yAxis);
+
+        PointOption to = new PointOption();
+        to.withCoordinates(moveToXDirectionAt, yAxis);
+
+        TouchAction action = new TouchAction(driver);
+        action.longPress(from).moveTo(to).release().perform();
+    }
+
+    public AndroidElement getElementUsingIdAndScroll(String texto) {
+        return driver.findElementByAndroidUIAutomator("new UiScrollable(new UiSelector().scrollable(true).instance(0)).scrollIntoView(new UiSelector().textContains(\"" + texto + "\").instance(0))");
+    }
+
+    public AndroidElement getElementUsingTextAndScroll(String texto) {
+        return driver.findElementByAndroidUIAutomator("new UiScrollable(new UiSelector().scrollable(true).instance(0)).scrollIntoView(new UiSelector().textContains(\"" + texto + "\").instance(0))");
     }
 
     @After

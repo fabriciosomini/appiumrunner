@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private ToggleButton motoristaAtivo;
     private int estadoMotoristaSelected = 0;
     private boolean ignoreFocus;
+    private TextView volumeCargaText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
         cpfMotorista = findViewById(R.id.cpfMotorista);
         estadoMotorista = findViewById(R.id.estadoMotorista);
         volumeCarga = findViewById(R.id.volumeCarga);
+        volumeCargaText = findViewById(R.id.volumeCargaText);
         tipoCarga = findViewById(R.id.tipoCarga);
         motoristaAtivo = findViewById(R.id.motoristaAtivo);
         abrirListaMercadorias = findViewById(R.id.abrirListaMercadorias);
@@ -169,6 +171,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 pos = i;
+                volumeCargaText.setText(pos + "%");
             }
 
             @Override
@@ -179,10 +182,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
 
-
-               /* EstadoUtil.encontrar(IdUtil.getStringId(volumeCarga), pos);
-                EstadoUtil.encontrar(IdUtil.getStringId(volumeCarga), Estado.Foco.FOCADO, pos);*/
-
+                EstadoUtil.encontrar(volumeCarga)
+                        .progredir(pos)
+                        .verificar()
+                        .reproduzir();
             }
         });
 
@@ -228,6 +231,8 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+        volumeCarga.setProgress(75);
 
     }
 

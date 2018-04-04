@@ -1,7 +1,10 @@
 package appiumrunner.unesc.net.appiumrunner.engine;
 
+
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import appiumrunner.unesc.net.appiumrunner.states.Estado;
 
@@ -26,11 +29,14 @@ public class Registrador {
     private String teardownScript;
     private ArrayList<Estado> estados;
 
+    private Set<ExtraMethods> extraMethods;
+
     public Registrador(Setup setup) {
         this.setup = setup;
         criacao = new Criacao();
         nomeTeste = gerarNomeTeste();
         estados = new ArrayList<>();
+        extraMethods = new HashSet<>();
 
     }
 
@@ -64,13 +70,15 @@ public class Registrador {
             StringBuilder estadoTexto = estado.getEstadoTexto();
             StringBuilder estadoSelecao = estado.getEstadoSelecao();
             Estado.Foco estadoFoco = estado.getEstadoFoco();
+            Integer estadoProgresso = estado.getEstadoProgresso();
 
             String findElementById = getFindElementByIdMethod(elementId, elementName);
             String click = getClickMethod(elementName);
             String clear = getClearMethod(elementName);
             String sendKeys = getSendKeysMethod(elementName, getSafeString(estadoTexto));
-            String selecItem = getSelectItemMethod(elementName, getSafeString(estadoSelecao));
             String scrollTo = getScrollToMethodById(elementId);
+            String progress = getProgressMethod(elementName, estadoProgresso);
+            String selecItem = getSelectItemMethod(elementName, getSafeString(estadoSelecao));
 
             String verificaoTexto = getTextAssertionMethod(elementName, getSafeString(estadoTexto));
             String verificaoFoco = "";
@@ -82,8 +90,9 @@ public class Registrador {
 
             List<Estado.TipoAcao> passos = estado.getAcoes();
 
-            if (passos.contains(Estado.TipoAcao.SCROLL_TO)) {
+            if (passos.contains(Estado.TipoAcao.ROLAR)) {
                 scriptCompleto += scrollTo + ";";
+                addExtraMethod(ExtraMethods.SCROLL);
             }
 
             if (!scriptCompleto.contains(findElementById)) {
@@ -101,7 +110,7 @@ public class Registrador {
 
                     switch (acao) {
 
-                        case FOCUS:
+                        case FOCAR:
                             if (estadoFoco == Estado.Foco.FOCADO) {
                                 scriptAcoes = click;
                             } else if (estadoFoco == Estado.Foco.SEM_FOCO) {
@@ -111,7 +120,7 @@ public class Registrador {
                             scriptCompleto += construirComandoOrdem(ordem, scriptAcoes, verificaoFoco);
                             break;
 
-                        case SEND_KEYS:
+                        case ESCREVER:
                             if (estadoTexto != null) {
 
                                 if (estadoTexto.toString().isEmpty()) {
@@ -124,14 +133,21 @@ public class Registrador {
                             scriptCompleto += construirComandoOrdem(ordem, scriptAcoes, verificaoTexto);
                             break;
 
-                        case SELECT_SPINNER_ITEM:
+                        case SELECIONAR:
                             if (estadoSelecao != null) {
                                 scriptAcoes = selecItem;
+                                addExtraMethod(ExtraMethods.SELECT);
                             }
                             scriptCompleto += construirComandoOrdem(ordem, scriptAcoes, verificaoSelecao);
                             break;
-                        case CLICK:
+
+                        case CLICAR:
                             scriptCompleto += click;
+                            break;
+
+                        case PROGREDIR:
+                            scriptCompleto += progress;
+                            addExtraMethod(ExtraMethods.PROGRESS);
                             break;
                     }
                 }
@@ -146,10 +162,12 @@ public class Registrador {
 
     }
 
-    private String getLongPressMethod(String elementName, int keyCode) {
-        String method = "\n" + "driver.longPressKeyCode(" + keyCode + ");";
-        return method;
+    private void addExtraMethod(ExtraMethods progress) {
+        if (!extraMethods.contains(progress)) {
+            extraMethods.add(progress);
+        }
     }
+
 
     private String construirComandoOrdem(Ordem ordem, String reproduzir, String verificar) {
 
@@ -231,6 +249,16 @@ public class Registrador {
         }
     }
 
+    private String getProgressMethod(String elementName, Integer estadoProgresso) {
+        String method = "\n" + "progressTo(" + elementName + ", " + estadoProgresso + ");";
+        return method;
+    }
+
+    private String getLongPressMethod(String elementName, int keyCode) {
+        String method = "\n" + "driver.longPressKeyCode(" + keyCode + ");";
+        return method;
+    }
+
     private String getSpinnerAssertionMethod(String elementName, String estadoSelecao) {
         //TODO: Estudar como se verifica a seleção de um spinner
         String method = "\n" + "Assert.assertEquals(\"" + estadoSelecao + "\", " + elementName + ".findElementByAndroidUIAutomator(\"new UiSelector().index(0)\").getText()" + ");";
@@ -251,14 +279,15 @@ public class Registrador {
         return method;
     }
 
-    private String getSelectItemMethod(String elementName, String estadoTexto) {
+    private String getSelectItemMethod(String elementName, String estadoSelecao) {
+
 
         String method = getClickMethod(elementName)
-                + getScrollToMethodByText(estadoTexto)
-                + ".click();";
+                + "\n" + "getElementUsingTextAndScroll(" + "\"" + estadoSelecao + "\").click();";
 
         return method;
     }
+
 
     private String getSendKeysMethod(String elementName, String estadoTexto) {
         String method = "\n" + elementName + ".sendKeys(\"" + estadoTexto + "\");";
@@ -275,13 +304,8 @@ public class Registrador {
         return method;
     }
 
-    private String getScrollToMethodByText(String estadoSelecao) {
-        String method = "\n" + "driver.findElementByAndroidUIAutomator(\"new UiScrollable(new UiSelector().scrollable(true).instance(0)).scrollIntoView(new UiSelector().textContains(" + "\\" + "\"" + estadoSelecao + "\\" + "\"" + ").instance(0))\")";
-        return method;
-    }
-
     private String getScrollToMethodById(String elementName) {
-        String method = "\n" + "driver.findElementByAndroidUIAutomator(\"new UiScrollable(new UiSelector().scrollable(true).instance(0)).scrollIntoView(new UiSelector().resourceIdMatches(" + "\\" + "\".*" + elementName + "\\" + "\"" + ").instance(0))\")";
+        String method = "\n" + "getElementUsingIdAndScroll(" + "\"" + elementName + "\");";
         return method;
     }
 
@@ -307,6 +331,44 @@ public class Registrador {
         return method;
     }
 
+    private String getElementUsingTextAndScrollMethodDefinition() {
+
+        String method =
+                "\n\n" + "public AndroidElement getElementUsingTextAndScroll(String texto){"
+                        + "\n\t" + "return driver.findElementByAndroidUIAutomator(\"new UiScrollable(new UiSelector().scrollable(true).instance(0)).scrollIntoView(new UiSelector().textContains(" + "\\" + "\"\"+texto+\"\\" + "\"" + ").instance(0))\");"
+                        + "\n" + "}";
+
+        return method;
+    }
+
+    private String getElementUsingIdAndScrollMethodDefinition() {
+
+        String method =
+                "\n\n" + "public AndroidElement getElementUsingIdAndScroll(String texto){"
+                        + "\n\t" + "return driver.findElementByAndroidUIAutomator(\"new UiScrollable(new UiSelector().scrollable(true).instance(0)).scrollIntoView(new UiSelector().textContains(" + "\\" + "\"\"+texto+\"\\" + "\"" + ").instance(0))\");"
+                        + "\n" + "}";
+
+        return method;
+    }
+
+    public String getProgressMethodDefinition() {
+        String method =
+                "\n" + "public void progressTo(AndroidElement seekBar, int progress) {"
+                        + "\n\t" + "int width = seekBar.getSize().getWidth();"
+                        + "\n\t" + "int progressToX = progress * width /100;"
+                        + "\n\t" + "int startX = seekBar.getLocation().getX();"
+                        + "\n\t" + "int yAxis = seekBar.getLocation().getY();"
+                        + "\n\t" + "int moveToXDirectionAt = progressToX;"
+                        + "\n\n\t" + "PointOption from = new PointOption();"
+                        + "\n\t" + "from.withCoordinates(startX, yAxis);"
+                        + "\n\n\t" + "PointOption to = new PointOption();"
+                        + "\n\t" + "to.withCoordinates(moveToXDirectionAt, yAxis);"
+                        + "\n\n\t" + "TouchAction action=new TouchAction(driver);"
+                        + "\n\t" + "action.longPress(from).moveTo(to).release().perform();"
+                        + "\n" + "}";
+        return method;
+    }
+
     private String criarScript() {
 
         String scriptAcoes = construirScriptAcoesVerificacoes();
@@ -314,35 +376,63 @@ public class Registrador {
         scriptAcoes = "\n\n" + "@Test"
                 + "\n" + "public void teste() throws Exception {"
                 + "\n" + scriptAcoes
-                + "\n" + "}";
+                + "\n" + "}"
+                + "\n" + criarMetodosExtras();
         return scriptAcoes;
+    }
+
+    private String criarMetodosExtras() {
+
+        String scriptMetodosExtras = "";
+        for (ExtraMethods extra :
+                extraMethods) {
+            switch (extra) {
+                case PROGRESS:
+                    scriptMetodosExtras += getProgressMethodDefinition();
+                    break;
+                case SELECT:
+                    scriptMetodosExtras += getElementUsingTextAndScrollMethodDefinition();
+                    break;
+                case SCROLL:
+                    scriptMetodosExtras += getElementUsingIdAndScrollMethodDefinition();
+                    break;
+            }
+        }
+
+        return scriptMetodosExtras;
     }
 
     private String criarClasseTeste() {
 
         String packageName = setup.getPackageName();
         fullScript = fullScript.replace("\n", "\n\t");
-        String classe = "package " + packageName + ";"
-                + "\n" + "import org.junit.After;"
-                + "\n" + "import org.junit.Assert;"
-                + "\n" + "import org.junit.Before;"
-                + "\n" + "import org.junit.Test;"
-                + "\n" + "import org.openqa.selenium.By;"
-                + "\n" + "import org.openqa.selenium.Keys;"
-                + "\n" + "import org.openqa.selenium.remote.DesiredCapabilities;"
-                + "\n" + "import java.io.File;"
-                + "\n" + "import java.net.MalformedURLException;"
-                + "\n" + "import java.net.URL;"
-                + "\n" + "import java.util.concurrent.TimeUnit;"
-                + "\n" + "import io.appium.java_client.android.AndroidDriver;"
-                + "\n" + "import io.appium.java_client.android.AndroidElement;"
-                + "\n" + "import io.appium.java_client.remote.MobileCapabilityType;"
-                + "\n\n" + "public class " + nomeTeste + " {"
-                + "\n\t" + "private AndroidDriver<AndroidElement> driver = null;"
-                + fullScript
-                + "\n" + "}";
 
-        return classe;
+        String packages = "package " + packageName + ";";
+
+        String imports =
+                "\n" + "import org.junit.After;"
+                        + "\n" + "import org.junit.Assert;"
+                        + "\n" + "import org.junit.Before;"
+                        + "\n" + "import org.junit.Test;"
+                        + "\n" + "import org.openqa.selenium.By;"
+                        + "\n" + "import org.openqa.selenium.remote.DesiredCapabilities;"
+                        + "\n" + "import java.io.File;"
+                        + "\n" + "import java.net.MalformedURLException;"
+                        + "\n" + "import java.net.URL;"
+                        + "\n" + "import java.util.concurrent.TimeUnit;"
+                        + "\n" + "import io.appium.java_client.TouchAction;"
+                        + "\n" + "import io.appium.java_client.android.AndroidDriver;"
+                        + "\n" + "import io.appium.java_client.android.AndroidElement;"
+                        + "\n" + "import io.appium.java_client.remote.MobileCapabilityType;"
+                        + "\n" + "import io.appium.java_client.touch.offset.PointOption;";
+
+        String classe =
+                "\n\n" + "public class " + nomeTeste + " {"
+                        + "\n\t" + "private AndroidDriver<AndroidElement> driver = null;"
+                        + fullScript
+                        + "\n" + "}";
+
+        return packages + imports + classe;
     }
 
     private String createTeardown() {
@@ -387,11 +477,16 @@ public class Registrador {
         return fullScript;
     }
 
+
     private enum Ordem {
         VERIFICAR_DEPOIS_REPRODUZIR,
         REPRODUZIR_DEPOIS_VERIFICAR,
         VERIFICAR,
         NONE, REPRODUZIR
+    }
+
+    private enum ExtraMethods {
+        SELECT, SCROLL, PROGRESS
     }
 
 
