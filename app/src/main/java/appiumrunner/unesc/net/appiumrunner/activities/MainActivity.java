@@ -23,7 +23,6 @@ import appiumrunner.unesc.net.appiumrunner.R;
 import appiumrunner.unesc.net.appiumrunner.engine.Registrador;
 import appiumrunner.unesc.net.appiumrunner.engine.Setup;
 import appiumrunner.unesc.net.appiumrunner.helpers.EstadoUtil;
-import appiumrunner.unesc.net.appiumrunner.states.Estado;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -64,22 +63,19 @@ public class MainActivity extends AppCompatActivity {
     private void registrarEstadoInicialTela() {
 
         EstadoUtil.encontrar(nomeMotorista)
-                .focar(Estado.Foco.SEM_FOCO)
-                .escrever("")
-                .verificar()
-                .finalizar();
+                .desfocar()
+                .limpar()
+                .verificar();
 
         EstadoUtil.encontrar(cpfMotorista)
-                .focar(Estado.Foco.SEM_FOCO)
-                .escrever("")
-                .verificar()
-                .finalizar();
+                .desfocar()
+                .limpar()
+                .verificar();
 
         EstadoUtil.encontrar(estadoMotorista)
-                .focar(Estado.Foco.SEM_FOCO)
+                .desfocar()
                 .escrever("")
-                .verificar()
-                .finalizar();
+                .verificar();
 
     }
 
@@ -108,19 +104,17 @@ public class MainActivity extends AppCompatActivity {
                     if (!text.isEmpty()) {
                         EstadoUtil.encontrar(nomeMotorista)
                                 .limpar()
-                                .reproduzir()
-                                .finalizar();
+                                .reproduzir();
                     }
                 }
 
                 if (!hasFocus && !ignoreFocus) {
 
                     EstadoUtil.encontrar(nomeMotorista)
+                            .focar()
                             .escrever(text)
-                            .focar(Estado.Foco.SEM_FOCO)
                             .reproduzir()
-                            .verificar()
-                            .finalizar();
+                            .verificar();
 
                 }
             }
@@ -134,19 +128,17 @@ public class MainActivity extends AppCompatActivity {
                     if (!text.isEmpty()) {
                         EstadoUtil.encontrar(cpfMotorista)
                                 .limpar()
-                                .reproduzir()
-                                .finalizar();
+                                .reproduzir();
                     }
                 }
 
                 if (!hasFocus && !ignoreFocus) {
 
                     EstadoUtil.encontrar(cpfMotorista)
+                            .focar()
                             .escrever(text)
-                            .focar(Estado.Foco.SEM_FOCO)
                             .reproduzir()
-                            .verificar()
-                            .finalizar();
+                            .verificar();
 
                 }
             }
@@ -160,8 +152,7 @@ public class MainActivity extends AppCompatActivity {
                     EstadoUtil.encontrar(estadoMotorista)
                             .selecionar(newValue)
                             .reproduzir()
-                            .verificar()
-                            .finalizar();
+                            .verificar();
 
                 }
             }
@@ -228,8 +219,7 @@ public class MainActivity extends AppCompatActivity {
                 EstadoUtil.encontrar(abrirListaMercadorias)
                         .rolar()
                         .clicar()
-                        .reproduzir()
-                        .finalizar();
+                        .reproduzir();
 
                 EstadoUtil.terminarTeste();
 

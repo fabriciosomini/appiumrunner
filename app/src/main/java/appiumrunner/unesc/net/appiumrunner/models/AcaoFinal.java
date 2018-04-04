@@ -16,18 +16,20 @@ public class AcaoFinal {
 
     public AcaoFinal reproduzir() {
         estado.getAcoes().add(Estado.TipoAcao.REPRODUZIR);
+        registrador.registrar(estado);
         return this;
     }
 
     public AcaoFinal verificar() {
 
         estado.getAcoes().add(Estado.TipoAcao.VERIFICAR);
+        registrador.registrar(estado);
         return this;
     }
-    public Boolean finalizar() {
+    /*public Boolean concluir() {
 
         registrador.registrar(estado);
         return true;
-    }
+    }*/
 
 }

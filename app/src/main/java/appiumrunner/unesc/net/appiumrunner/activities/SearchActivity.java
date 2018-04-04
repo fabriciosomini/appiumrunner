@@ -12,7 +12,6 @@ import java.util.ArrayList;
 
 import appiumrunner.unesc.net.appiumrunner.R;
 import appiumrunner.unesc.net.appiumrunner.helpers.EstadoUtil;
-import appiumrunner.unesc.net.appiumrunner.states.Estado;
 
 
 public class SearchActivity extends AppCompatActivity {
@@ -38,10 +37,9 @@ public class SearchActivity extends AppCompatActivity {
 
     private void registrarEstadoInicialTela() {
         EstadoUtil.encontrar(searchEditTxt)
-                .focar(Estado.Foco.SEM_FOCO)
                 .escrever(getString(R.string.hint_search))
-                .verificar()
-                .finalizar();
+                .desfocar()
+                .verificar();
     }
 
     private void setEventosInterface() {
@@ -60,10 +58,9 @@ public class SearchActivity extends AppCompatActivity {
                 if (!hasFocus && !ignoreFocus) {
                     String text = searchEditTxt.getText().toString();
                     EstadoUtil.encontrar(searchEditTxt)
-                            .focar(Estado.Foco.FOCADO)
+                            .focar()
                             .escrever(text)
-                            .verificar()
-                            .finalizar();
+                            .verificar();
                 }
             }
         });

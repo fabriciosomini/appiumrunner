@@ -53,44 +53,44 @@ public class ClasseTesteTCC3 {
         Assert.assertEquals("", estadoMotorista.getText());
 
 
+        nomeMotorista.click();
+        Assert.assertEquals(true, nomeMotorista.getCenter().equals(driver.findElementByAndroidUIAutomator("new UiSelector().focused(true)").getCenter()));
         nomeMotorista.sendKeys("test");
         Assert.assertEquals("test", nomeMotorista.getText());
-        driver.longPressKeyCode(66);
-        Assert.assertEquals(false, nomeMotorista.getCenter().equals(driver.findElementByAndroidUIAutomator("new UiSelector().focused(true)").getCenter()));
 
 
-        cpfMotorista.sendKeys("14");
-        Assert.assertEquals("14", cpfMotorista.getText());
-        driver.longPressKeyCode(66);
-        Assert.assertEquals(false, cpfMotorista.getCenter().equals(driver.findElementByAndroidUIAutomator("new UiSelector().focused(true)").getCenter()));
+        cpfMotorista.click();
+        Assert.assertEquals(true, cpfMotorista.getCenter().equals(driver.findElementByAndroidUIAutomator("new UiSelector().focused(true)").getCenter()));
+        cpfMotorista.sendKeys("123");
+        Assert.assertEquals("123", cpfMotorista.getText());
 
 
         estadoMotorista.click();
-        driver.findElementByAndroidUIAutomator("new UiScrollable(new UiSelector().scrollable(true).instance(0)).scrollIntoView(new UiSelector().textContains(\"Maranhão - MA\").instance(0))").click();
-        Assert.assertEquals("Maranhão - MA", estadoMotorista.findElementByAndroidUIAutomator("new UiSelector().index(0)").getText());
+        driver.findElementByAndroidUIAutomator("new UiScrollable(new UiSelector().scrollable(true).instance(0)).scrollIntoView(new UiSelector().textContains(\"Alagoas - AL\").instance(0))").click();
+        Assert.assertEquals("Alagoas - AL", estadoMotorista.findElementByAndroidUIAutomator("new UiSelector().index(0)").getText());
 
 
         nomeMotorista.clear();
 
 
-        nomeMotorista.sendKeys("abc");
-        Assert.assertEquals("abc", nomeMotorista.getText());
-        driver.longPressKeyCode(66);
-        Assert.assertEquals(false, nomeMotorista.getCenter().equals(driver.findElementByAndroidUIAutomator("new UiSelector().focused(true)").getCenter()));
+        nomeMotorista.click();
+        Assert.assertEquals(true, nomeMotorista.getCenter().equals(driver.findElementByAndroidUIAutomator("new UiSelector().focused(true)").getCenter()));
+        nomeMotorista.sendKeys("aabb");
+        Assert.assertEquals("aabb", nomeMotorista.getText());
 
 
         cpfMotorista.clear();
 
 
-        cpfMotorista.sendKeys("888");
-        Assert.assertEquals("888", cpfMotorista.getText());
-        driver.longPressKeyCode(66);
-        Assert.assertEquals(false, cpfMotorista.getCenter().equals(driver.findElementByAndroidUIAutomator("new UiSelector().focused(true)").getCenter()));
+        cpfMotorista.click();
+        Assert.assertEquals(true, cpfMotorista.getCenter().equals(driver.findElementByAndroidUIAutomator("new UiSelector().focused(true)").getCenter()));
+        cpfMotorista.sendKeys("579");
+        Assert.assertEquals("579", cpfMotorista.getText());
 
 
         estadoMotorista.click();
-        driver.findElementByAndroidUIAutomator("new UiScrollable(new UiSelector().scrollable(true).instance(0)).scrollIntoView(new UiSelector().textContains(\"Amazonas - AM\").instance(0))").click();
-        Assert.assertEquals("Amazonas - AM", estadoMotorista.findElementByAndroidUIAutomator("new UiSelector().index(0)").getText());
+        driver.findElementByAndroidUIAutomator("new UiScrollable(new UiSelector().scrollable(true).instance(0)).scrollIntoView(new UiSelector().textContains(\"Goiás - GO\").instance(0))").click();
+        Assert.assertEquals("Goiás - GO", estadoMotorista.findElementByAndroidUIAutomator("new UiSelector().index(0)").getText());
 
 
         driver.findElementByAndroidUIAutomator("new UiScrollable(new UiSelector().scrollable(true).instance(0)).scrollIntoView(new UiSelector().resourceIdMatches(\".*abrirListaMercadorias\").instance(0))");

@@ -30,37 +30,20 @@ public class Estado extends AcaoFinal {
         estado = this;
     }
 
-    public List<TipoAcao> getAcoes() {
-        return acoes;
-    }
-
-    public StringBuilder getEstadoSelecao() {
-        return estadoSelecao;
-    }
-
     public Estado selecionar(String estadoSelecao) {
         this.estadoSelecao = estadoSelecao == null ? null : new StringBuilder(estadoSelecao);
         acoes.add(TipoAcao.SELECT_SPINNER_ITEM);
         return this;
     }
 
-
-    public Foco getEstadoFoco() {
-        return estadoFoco;
-    }
-
-    public Estado focar(Foco estadoFoco) {
-        this.estadoFoco = estadoFoco;
+    public Estado focar() {
+        this.estadoFoco = Foco.FOCADO;
         acoes.add(TipoAcao.FOCUS);
         return this;
     }
 
-    public StringBuilder getEstadoTexto() {
-        return estadoTexto;
-    }
-
     public Estado limpar() {
-
+        this.estadoTexto = new StringBuilder("");
         acoes.add(TipoAcao.SEND_KEYS);
         return this;
     }
@@ -70,6 +53,40 @@ public class Estado extends AcaoFinal {
         this.estadoTexto = estadoTexto == null ? null : new StringBuilder(estadoTexto);
         acoes.add(TipoAcao.SEND_KEYS);
         return this;
+    }
+
+    public Estado rolar() {
+        acoes.add(TipoAcao.SCROLL_TO);
+        return this;
+    }
+
+    public Estado clicar() {
+        this.estadoFoco = Foco.FOCADO;
+        acoes.add(TipoAcao.CLICK);
+        return this;
+    }
+
+    public Estado desfocar() {
+        this.estadoFoco = Foco.SEM_FOCO;
+        acoes.add(TipoAcao.FOCUS);
+        return this;
+    }
+
+    //-------------------------------------------
+    public List<TipoAcao> getAcoes() {
+        return acoes;
+    }
+
+    public StringBuilder getEstadoSelecao() {
+        return estadoSelecao;
+    }
+
+    public Foco getEstadoFoco() {
+        return estadoFoco;
+    }
+
+    public StringBuilder getEstadoTexto() {
+        return estadoTexto;
     }
 
     protected String getStateMessage() {
@@ -96,18 +113,6 @@ public class Estado extends AcaoFinal {
 
         return this;
     }
-
-    public Estado rolar() {
-        acoes.add(TipoAcao.SCROLL_TO);
-        return this;
-    }
-
-    public Estado clicar() {
-
-        acoes.add(TipoAcao.CLICK);
-        return this;
-    }
-
 
     public enum Verificao {
         FINAL_ESTADO,

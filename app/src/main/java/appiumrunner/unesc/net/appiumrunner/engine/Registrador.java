@@ -37,7 +37,11 @@ public class Registrador {
     //TODO: Adicionar suporte ao método findElement
     public void registrar(Estado estado) {
 
-        estados.add(estado);
+        if (estados.contains(estado)) {
+            estados.set(estados.indexOf(estado), estado);
+        } else {
+            estados.add(estado);
+        }
 
     }
 
