@@ -224,8 +224,6 @@ public class MainActivity extends AppCompatActivity {
                         .clicar()
                         .reproduzir();
 
-                EstadoUtil.terminarTeste();
-
                 Intent i = new Intent(getBaseContext(), SearchActivity.class);
                 startActivity(i);
 
@@ -240,6 +238,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         ignoreFocus = false;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EstadoUtil.terminarTeste();
     }
 
     public ArrayList<String> getEstados() {

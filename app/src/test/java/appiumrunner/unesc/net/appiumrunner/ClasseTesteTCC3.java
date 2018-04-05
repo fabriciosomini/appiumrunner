@@ -57,23 +57,23 @@ public class ClasseTesteTCC3 {
 
         nomeMotorista.click();
         Assert.assertEquals(true, elementHasFocus(nomeMotorista));
-        nomeMotorista.sendKeys("test");
-        Assert.assertEquals("test", nomeMotorista.getText());
+        nomeMotorista.sendKeys("sometimes");
+        Assert.assertEquals("sometimes", nomeMotorista.getText());
 
 
         cpfMotorista.click();
         Assert.assertEquals(true, elementHasFocus(cpfMotorista));
-        cpfMotorista.sendKeys("124");
-        Assert.assertEquals("124", cpfMotorista.getText());
+        cpfMotorista.sendKeys("1234");
+        Assert.assertEquals("1234", cpfMotorista.getText());
 
 
         estadoMotorista.click();
-        getElementUsingTextAndScroll("Maranhão - MA").click();
-        Assert.assertEquals("Maranhão - MA", getChildText(estadoMotorista, 0));
+        getElementUsingTextAndScroll("Mato Grosso do Sul - MS").click();
+        Assert.assertEquals("Mato Grosso do Sul - MS", getChildText(estadoMotorista, 0));
 
 
         AndroidElement volumeCarga = driver.findElement(By.id("volumeCarga"));
-        progressTo(volumeCarga, 33);
+        progressTo(volumeCarga, 24);
 
 
         getElementUsingIdAndScroll("abrirListaMercadorias");
