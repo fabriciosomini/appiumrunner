@@ -244,7 +244,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        String script = GeradorTestes.terminarTeste();
+        GeradorTestes.terminarTeste();
+        String script = GeradorTestes.getTeste();
         Log.d("Teste Automatizado", script);
     }
 

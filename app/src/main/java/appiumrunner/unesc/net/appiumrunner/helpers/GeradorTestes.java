@@ -21,8 +21,16 @@ public class GeradorTestes {
         return estado;
     }
 
-    public static String terminarTeste() {
-        return registrador.parar();
+    public static void terminarTeste() {
+        registrador.parar();
+    }
+
+    public static String getTeste() {
+        return registrador.getScript();
+    }
+
+    public static String getEstadoAparelhoMovel() {
+        return registrador.getEstadoAparelhoMovel();
     }
 
 }

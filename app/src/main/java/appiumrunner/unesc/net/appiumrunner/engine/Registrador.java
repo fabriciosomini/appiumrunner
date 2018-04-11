@@ -18,12 +18,10 @@ public class Registrador {
 
 
     private final Setup setup;
-
+    private String script;
     private Criacao criacao;
-
-
+    private String estadoAparelhoMovel;
     private ArrayList<Estado> estados;
-
 
 
     public Registrador(Setup setup) {
@@ -31,6 +29,10 @@ public class Registrador {
         criacao = new Criacao(setup);
         estados = new ArrayList<>();
 
+    }
+
+    public String getEstadoAparelhoMovel() {
+        return estadoAparelhoMovel;
     }
 
     //TODO: Adicionar suporte ao método findElement
@@ -44,12 +46,17 @@ public class Registrador {
 
     }
 
-    public String parar() {
-        return criacao.criar(estados);
+    public String getScript() {
+        return script;
+    }
+
+    public void parar() {
+        script = criacao.criar(estados);
     }
 
 
     public void registrarEstadoAparelho() {
         //TODO: Verificar no TCC os valores que serão coletados pelo método
+        estadoAparelhoMovel += "";
     }
 }
