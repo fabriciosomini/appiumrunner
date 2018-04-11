@@ -11,7 +11,7 @@ import android.widget.ListView;
 import java.util.ArrayList;
 
 import appiumrunner.unesc.net.appiumrunner.R;
-import appiumrunner.unesc.net.appiumrunner.helpers.EstadoUtil;
+import appiumrunner.unesc.net.appiumrunner.helpers.GeradorTestes;
 
 
 public class SearchActivity extends AppCompatActivity {
@@ -35,10 +35,10 @@ public class SearchActivity extends AppCompatActivity {
 
 
     private void registrarEstadoInicialTela() {
-        EstadoUtil.encontrar(searchEditTxt)
-                .escrever(getString(R.string.hint_search))
-                .desfocar()
-                .verificar();
+        GeradorTestes.iniciarTesteElemento(searchEditTxt)
+                .escreverValor(getString(R.string.hint_search))
+                .desfocarCampo()
+                .verificarValores();
     }
 
     private void setEventosInterface() {
@@ -56,10 +56,10 @@ public class SearchActivity extends AppCompatActivity {
             public void onFocusChange(View view, boolean hasFocus) {
                 if (!hasFocus && !ignoreFocus) {
                     String text = searchEditTxt.getText().toString();
-                    EstadoUtil.encontrar(searchEditTxt)
-                            .focar()
-                            .escrever(text)
-                            .verificar();
+                    GeradorTestes.iniciarTesteElemento(searchEditTxt)
+                            .focarElemento()
+                            .escreverValor(text)
+                            .verificarValores();
                 }
             }
         });

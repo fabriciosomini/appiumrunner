@@ -35,49 +35,49 @@ public class Estado extends AcaoFinal {
         estado = this;
     }
 
-    public Estado selecionar(String estadoSelecao) {
+    public Estado selecionarValor(String estadoSelecao) {
         this.estadoSelecao = estadoSelecao == null ? null : new StringBuilder(estadoSelecao);
         acoes.add(TipoAcao.SELECIONAR);
         return this;
     }
 
-    public Estado focar() {
+    public Estado focarElemento() {
         this.estadoFoco = Foco.FOCADO;
         acoes.add(TipoAcao.FOCAR);
         return this;
     }
 
-    public Estado limpar() {
+    public Estado limparValor() {
         this.estadoTexto = new StringBuilder("");
         acoes.add(TipoAcao.ESCREVER);
         return this;
     }
 
-    public Estado escrever(String estadoTexto) {
+    public Estado escreverValor(String estadoTexto) {
 
         this.estadoTexto = estadoTexto == null ? null : new StringBuilder(estadoTexto);
         acoes.add(TipoAcao.ESCREVER);
         return this;
     }
 
-    public Estado rolar() {
+    public Estado rolarAteElemento() {
         acoes.add(TipoAcao.ROLAR);
         return this;
     }
 
-    public Estado clicar() {
+    public Estado clicarElemento() {
         this.estadoFoco = Foco.FOCADO;
         acoes.add(TipoAcao.CLICAR);
         return this;
     }
 
-    public Estado desfocar() {
+    public Estado desfocarCampo() {
         this.estadoFoco = Foco.SEM_FOCO;
         acoes.add(TipoAcao.FOCAR);
         return this;
     }
 
-    public Estado progredir(int estadoProgresso) {
+    public Estado deslizarBarraProgresso(int estadoProgresso) {
         this.estadoProgresso = new Integer(estadoProgresso);
         acoes.add(TipoAcao.PROGREDIR);
         return this;

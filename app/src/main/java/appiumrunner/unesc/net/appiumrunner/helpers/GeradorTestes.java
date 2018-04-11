@@ -5,23 +5,23 @@ import android.view.View;
 import appiumrunner.unesc.net.appiumrunner.engine.Registrador;
 import appiumrunner.unesc.net.appiumrunner.states.Estado;
 
-public class EstadoUtil {
+public class GeradorTestes {
     private static Registrador registrador;
 
 
     public static void init(Registrador registrador) {
-        EstadoUtil.registrador = registrador;
+        GeradorTestes.registrador = registrador;
     }
 
-    public static Estado encontrar(View elemento) {
+    public static Estado iniciarTesteElemento(View elemento) {
         String id = IdUtil.getStringId(elemento);
         Estado estado = new Estado(registrador);
         estado.setIdentificadorElemento(id);
         return estado;
     }
 
-    public static void terminarTeste() {
-        registrador.parar();
+    public static String terminarTeste() {
+        return registrador.parar();
     }
 
 }

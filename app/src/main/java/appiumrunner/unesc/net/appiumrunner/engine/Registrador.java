@@ -11,9 +11,9 @@ import appiumrunner.unesc.net.appiumrunner.states.Estado;
 
 
 //TODO: Verificar se todos os metodos do utilitario de estados estão aqui (ex: Verificar Barra Progresso)
-//TODO: toggle - reproduzir e verificar
-//TODO: seekbar - reproduzir e verificar
-//TODO: radiogroup - reproduzir e verificar
+//TODO: toggle - reproduzirAcoes e verificarValores
+//TODO: seekbar - reproduzirAcoes e verificarValores
+//TODO: radiogroup - reproduzirAcoes e verificarValores
 public class Registrador {
 
 
@@ -44,8 +44,8 @@ public class Registrador {
 
     }
 
-    public void parar() {
-        criacao.criar(estados);
+    public String parar() {
+        return criacao.criar(estados);
     }
 
 

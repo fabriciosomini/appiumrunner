@@ -1,7 +1,5 @@
 package appiumrunner.unesc.net.appiumrunner.engine;
 
-import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -29,7 +27,7 @@ public class Criacao {
         tipoExtraMethods = new HashSet<>();
     }
 
-    public void criar(ArrayList<Estado> estados) {
+    public String criar(ArrayList<Estado> estados) {
 
         ScriptBuilder scriptBuilder = new ScriptBuilder();
         this.estados = estados;
@@ -47,7 +45,7 @@ public class Criacao {
 
         fullScript = fullScript.replace("\n\n\n\n", "\n\n");
 
-        Log.d("SCRIPT", fullScript);
+        return fullScript;
 
     }
 

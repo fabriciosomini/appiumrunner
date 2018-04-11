@@ -3,6 +3,7 @@ package appiumrunner.unesc.net.appiumrunner.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
@@ -22,7 +23,7 @@ import java.util.ArrayList;
 import appiumrunner.unesc.net.appiumrunner.R;
 import appiumrunner.unesc.net.appiumrunner.engine.Registrador;
 import appiumrunner.unesc.net.appiumrunner.engine.Setup;
-import appiumrunner.unesc.net.appiumrunner.helpers.EstadoUtil;
+import appiumrunner.unesc.net.appiumrunner.helpers.GeradorTestes;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -54,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         setup.setAppPath(".\\build\\outputs\\apk\\debug\\", "app-debug.apk");
 
         registrador = new Registrador(setup);
-        EstadoUtil.init(registrador);
+        GeradorTestes.init(registrador);
 
         setEventosInterface();
         registrarEstadoInicialTela();
@@ -63,20 +64,20 @@ public class MainActivity extends AppCompatActivity {
 
     private void registrarEstadoInicialTela() {
 
-        EstadoUtil.encontrar(nomeMotorista)
-                .desfocar()
-                .limpar()
-                .verificar();
+        GeradorTestes.iniciarTesteElemento(nomeMotorista)
+                .desfocarCampo()
+                .limparValor()
+                .verificarValores();
 
-        EstadoUtil.encontrar(cpfMotorista)
-                .desfocar()
-                .limpar()
-                .verificar();
+        GeradorTestes.iniciarTesteElemento(cpfMotorista)
+                .desfocarCampo()
+                .limparValor()
+                .verificarValores();
 
-        EstadoUtil.encontrar(estadoMotorista)
-                .desfocar()
-                .escrever("")
-                .verificar();
+        GeradorTestes.iniciarTesteElemento(estadoMotorista)
+                .desfocarCampo()
+                .escreverValor("")
+                .verificarValores();
 
     }
 
@@ -104,19 +105,19 @@ public class MainActivity extends AppCompatActivity {
                 String text = nomeMotorista.getText().toString();
                 if (hasFocus && !ignoreFocus) {
                     if (!text.isEmpty()) {
-                        EstadoUtil.encontrar(nomeMotorista)
-                                .limpar()
-                                .reproduzir();
+                        GeradorTestes.iniciarTesteElemento(nomeMotorista)
+                                .limparValor()
+                                .reproduzirAcoes();
                     }
                 }
 
                 if (!hasFocus && !ignoreFocus) {
 
-                    EstadoUtil.encontrar(nomeMotorista)
-                            .focar()
-                            .escrever(text)
-                            .reproduzir()
-                            .verificar();
+                    GeradorTestes.iniciarTesteElemento(nomeMotorista)
+                            .focarElemento()
+                            .escreverValor(text)
+                            .reproduzirAcoes()
+                            .verificarValores();
 
                 }
             }
@@ -128,19 +129,19 @@ public class MainActivity extends AppCompatActivity {
                 String text = cpfMotorista.getText().toString();
                 if (hasFocus && !ignoreFocus) {
                     if (!text.isEmpty()) {
-                        EstadoUtil.encontrar(cpfMotorista)
-                                .limpar()
-                                .reproduzir();
+                        GeradorTestes.iniciarTesteElemento(cpfMotorista)
+                                .limparValor()
+                                .reproduzirAcoes();
                     }
                 }
 
                 if (!hasFocus && !ignoreFocus) {
 
-                    EstadoUtil.encontrar(cpfMotorista)
-                            .focar()
-                            .escrever(text)
-                            .reproduzir()
-                            .verificar();
+                    GeradorTestes.iniciarTesteElemento(cpfMotorista)
+                            .focarElemento()
+                            .escreverValor(text)
+                            .reproduzirAcoes()
+                            .verificarValores();
 
                 }
             }
@@ -151,10 +152,10 @@ public class MainActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 if (++estadoMotoristaSelected > 1) {
                     final String newValue = (String) estadoMotorista.getItemAtPosition(i);
-                    EstadoUtil.encontrar(estadoMotorista)
-                            .selecionar(newValue)
-                            .reproduzir()
-                            .verificar();
+                    GeradorTestes.iniciarTesteElemento(estadoMotorista)
+                            .selecionarValor(newValue)
+                            .reproduzirAcoes()
+                            .verificarValores();
 
                 }
             }
@@ -182,10 +183,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
 
-                EstadoUtil.encontrar(volumeCarga)
-                        .progredir(pos)
-                        .verificar()
-                        .reproduzir();
+                GeradorTestes.iniciarTesteElemento(volumeCarga)
+                        .deslizarBarraProgresso(pos)
+                        .verificarValores()
+                        .reproduzirAcoes();
             }
         });
 
@@ -194,8 +195,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
 
-                /*EstadoUtil.encontrar(IdUtil.getStringId(tipoCarga), i);
-                EstadoUtil.encontrar(registrador, IdUtil.getStringId(tipoCarga), Estado.Foco.FOCADO, i);*/
+                /*GeradorTestes.iniciarTesteElemento(IdUtil.getStringId(tipoCarga), i);
+                GeradorTestes.iniciarTesteElemento(registrador, IdUtil.getStringId(tipoCarga), Estado.Foco.FOCADO, i);*/
 
             }
         });
@@ -204,8 +205,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
 
-                /*EstadoUtil.encontrar(IdUtil.getStringId(motoristaAtivo))
-                        .focar(Estado.Foco.FOCADO);*/
+                /*GeradorTestes.iniciarTesteElemento(IdUtil.getStringId(motoristaAtivo))
+                        .focarElemento(Estado.Foco.FOCADO);*/
 
             }
         });
@@ -219,10 +220,10 @@ public class MainActivity extends AppCompatActivity {
                 ignoreFocus = true;
                 abrirListaMercadorias.requestFocusFromTouch();
 
-                EstadoUtil.encontrar(abrirListaMercadorias)
-                        .rolar()
-                        .clicar()
-                        .reproduzir();
+                GeradorTestes.iniciarTesteElemento(abrirListaMercadorias)
+                        .rolarAteElemento()
+                        .clicarElemento()
+                        .reproduzirAcoes();
 
                 Intent i = new Intent(getBaseContext(), SearchActivity.class);
                 startActivity(i);
@@ -243,7 +244,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        EstadoUtil.terminarTeste();
+        String script = GeradorTestes.terminarTeste();
+        Log.d("Teste Automatizado", script);
     }
 
     public ArrayList<String> getEstados() {

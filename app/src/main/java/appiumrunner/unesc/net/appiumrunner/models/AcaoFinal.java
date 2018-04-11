@@ -14,13 +14,13 @@ public class AcaoFinal {
         this.registrador = registrador;
     }
 
-    public AcaoFinal reproduzir() {
+    public AcaoFinal reproduzirAcoes() {
         estado.getAcoes().add(Estado.TipoAcao.REPRODUZIR);
         registrador.registrar(estado);
         return this;
     }
 
-    public AcaoFinal verificar() {
+    public AcaoFinal verificarValores() {
 
         estado.getAcoes().add(Estado.TipoAcao.VERIFICAR);
         registrador.registrar(estado);
