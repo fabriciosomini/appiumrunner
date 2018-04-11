@@ -1,7 +1,6 @@
 package appiumrunner.unesc.net.appiumrunner;
 
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
@@ -40,45 +39,8 @@ public class ClasseTesteTCC3 {
     @Test
     public void teste() {
 
-        AndroidElement nomeMotorista = driver.findElement(By.id("nomeMotorista"));
-        Assert.assertEquals(false, elementHasFocus(nomeMotorista));
-        Assert.assertEquals("", nomeMotorista.getText());
+        AndroidElement tipoCarga = driver.findElement(By.id("tipoCarga"));
 
-
-        AndroidElement cpfMotorista = driver.findElement(By.id("cpfMotorista"));
-        Assert.assertEquals(false, elementHasFocus(cpfMotorista));
-        Assert.assertEquals("", cpfMotorista.getText());
-
-
-        AndroidElement estadoMotorista = driver.findElement(By.id("estadoMotorista"));
-        Assert.assertEquals(false, elementHasFocus(estadoMotorista));
-        Assert.assertEquals("", estadoMotorista.getText());
-
-
-        nomeMotorista.click();
-        Assert.assertEquals(true, elementHasFocus(nomeMotorista));
-        nomeMotorista.sendKeys("sometimes");
-        Assert.assertEquals("sometimes", nomeMotorista.getText());
-
-
-        cpfMotorista.click();
-        Assert.assertEquals(true, elementHasFocus(cpfMotorista));
-        cpfMotorista.sendKeys("1234");
-        Assert.assertEquals("1234", cpfMotorista.getText());
-
-
-        estadoMotorista.click();
-        getElementUsingTextAndScroll("Mato Grosso do Sul - MS").click();
-        Assert.assertEquals("Mato Grosso do Sul - MS", getChildText(estadoMotorista, 0));
-
-
-        AndroidElement volumeCarga = driver.findElement(By.id("volumeCarga"));
-        progressTo(volumeCarga, 24);
-
-
-        getElementUsingIdAndScroll("abrirListaMercadorias");
-        AndroidElement abrirListaMercadorias = driver.findElement(By.id("abrirListaMercadorias"));
-        abrirListaMercadorias.click();
 
 
     }

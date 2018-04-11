@@ -1,6 +1,9 @@
 package appiumrunner.unesc.net.appiumrunner.models;
 
+import java.util.List;
+
 import appiumrunner.unesc.net.appiumrunner.engine.Registrador;
+import appiumrunner.unesc.net.appiumrunner.helpers.MethodInvoker;
 import appiumrunner.unesc.net.appiumrunner.states.Estado;
 
 public class AcaoFinal {
@@ -15,14 +18,15 @@ public class AcaoFinal {
     }
 
     public AcaoFinal reproduzirAcoes() {
-        estado.getAcoes().add(Estado.TipoAcao.REPRODUZIR);
+        List<Estado.TipoAcao> acoes = (List<Estado.TipoAcao>) MethodInvoker.invoke(estado, "getAcoes");
+        acoes.add(Estado.TipoAcao.REPRODUZIR);
         registrador.registrar(estado);
         return this;
     }
 
     public AcaoFinal verificarValores() {
-
-        estado.getAcoes().add(Estado.TipoAcao.VERIFICAR);
+        List<Estado.TipoAcao> acoes = (List<Estado.TipoAcao>) MethodInvoker.invoke(estado, "getAcoes");
+        acoes.add(Estado.TipoAcao.VERIFICAR);
         registrador.registrar(estado);
         return this;
     }

@@ -15,9 +15,11 @@ public class GeradorTestes {
     }
 
     public static Estado iniciarTesteElemento(View elemento) {
+
         String id = IdUtil.getStringId(elemento);
         Estado estado = new Estado(registrador);
-        estado.setIdentificadorElemento(id);
+        MethodInvoker.invoke(estado, "setIdentificadorElemento", String.class, id);
+
         return estado;
     }
 

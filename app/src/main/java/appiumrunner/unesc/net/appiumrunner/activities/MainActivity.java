@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.Spinner;
@@ -195,8 +196,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
 
-                /*GeradorTestes.iniciarTesteElemento(IdUtil.getStringId(tipoCarga), i);
-                GeradorTestes.iniciarTesteElemento(registrador, IdUtil.getStringId(tipoCarga), Estado.Foco.FOCADO, i);*/
+                RadioButton radioButton = findViewById(radioGroup.getCheckedRadioButtonId());
+                GeradorTestes.iniciarTesteElemento(radioButton)
+                        .marcarOpcao()
+                        .reproduzirAcoes()
+                        .verificarValores();
 
             }
         });
@@ -205,8 +209,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
 
-                /*GeradorTestes.iniciarTesteElemento(IdUtil.getStringId(motoristaAtivo))
-                        .focarElemento(Estado.Foco.FOCADO);*/
+                GeradorTestes.iniciarTesteElemento(motoristaAtivo)
+                        .marcarOpcaoDesmarcavel(b)
+                        .reproduzirAcoes()
+                        .verificarValores();
 
             }
         });

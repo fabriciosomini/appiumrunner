@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import appiumrunner.unesc.net.appiumrunner.helpers.MethodInvoker;
 import appiumrunner.unesc.net.appiumrunner.states.Estado;
 
 /**
@@ -190,14 +191,15 @@ public class Criacao {
                     estados) {
 
 
-                String elementName = estado.getIdentificadorElemento();
+                String elementName = (String) MethodInvoker.invoke(estado, "getIdentificadorElemento");
                 String elementId = elementName;
 
 
-                StringBuilder estadoTexto = estado.getEstadoTexto();
-                StringBuilder estadoSelecao = estado.getEstadoSelecao();
-                Estado.Foco estadoFoco = estado.getEstadoFoco();
-                Integer estadoProgresso = estado.getEstadoProgresso();
+                StringBuilder estadoTexto = (StringBuilder) MethodInvoker.invoke(estado, "getEstadoTexto");
+                StringBuilder estadoSelecao = (StringBuilder) MethodInvoker.invoke(estado, "getEstadoSelecao");
+                Estado.Foco estadoFoco = (Estado.Foco) MethodInvoker.invoke(estado, "getEstadoFoco");
+                Integer estadoProgresso = (Integer) MethodInvoker.invoke(estado, "getEstadoProgresso");
+                List<Estado.TipoAcao> passos = (List<Estado.TipoAcao>) MethodInvoker.invoke(estado, "getAcoes");
 
                 String findElementById = methodBuilder.getFindElementByIdMethod(elementId, elementName);
                 String click = methodBuilder.getClickMethod(elementName);
@@ -221,7 +223,6 @@ public class Criacao {
                     utils.addExtraMethod(TipoExtraMethods.GET_CHILD_TEXT);
                 }
 
-                List<Estado.TipoAcao> passos = estado.getAcoes();
 
                 if (passos.contains(Estado.TipoAcao.ROLAR)) {
                     scriptCompleto += scrollTo;

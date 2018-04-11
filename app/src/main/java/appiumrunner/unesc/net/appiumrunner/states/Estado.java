@@ -16,15 +16,9 @@ public class Estado extends AcaoFinal {
     private List<Estado.TipoAcao> acoes;
     private Foco estadoFoco;
     private String identificadorElemento;
-    private String stateMessage;
     private StringBuilder estadoTexto;
     private StringBuilder estadoSelecao;
-    private Integer estadoContagem;
-
-    public Integer getEstadoProgresso() {
-        return estadoProgresso;
-    }
-
+    private boolean estadoMarcacaoOpcao;
     private int estadoProgresso;
 
 
@@ -83,42 +77,50 @@ public class Estado extends AcaoFinal {
         return this;
     }
 
+
+    public Estado marcarOpcaoDesmarcavel(boolean marcar) {
+        this.estadoMarcacaoOpcao = marcar;
+        acoes.add(TipoAcao.MARCAR_OPCAO_DESMARCAVEL);
+        return this;
+    }
+
+    public Estado marcarOpcao() {
+
+        acoes.add(TipoAcao.MARCAR_OPCAO);
+        return this;
+    }
+
     //-------------------------------------------
-    public List<TipoAcao> getAcoes() {
+    private List<TipoAcao> getAcoes() {
         return acoes;
     }
 
-    public StringBuilder getEstadoSelecao() {
+    private StringBuilder getEstadoSelecao() {
         return estadoSelecao;
     }
 
-    public Foco getEstadoFoco() {
+    private Foco getEstadoFoco() {
         return estadoFoco;
     }
 
-    public StringBuilder getEstadoTexto() {
+    private StringBuilder getEstadoTexto() {
         return estadoTexto;
     }
 
-    protected String getStateMessage() {
-        return stateMessage;
-    }
 
-    public String getIdentificadorElemento() {
+    private String getIdentificadorElemento() {
         return identificadorElemento;
     }
 
-    public Estado setIdentificadorElemento(String identificador) {
+    private Estado setIdentificadorElemento(String identificador) {
 
         this.identificadorElemento = identificador;
         return this;
     }
 
-    public Estado setEstadoContagem(Integer estadoContagem) {
-        this.estadoContagem = estadoContagem;
-        return this;
+    private Integer getEstadoProgresso() {
+        return estadoProgresso;
     }
-
 
     public enum Verificao {
         FINAL_ESTADO,
@@ -134,7 +136,7 @@ public class Estado extends AcaoFinal {
     public enum TipoAcao {
         FOCAR,
         ESCREVER,
-        VERIFICAR, REPRODUZIR, ROLAR, CLICAR, PROGREDIR, SELECIONAR
+        VERIFICAR, REPRODUZIR, ROLAR, CLICAR, PROGREDIR, MARCAR_OPCAO, MARCAR_OPCAO_DESMARCAVEL, SELECIONAR
     }
 
 
