@@ -16,4 +16,5 @@
     <string name="alive_cargo">Carga Viva</string>
     <string name="company_name">Somini Transportes Ltda.</string>
     <string name="cargo_type">Tipo de Carga</string>
+    <string name="recebeEmDinheiro">Recebe em Dinheiro</string>
 </resources>

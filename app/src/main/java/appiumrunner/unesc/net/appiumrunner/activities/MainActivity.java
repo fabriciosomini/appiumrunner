@@ -9,6 +9,7 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -41,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     private int estadoMotoristaSelected = 0;
     private boolean ignoreFocus;
     private TextView volumeCargaText;
+    private CheckBox bitrem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
         volumeCargaText = findViewById(R.id.volumeCargaText);
         tipoCarga = findViewById(R.id.tipoCarga);
         motoristaAtivo = findViewById(R.id.motoristaAtivo);
+        bitrem = findViewById(R.id.bitrem);
         abrirListaMercadorias = findViewById(R.id.abrirListaMercadorias);
 
         nomeEmpresa.setText(getString(R.string.company_name));
@@ -217,6 +220,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        bitrem.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                GeradorTestes.iniciarTesteElemento(bitrem)
+                        .marcarOpcaoDesmarcavel(b)
+                        .reproduzirAcoes()
+                        .verificarValores();
+            }
+        });
 
         abrirListaMercadorias.setOnClickListener(new View.OnClickListener() {
             @Override
