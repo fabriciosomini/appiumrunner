@@ -49,6 +49,7 @@ public class Registrador {
     }
 
 
-
-
+    public void registrarEstadoAparelho() {
+        //TODO: Verificar no TCC os valores que serão coletados pelo método
+    }
 }

@@ -11,6 +11,7 @@ public class GeradorTestes {
 
     public static void init(Registrador registrador) {
         GeradorTestes.registrador = registrador;
+        GeradorTestes.registrador.registrarEstadoAparelho();
     }
 
     public static Estado iniciarTesteElemento(View elemento) {
