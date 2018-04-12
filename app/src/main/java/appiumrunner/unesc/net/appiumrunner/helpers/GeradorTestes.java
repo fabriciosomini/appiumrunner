@@ -35,10 +35,9 @@ public class GeradorTestes {
         return registrador.getEstadoAparelhoMovel();
     }
 
-    public static void pressionarVoltar() {
 
+    public static void pressionar(Estado.Tecla tecla) {
         Estado estado = new Estado(registrador);
-        estado.pressionarTeclas(Estado.Tecla.VOLTAR).reproduzirAcoes();
-
+        estado.pressionarTeclas(tecla).reproduzirAcoes();
     }
 }

@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 import appiumrunner.unesc.net.appiumrunner.R;
 import appiumrunner.unesc.net.appiumrunner.helpers.GeradorTestes;
+import appiumrunner.unesc.net.appiumrunner.states.Estado;
 
 
 public class SearchActivity extends AppCompatActivity {
@@ -57,7 +58,7 @@ public class SearchActivity extends AppCompatActivity {
                 if (!hasFocus && !ignoreFocus) {
                     String text = searchEditTxt.getText().toString();
                     GeradorTestes.iniciarTesteElemento(searchEditTxt)
-                            .focarElemento()
+                            .focarCampo()
                             .escreverValor(text)
                             .reproduzirAcoes()
                             .verificarValores();
@@ -69,7 +70,7 @@ public class SearchActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        GeradorTestes.pressionarVoltar();
+        GeradorTestes.pressionar(Estado.Tecla.VOLTAR);
     }
 
     @Override

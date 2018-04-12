@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
                 if (!hasFocus && !ignoreFocus) {
 
                     GeradorTestes.iniciarTesteElemento(nomeMotorista)
-                            .focarElemento()
+                            .focarCampo()
                             .escreverValor(text)
                             .reproduzirAcoes()
                             .verificarValores();
@@ -143,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
                 if (!hasFocus && !ignoreFocus) {
 
                     GeradorTestes.iniciarTesteElemento(cpfMotorista)
-                            .focarElemento()
+                            .focarCampo()
                             .escreverValor(text)
                             .reproduzirAcoes()
                             .verificarValores();
@@ -158,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
                 if (++estadoMotoristaSelected > 1) {
                     final String newValue = (String) estadoMotorista.getItemAtPosition(i);
                     GeradorTestes.iniciarTesteElemento(estadoMotorista)
-                            .selecionarValor(newValue)
+                            .escolherValor(newValue)
                             .reproduzirAcoes()
                             .verificarValores();
 
@@ -215,7 +215,7 @@ public class MainActivity extends AppCompatActivity {
                 Estado.Marcacao marcacao = b ? Estado.Marcacao.MARCADO : Estado.Marcacao.DESMARCADO;
                 GeradorTestes.iniciarTesteElemento(motoristaAtivo)
                         .marcarOpcaoDesmarcavel(marcacao)
-                        .rolarAteElemento()
+                        .rolarAteCampo()
                         .reproduzirAcoes()
                         .verificarValores();
 
@@ -228,7 +228,7 @@ public class MainActivity extends AppCompatActivity {
                 Estado.Marcacao marcacao = b ? Estado.Marcacao.MARCADO : Estado.Marcacao.DESMARCADO;
                 GeradorTestes.iniciarTesteElemento(bitrem)
                         .marcarOpcaoDesmarcavel(marcacao)
-                        .rolarAteElemento()
+                        .rolarAteCampo()
                         .reproduzirAcoes()
                         .verificarValores();
             }
@@ -243,8 +243,8 @@ public class MainActivity extends AppCompatActivity {
                 abrirListaMercadorias.requestFocusFromTouch();
 
                 GeradorTestes.iniciarTesteElemento(abrirListaMercadorias)
-                        .rolarAteElemento()
-                        .clicarElemento()
+                        .rolarAteCampo()
+                        .clicarCampo()
                         .reproduzirAcoes();
 
                 Intent i = new Intent(getBaseContext(), SearchActivity.class);
@@ -260,7 +260,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        GeradorTestes.pressionarVoltar();
+        GeradorTestes.pressionar(Estado.Tecla.VOLTAR);
     }
 
     @Override
@@ -268,7 +268,7 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         ignoreFocus = false;
         GeradorTestes.iniciarTesteElemento(nomeMotorista)
-                .rolarAteElemento()
+                .rolarAteCampo()
                 .reproduzirAcoes();
     }
 

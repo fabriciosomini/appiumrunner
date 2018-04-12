@@ -1,6 +1,7 @@
 package appiumrunner.unesc.net.appiumrunner.states;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import appiumrunner.unesc.net.appiumrunner.engine.Registrador;
@@ -30,13 +31,13 @@ public class Estado extends AcaoFinal {
         estado = this;
     }
 
-    public Estado selecionarValor(String estadoSelecao) {
+    public Estado escolherValor(String estadoSelecao) {
         this.estadoSelecao = estadoSelecao == null ? null : new StringBuilder(estadoSelecao);
         acoes.add(TipoAcao.SELECIONAR);
         return this;
     }
 
-    public Estado focarElemento() {
+    public Estado focarCampo() {
         this.estadoFoco = Foco.FOCADO;
         acoes.add(TipoAcao.FOCAR);
         return this;
@@ -55,12 +56,12 @@ public class Estado extends AcaoFinal {
         return this;
     }
 
-    public Estado rolarAteElemento() {
+    public Estado rolarAteCampo() {
         acoes.add(TipoAcao.ROLAR);
         return this;
     }
 
-    public Estado clicarElemento() {
+    public Estado clicarCampo() {
         this.estadoFoco = Foco.FOCADO;
         acoes.add(TipoAcao.CLICAR);
         return this;
@@ -94,6 +95,11 @@ public class Estado extends AcaoFinal {
     public Estado pressionarTeclas(Tecla tecla) {
         this.estadoTecla = tecla;
         acoes.add(TipoAcao.PRESSIONAR);
+        return this;
+    }
+
+    public Estado selecionarData(Calendar estadoData) {
+
         return this;
     }
 

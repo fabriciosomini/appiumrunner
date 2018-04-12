@@ -184,7 +184,7 @@ public class Criacao {
                             + "\n\t" + "} catch (MalformedURLException e) {"
                             + "\n\t\t" + "e.printStackTrace();"
                             + "\n\t" + "}"
-                            + "\n\t" + "driver.manage().timeouts().implicitlyWait(80, TimeUnit.SECONDS);"
+                            + "\n\t" + "driver.manage().timeouts().implicitlyWait(15, TimeUnit.SECONDS);"
                             + "\n" + "}";
 
             return fullScript;
