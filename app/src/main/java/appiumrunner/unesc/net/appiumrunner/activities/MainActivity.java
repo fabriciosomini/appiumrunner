@@ -253,8 +253,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        volumeCarga.setProgress(75);
-
     }
 
     @Override
