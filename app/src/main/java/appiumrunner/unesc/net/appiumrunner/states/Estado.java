@@ -12,13 +12,12 @@ import appiumrunner.unesc.net.appiumrunner.models.AcaoFinal;
 
 public class Estado extends AcaoFinal {
     private final Registrador registrador;
-
     private List<Estado.TipoAcao> acoes;
     private Foco estadoFoco;
     private String identificadorElemento;
     private StringBuilder estadoTexto;
     private StringBuilder estadoSelecao;
-    private boolean estadoMarcacaoOpcao;
+    private Estado.Marcacao estadoMarcacaoOpcao;
     private int estadoProgresso;
 
 
@@ -78,8 +77,8 @@ public class Estado extends AcaoFinal {
     }
 
 
-    public Estado marcarOpcaoDesmarcavel(boolean marcar) {
-        this.estadoMarcacaoOpcao = marcar;
+    public Estado marcarOpcaoDesmarcavel(Estado.Marcacao marcacao) {
+        this.estadoMarcacaoOpcao = marcacao;
         acoes.add(TipoAcao.MARCAR_OPCAO_DESMARCAVEL);
         return this;
     }
@@ -118,6 +117,11 @@ public class Estado extends AcaoFinal {
         return this;
     }
 
+
+    private Estado.Marcacao getEstadoMarcacaoOpcao() {
+        return estadoMarcacaoOpcao;
+    }
+
     private Integer getEstadoProgresso() {
         return estadoProgresso;
     }
@@ -140,4 +144,8 @@ public class Estado extends AcaoFinal {
     }
 
 
+    public enum Marcacao {
+        MARCADO,
+        DESMARCADO
+    }
 }

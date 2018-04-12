@@ -26,6 +26,7 @@ import appiumrunner.unesc.net.appiumrunner.R;
 import appiumrunner.unesc.net.appiumrunner.engine.Registrador;
 import appiumrunner.unesc.net.appiumrunner.engine.Setup;
 import appiumrunner.unesc.net.appiumrunner.helpers.GeradorTestes;
+import appiumrunner.unesc.net.appiumrunner.states.Estado;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -189,8 +190,8 @@ public class MainActivity extends AppCompatActivity {
 
                 GeradorTestes.iniciarTesteElemento(volumeCarga)
                         .deslizarBarraProgresso(pos)
-                        .verificarValores()
-                        .reproduzirAcoes();
+                        .reproduzirAcoes()
+                        .verificarValores();
             }
         });
 
@@ -211,9 +212,10 @@ public class MainActivity extends AppCompatActivity {
         motoristaAtivo.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-
+                Estado.Marcacao marcacao = b ? Estado.Marcacao.MARCADO : Estado.Marcacao.DESMARCADO;
                 GeradorTestes.iniciarTesteElemento(motoristaAtivo)
-                        .marcarOpcaoDesmarcavel(b)
+                        .marcarOpcaoDesmarcavel(marcacao)
+                        .rolarAteElemento()
                         .reproduzirAcoes()
                         .verificarValores();
 
@@ -223,8 +225,10 @@ public class MainActivity extends AppCompatActivity {
         bitrem.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                Estado.Marcacao marcacao = b ? Estado.Marcacao.MARCADO : Estado.Marcacao.DESMARCADO;
                 GeradorTestes.iniciarTesteElemento(bitrem)
-                        .marcarOpcaoDesmarcavel(b)
+                        .marcarOpcaoDesmarcavel(marcacao)
+                        .rolarAteElemento()
                         .reproduzirAcoes()
                         .verificarValores();
             }

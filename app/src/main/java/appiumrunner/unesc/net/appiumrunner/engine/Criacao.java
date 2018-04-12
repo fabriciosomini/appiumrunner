@@ -58,7 +58,7 @@ public class Criacao {
     }
 
     private enum TipoExtraMethods {
-        SELECT, SCROLL, FOCUS, GET_CHILD_TEXT, PROGRESS
+        SELECT, SCROLL, ISFOCUSED, GET_CHILD_TEXT, CHECK, ISCHECKED, PROGRESS
     }
 
     private class ScriptBuilder {
@@ -94,13 +94,19 @@ public class Criacao {
                         scriptMetodosExtras += methodBuilder.getElementUsingTextAndScrollMethodDefinition();
                         break;
                     case SCROLL:
-                        scriptMetodosExtras += methodBuilder.getElementUsingIdAndScrollMethodDefinition();
+                        scriptMetodosExtras += methodBuilder.getElementByIdAndScrollToMethodDefinition();
                         break;
-                    case FOCUS:
-                        scriptMetodosExtras += methodBuilder.getFocusAssertionMethodDefinition();
+                    case ISFOCUSED:
+                        scriptMetodosExtras += methodBuilder.getElementHasFocusMethodDefinition();
                         break;
                     case GET_CHILD_TEXT:
                         scriptMetodosExtras += methodBuilder.getChildTextMethodDefinition();
+                        break;
+                    case CHECK:
+                        scriptMetodosExtras += methodBuilder.getCheckMethodDefinition();
+                        break;
+                    case ISCHECKED:
+                        scriptMetodosExtras += methodBuilder.getIsOptionCheckedMethodDefinition();
                         break;
                 }
             }
@@ -195,42 +201,59 @@ public class Criacao {
                 String elementId = elementName;
 
 
+                Estado.Marcacao estadoMarcacaoOpcao = (Estado.Marcacao) MethodInvoker.invoke(estado, "getEstadoMarcacaoOpcao");
                 StringBuilder estadoTexto = (StringBuilder) MethodInvoker.invoke(estado, "getEstadoTexto");
                 StringBuilder estadoSelecao = (StringBuilder) MethodInvoker.invoke(estado, "getEstadoSelecao");
                 Estado.Foco estadoFoco = (Estado.Foco) MethodInvoker.invoke(estado, "getEstadoFoco");
                 Integer estadoProgresso = (Integer) MethodInvoker.invoke(estado, "getEstadoProgresso");
                 List<Estado.TipoAcao> passos = (List<Estado.TipoAcao>) MethodInvoker.invoke(estado, "getAcoes");
 
-                String findElementById = methodBuilder.getFindElementByIdMethod(elementId, elementName);
-                String click = methodBuilder.getClickMethod(elementName);
-                String clear = methodBuilder.getClearMethod(elementName);
-                String sendKeys = methodBuilder.getSendKeysMethod(elementName, utils.getSafeString(estadoTexto));
-                String scrollTo = methodBuilder.getScrollToMethodById(elementId);
-                String progress = methodBuilder.getProgressMethod(elementName, estadoProgresso);
-                String selecItem = methodBuilder.getSelectItemMethod(elementName, utils.getSafeString(estadoSelecao));
+                String findElementByIdCall = methodBuilder.getFindElementByIdMethod(elementId, elementName);
+                String clickCall = methodBuilder.getClickMethod(elementName);
+                String clearCall = methodBuilder.getClearMethod(elementName);
+                String sendKeysCall = methodBuilder.getSendKeysMethod(elementName, utils.getSafeString(estadoTexto));
+                String scrollToCall = methodBuilder.getScrollToMethodById(elementId);
+                String progressCall = methodBuilder.getProgressMethod(elementName, estadoProgresso);
+                String selecItemCall = methodBuilder.getSelectItemMethod(elementName, utils.getSafeString(estadoSelecao));
+                String checkOptionCall = methodBuilder.getCheckMethod(elementName, estadoMarcacaoOpcao);
 
                 String verificaoTexto = methodBuilder.getTextAssertionMethod(elementName, utils.getSafeString(estadoTexto));
-                String verificaoFoco = "";
-                String verificaoSelecao = "";
+                String verificaoFoco = methodBuilder.getFocusAssertionMethod(elementName, estadoFoco);
+                String verificaoSelecao = methodBuilder.getSpinnerAssertionMethod(elementName, utils.getSafeString(estadoSelecao));
+                String verificarProgresso = methodBuilder.getProgressAssertionMethod(elementName, estadoProgresso);
+                String verificacaoOpcaoMarcada = estadoMarcacaoOpcao == null ? methodBuilder.getCheckAsssertionMethod(elementName, Estado.Marcacao.MARCADO) :
+                        methodBuilder.getCheckAsssertionMethod(elementName, estadoMarcacaoOpcao);
 
-                if (estadoFoco != null && estadoFoco != Estado.Foco.IGNORAR) {
-                    verificaoFoco = methodBuilder.getFocusAssertionMethod(elementName, estadoFoco);
-                    utils.addExtraMethod(TipoExtraMethods.FOCUS);
+                if (passos.contains(Estado.TipoAcao.FOCAR) && passos.contains(Estado.TipoAcao.VERIFICAR)
+                        && estadoFoco != null && estadoFoco != Estado.Foco.IGNORAR) {
+                    utils.addExtraMethod(TipoExtraMethods.ISFOCUSED);
                 }
 
-                if (estadoSelecao != null) {
-                    verificaoSelecao = methodBuilder.getSpinnerAssertionMethod(elementName, utils.getSafeString(estadoSelecao));
+                //Marcar opção desmarcável usa o método isOptionChecked na ação e na asserção, então adicione
+                if (passos.contains(Estado.TipoAcao.MARCAR_OPCAO_DESMARCAVEL)) {
+                    utils.addExtraMethod(TipoExtraMethods.ISCHECKED);
+                }
+
+                //Marcar opcao não usa o método isOptionChecked, então apenas adicione se tiver asserção
+                if (passos.contains(Estado.TipoAcao.MARCAR_OPCAO) && passos.contains(Estado.TipoAcao.VERIFICAR)) {
+                    utils.addExtraMethod(TipoExtraMethods.ISCHECKED);
+                }
+
+                if (passos.contains(Estado.TipoAcao.SELECIONAR) && estadoSelecao != null) {
                     utils.addExtraMethod(TipoExtraMethods.GET_CHILD_TEXT);
                 }
 
-
                 if (passos.contains(Estado.TipoAcao.ROLAR)) {
-                    scriptCompleto += scrollTo;
+                    scriptCompleto += scrollToCall;
                     utils.addExtraMethod(TipoExtraMethods.SCROLL);
                 }
 
-                if (!scriptCompleto.contains(findElementById)) {
-                    scriptCompleto += findElementById;
+                if (passos.contains(Estado.TipoAcao.MARCAR_OPCAO)) {
+                    utils.addExtraMethod(TipoExtraMethods.CHECK);
+                }
+
+                if (!scriptCompleto.contains(findElementByIdCall)) {
+                    scriptCompleto += findElementByIdCall;
                 }
 
                 TipoOrdem tipoOrdem = utils.getOrdem(passos);
@@ -244,9 +267,13 @@ public class Criacao {
 
                         switch (acao) {
 
+                            case CLICAR:
+                                scriptCompleto += clickCall;
+                                break;
+
                             case FOCAR:
                                 if (estadoFoco == Estado.Foco.FOCADO) {
-                                    scriptAcoes = click;
+                                    scriptAcoes = clickCall;
                                 } else if (estadoFoco == Estado.Foco.SEM_FOCO) {
                                     scriptAcoes = methodBuilder.getLongPressMethod(elementName, 66);
                                 }
@@ -258,10 +285,10 @@ public class Criacao {
                                 if (estadoTexto != null) {
 
                                     if (estadoTexto.toString().isEmpty()) {
-                                        scriptAcoes = clear;
+                                        scriptAcoes = clearCall;
 
                                     } else {
-                                        scriptAcoes = sendKeys;
+                                        scriptAcoes = sendKeysCall;
                                     }
                                 }
                                 scriptCompleto += utils.construirComandoEmOrdem(tipoOrdem, scriptAcoes, verificaoTexto);
@@ -269,20 +296,26 @@ public class Criacao {
 
                             case SELECIONAR:
                                 if (estadoSelecao != null) {
-                                    scriptAcoes = selecItem;
+                                    scriptAcoes = selecItemCall;
                                     utils.addExtraMethod(TipoExtraMethods.SELECT);
                                 }
                                 scriptCompleto += utils.construirComandoEmOrdem(tipoOrdem, scriptAcoes, verificaoSelecao);
                                 break;
 
-                            case CLICAR:
-                                scriptCompleto += click;
-                                break;
-
                             case PROGREDIR:
-                                scriptCompleto += progress;
+                                scriptAcoes = progressCall;
+                                scriptCompleto += utils.construirComandoEmOrdem(tipoOrdem, scriptAcoes, verificarProgresso);
                                 utils.addExtraMethod(TipoExtraMethods.PROGRESS);
                                 break;
+
+                            case MARCAR_OPCAO:
+                                scriptAcoes = clickCall;
+                                scriptCompleto += utils.construirComandoEmOrdem(tipoOrdem, scriptAcoes, verificacaoOpcaoMarcada);
+                                break;
+
+                            case MARCAR_OPCAO_DESMARCAVEL:
+                                scriptAcoes = checkOptionCall;
+                                scriptCompleto += utils.construirComandoEmOrdem(tipoOrdem, scriptAcoes, verificacaoOpcaoMarcada);
                         }
                     }
                 }
@@ -298,6 +331,8 @@ public class Criacao {
     }
 
     private class MethodBuilder {
+
+
         private String getProgressMethod(String elementName, Integer estadoProgresso) {
             String method = "\n" + "progressTo(" + elementName + ", " + estadoProgresso + ");";
             return method;
@@ -353,7 +388,7 @@ public class Criacao {
         }
 
         private String getScrollToMethodById(String elementName) {
-            String method = "\n" + "getElementUsingIdAndScroll(" + "\"" + elementName + "\");";
+            String method = "\n" + "getElementByIdAndScrollTo(" + "\"" + elementName + "\");";
             return method;
         }
 
@@ -389,10 +424,10 @@ public class Criacao {
             return method;
         }
 
-        private String getElementUsingIdAndScrollMethodDefinition() {
+        private String getElementByIdAndScrollToMethodDefinition() {
 
             String method =
-                    "\n\n" + "public AndroidElement getElementUsingIdAndScroll(String texto){"
+                    "\n\n" + "public AndroidElement getElementByIdAndScrollTo(String texto){"
                             + "\n\t" + "return driver.findElementByAndroidUIAutomator(\"new UiScrollable(new UiSelector().scrollable(true).instance(0)).scrollIntoView(new UiSelector().resourceIdMatches(" + "\\" + "\".*\"+texto+\"\\" + "\"" + ").instance(0))\");"
                             + "\n" + "}";
 
@@ -418,7 +453,7 @@ public class Criacao {
         }
 
 
-        public String getFocusAssertionMethodDefinition() {
+        public String getElementHasFocusMethodDefinition() {
             String method =
                     "\n\n" + "private boolean elementHasFocus(AndroidElement element) {"
                             + "\n\t" + "return element" + ".getCenter().equals(" + getFocusElementMethod() + ".getCenter());"
@@ -431,6 +466,43 @@ public class Criacao {
                     "\n\n" + "private String getChildText(AndroidElement element, int index) {"
                             + "\n\t" + "return  element.findElementByAndroidUIAutomator(\"new UiSelector().index(\"+index+\")\").getText();"
                             + "\n" + "}";
+            return method;
+        }
+
+        public String getCheckMethodDefinition() {
+            String method =
+                    "\n\n" + "private void checkOption(AndroidElement element, boolean check) {"
+                            + "\n\t" + "boolean isChecked =  Boolean.valueOf(element.getAttribute(\"checked\"));"
+                            + "\n\t" + "if(isChecked != check){"
+                            + "\n\t\t" + "element.click();"
+                            + "\n\t" + "}"
+                            + "\n" + "}";
+            return method;
+        }
+
+        public String getIsOptionCheckedMethodDefinition() {
+            String method =
+                    "\n\n" + "private boolean isOptionChecked(AndroidElement element) {"
+                            + "\n\t" + "boolean isChecked = Boolean.valueOf(element.getAttribute(\"checked\"));"
+                            + "\n\t" + "return isChecked;"
+                            + "\n" + "}";
+            return method;
+        }
+
+        public String getProgressAssertionMethod(String elementName, int progresso) {
+            String method = "\n//TODO: Implementar método de verificação de progressbar";
+            return method;
+        }
+
+        public String getCheckMethod(String elementName, Estado.Marcacao marcacao) {
+            boolean marcar = marcacao == Estado.Marcacao.MARCADO;
+            String method = "checkOption( " + elementName + ", " + marcar + ");";
+            return method;
+        }
+
+        public String getCheckAsssertionMethod(String elementName, Estado.Marcacao marcacao) {
+            boolean marcar = marcacao == Estado.Marcacao.MARCADO;
+            String method = "\n" + "Assert.assertEquals(" + marcar + ", isOptionChecked(" + elementName + "));";
             return method;
         }
     }
