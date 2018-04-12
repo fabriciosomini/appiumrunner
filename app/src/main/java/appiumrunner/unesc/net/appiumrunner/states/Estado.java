@@ -20,6 +20,8 @@ public class Estado extends AcaoFinal {
     private Estado.Marcacao estadoMarcacaoOpcao;
     private int estadoProgresso;
 
+    private Tecla estadoTecla;
+
 
     public Estado(Registrador registrador) {
         super(registrador);
@@ -89,9 +91,21 @@ public class Estado extends AcaoFinal {
         return this;
     }
 
+    public Estado pressionarTeclas(Tecla tecla) {
+        this.estadoTecla = tecla;
+        acoes.add(TipoAcao.PRESSIONAR);
+        return this;
+    }
+
     //-------------------------------------------
+
+
     private List<TipoAcao> getAcoes() {
         return acoes;
+    }
+
+    public Tecla getEstadoTecla() {
+        return estadoTecla;
     }
 
     private StringBuilder getEstadoSelecao() {
@@ -126,6 +140,7 @@ public class Estado extends AcaoFinal {
         return estadoProgresso;
     }
 
+
     public enum Verificao {
         FINAL_ESTADO,
         POR_PROPRIEDADE
@@ -140,7 +155,7 @@ public class Estado extends AcaoFinal {
     public enum TipoAcao {
         FOCAR,
         ESCREVER,
-        VERIFICAR, REPRODUZIR, ROLAR, CLICAR, PROGREDIR, MARCAR_OPCAO, MARCAR_OPCAO_DESMARCAVEL, SELECIONAR
+        VERIFICAR, REPRODUZIR, ROLAR, CLICAR, PROGREDIR, MARCAR_OPCAO, MARCAR_OPCAO_DESMARCAVEL, PRESSIONAR, SELECIONAR
     }
 
 
@@ -148,4 +163,6 @@ public class Estado extends AcaoFinal {
         MARCADO,
         DESMARCADO
     }
+
+    public enum Tecla {VOLTAR}
 }

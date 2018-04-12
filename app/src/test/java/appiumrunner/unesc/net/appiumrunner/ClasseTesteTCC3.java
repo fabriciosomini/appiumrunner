@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 import io.appium.java_client.TouchAction;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
+import io.appium.java_client.android.AndroidKeyCode;
 import io.appium.java_client.remote.MobileCapabilityType;
 import io.appium.java_client.touch.offset.PointOption;
 
@@ -55,29 +56,28 @@ public class ClasseTesteTCC3 {
         Assert.assertEquals("", estadoMotorista.getText());
 
 
+        getElementByIdAndScrollTo("nomeMotorista");
+
+
         nomeMotorista.click();
         Assert.assertEquals(true, elementHasFocus(nomeMotorista));
-        nomeMotorista.sendKeys("abelha");
-        Assert.assertEquals("abelha", nomeMotorista.getText());
+        nomeMotorista.sendKeys("test");
+        Assert.assertEquals("test", nomeMotorista.getText());
 
 
         cpfMotorista.click();
         Assert.assertEquals(true, elementHasFocus(cpfMotorista));
-        cpfMotorista.sendKeys("12314232");
-        Assert.assertEquals("12314232", cpfMotorista.getText());
+        cpfMotorista.sendKeys("123");
+        Assert.assertEquals("123", cpfMotorista.getText());
 
 
         estadoMotorista.click();
-        getElementUsingTextAndScroll("Minas Gerais - MG").click();
-        Assert.assertEquals("Minas Gerais - MG", getChildText(estadoMotorista, 0));
+        getElementUsingTextAndScroll("Maranhão - MA").click();
+        Assert.assertEquals("Maranhão - MA", getChildText(estadoMotorista, 0));
 
 
         AndroidElement volumeCarga = driver.findElement(By.id("volumeCarga"));
-        progressTo(volumeCarga, 21);
-        //TODO: Implementar método de verificação de progressbar
-
-
-        progressTo(volumeCarga, 16);
+        progressTo(volumeCarga, 25);
         //TODO: Implementar método de verificação de progressbar
 
 
@@ -86,17 +86,19 @@ public class ClasseTesteTCC3 {
         Assert.assertEquals(true, isOptionChecked(radioButton1));
 
 
+        getElementByIdAndScrollTo("bitrem");
         AndroidElement bitrem = driver.findElement(By.id("bitrem"));
         checkOption(bitrem, true);
         Assert.assertEquals(true, isOptionChecked(bitrem));
 
 
+        getElementByIdAndScrollTo("motoristaAtivo");
         AndroidElement motoristaAtivo = driver.findElement(By.id("motoristaAtivo"));
         checkOption(motoristaAtivo, false);
         Assert.assertEquals(false, isOptionChecked(motoristaAtivo));
 
 
-        getElementUsingIdAndScroll("abrirListaMercadorias");
+        getElementByIdAndScrollTo("abrirListaMercadorias");
         AndroidElement abrirListaMercadorias = driver.findElement(By.id("abrirListaMercadorias"));
         abrirListaMercadorias.click();
 
@@ -106,8 +108,16 @@ public class ClasseTesteTCC3 {
         Assert.assertEquals(false, elementHasFocus(searchEditTxt));
 
 
+        searchEditTxt.click();
         Assert.assertEquals(true, elementHasFocus(searchEditTxt));
-        Assert.assertEquals("let you go", searchEditTxt.getText());
+        searchEditTxt.sendKeys("carga");
+        Assert.assertEquals("carga", searchEditTxt.getText());
+
+
+        driver.pressKeyCode(AndroidKeyCode.BACK);
+
+
+        getElementByIdAndScrollTo("nomeMotorista");
 
 
         nomeMotorista.clear();
@@ -115,8 +125,8 @@ public class ClasseTesteTCC3 {
 
         nomeMotorista.click();
         Assert.assertEquals(true, elementHasFocus(nomeMotorista));
-        nomeMotorista.sendKeys("abelha zumbindo");
-        Assert.assertEquals("abelha zumbindo", nomeMotorista.getText());
+        nomeMotorista.sendKeys("test13");
+        Assert.assertEquals("test13", nomeMotorista.getText());
 
 
         cpfMotorista.clear();
@@ -124,8 +134,13 @@ public class ClasseTesteTCC3 {
 
         cpfMotorista.click();
         Assert.assertEquals(true, elementHasFocus(cpfMotorista));
-        cpfMotorista.sendKeys("68068068");
-        Assert.assertEquals("68068068", cpfMotorista.getText());
+        cpfMotorista.sendKeys("123242");
+        Assert.assertEquals("123242", cpfMotorista.getText());
+
+
+        estadoMotorista.click();
+        getElementUsingTextAndScroll("Mato Grosso do Sul - MS").click();
+        Assert.assertEquals("Mato Grosso do Sul - MS", getChildText(estadoMotorista, 0));
 
 
         estadoMotorista.click();
@@ -133,19 +148,26 @@ public class ClasseTesteTCC3 {
         Assert.assertEquals("Roraima - RR", getChildText(estadoMotorista, 0));
 
 
-        progressTo(volumeCarga, 83);
+        progressTo(volumeCarga, 50);
         //TODO: Implementar método de verificação de progressbar
 
 
-        AndroidElement radioButton3 = driver.findElement(By.id("radioButton3"));
-        radioButton3.click();
-        Assert.assertEquals(true, isOptionChecked(radioButton3));
+        AndroidElement radioButton2 = driver.findElement(By.id("radioButton2"));
+        radioButton2.click();
+        Assert.assertEquals(true, isOptionChecked(radioButton2));
 
+
+        getElementByIdAndScrollTo("bitrem");
         checkOption(bitrem, false);
         Assert.assertEquals(false, isOptionChecked(bitrem));
 
+
+        getElementByIdAndScrollTo("motoristaAtivo");
         checkOption(motoristaAtivo, true);
         Assert.assertEquals(true, isOptionChecked(motoristaAtivo));
+
+
+        driver.pressKeyCode(AndroidKeyCode.BACK);
 
 
     }
@@ -165,10 +187,6 @@ public class ClasseTesteTCC3 {
         return element.getCenter().equals(driver.findElementByAndroidUIAutomator("new UiSelector().focused(true)").getCenter());
     }
 
-    public AndroidElement getElementUsingIdAndScroll(String texto) {
-        return driver.findElementByAndroidUIAutomator("new UiScrollable(new UiSelector().scrollable(true).instance(0)).scrollIntoView(new UiSelector().resourceIdMatches(\".*" + texto + "\").instance(0))");
-    }
-
     private boolean isOptionChecked(AndroidElement element) {
         boolean isChecked = Boolean.valueOf(element.getAttribute("checked"));
         return isChecked;
@@ -176,6 +194,10 @@ public class ClasseTesteTCC3 {
 
     public AndroidElement getElementUsingTextAndScroll(String texto) {
         return driver.findElementByAndroidUIAutomator("new UiScrollable(new UiSelector().scrollable(true).instance(0)).scrollIntoView(new UiSelector().textContains(\"" + texto + "\").instance(0))");
+    }
+
+    public AndroidElement getElementByIdAndScrollTo(String texto) {
+        return driver.findElementByAndroidUIAutomator("new UiScrollable(new UiSelector().scrollable(true).instance(0)).scrollIntoView(new UiSelector().resourceIdMatches(\".*" + texto + "\").instance(0))");
     }
 
     public void progressTo(AndroidElement seekBar, int progress) {

@@ -59,10 +59,17 @@ public class SearchActivity extends AppCompatActivity {
                     GeradorTestes.iniciarTesteElemento(searchEditTxt)
                             .focarElemento()
                             .escreverValor(text)
+                            .reproduzirAcoes()
                             .verificarValores();
                 }
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        GeradorTestes.pressionarVoltar();
     }
 
     @Override

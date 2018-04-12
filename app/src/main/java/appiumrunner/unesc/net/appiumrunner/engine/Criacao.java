@@ -135,6 +135,7 @@ public class Criacao {
                             + "\n" + "import io.appium.java_client.TouchAction;"
                             + "\n" + "import io.appium.java_client.android.AndroidDriver;"
                             + "\n" + "import io.appium.java_client.android.AndroidElement;"
+                            + "\n" + "import io.appium.java_client.android.AndroidKeyCode;"
                             + "\n" + "import io.appium.java_client.remote.MobileCapabilityType;"
                             + "\n" + "import io.appium.java_client.touch.offset.PointOption;";
 
@@ -201,6 +202,7 @@ public class Criacao {
                 String elementId = elementName;
 
 
+                Estado.Tecla estadoTecla = (Estado.Tecla) MethodInvoker.invoke(estado, "getEstadoTecla");
                 Estado.Marcacao estadoMarcacaoOpcao = (Estado.Marcacao) MethodInvoker.invoke(estado, "getEstadoMarcacaoOpcao");
                 StringBuilder estadoTexto = (StringBuilder) MethodInvoker.invoke(estado, "getEstadoTexto");
                 StringBuilder estadoSelecao = (StringBuilder) MethodInvoker.invoke(estado, "getEstadoSelecao");
@@ -216,6 +218,7 @@ public class Criacao {
                 String progressCall = methodBuilder.getProgressMethod(elementName, estadoProgresso);
                 String selecItemCall = methodBuilder.getSelectItemMethod(elementName, utils.getSafeString(estadoSelecao));
                 String checkOptionCall = methodBuilder.getCheckMethod(elementName, estadoMarcacaoOpcao);
+                String pressKeyCall = methodBuilder.getPressKeyMethod(estadoTecla);
 
                 String verificaoTexto = methodBuilder.getTextAssertionMethod(elementName, utils.getSafeString(estadoTexto));
                 String verificaoFoco = methodBuilder.getFocusAssertionMethod(elementName, estadoFoco);
@@ -252,7 +255,7 @@ public class Criacao {
                     utils.addExtraMethod(TipoExtraMethods.CHECK);
                 }
 
-                if (!scriptCompleto.contains(findElementByIdCall)) {
+                if (elementName != null && !scriptCompleto.contains(findElementByIdCall)) {
                     scriptCompleto += findElementByIdCall;
                 }
 
@@ -269,6 +272,10 @@ public class Criacao {
 
                             case CLICAR:
                                 scriptCompleto += clickCall;
+                                break;
+
+                            case PRESSIONAR:
+                                scriptCompleto += pressKeyCall;
                                 break;
 
                             case FOCAR:
@@ -316,6 +323,8 @@ public class Criacao {
                             case MARCAR_OPCAO_DESMARCAVEL:
                                 scriptAcoes = checkOptionCall;
                                 scriptCompleto += utils.construirComandoEmOrdem(tipoOrdem, scriptAcoes, verificacaoOpcaoMarcada);
+
+
                         }
                     }
                 }
@@ -503,6 +512,21 @@ public class Criacao {
         public String getCheckAsssertionMethod(String elementName, Estado.Marcacao marcacao) {
             boolean marcar = marcacao == Estado.Marcacao.MARCADO;
             String method = "\n" + "Assert.assertEquals(" + marcar + ", isOptionChecked(" + elementName + "));";
+            return method;
+        }
+
+        public String getPressKeyMethod(Estado.Tecla estadoTecla) {
+
+            String key = "-1";
+
+            if (estadoTecla != null) {
+                switch (estadoTecla) {
+                    case VOLTAR:
+                        key = "AndroidKeyCode.BACK";
+                        break;
+                }
+            }
+            String method = "\n" + "driver.pressKeyCode(" + key + ");";
             return method;
         }
     }

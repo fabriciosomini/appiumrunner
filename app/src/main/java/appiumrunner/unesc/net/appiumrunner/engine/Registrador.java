@@ -56,7 +56,11 @@ public class Registrador {
 
 
     public void registrarEstadoAparelho() {
-        //TODO: Verificar no TCC os valores que serão coletados pelo método
-        estadoAparelhoMovel += "";
+
+        estadoAparelhoMovel += "//TODO: Verificar no TCC os valores que serão coletados pelo método";
+    }
+
+    public void registrarTeclaDireta(Estado.Tecla voltar) {
+
     }
 }

@@ -258,9 +258,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        GeradorTestes.pressionarVoltar();
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         ignoreFocus = false;
+        GeradorTestes.iniciarTesteElemento(nomeMotorista)
+                .rolarAteElemento()
+                .reproduzirAcoes();
     }
 
     @Override
