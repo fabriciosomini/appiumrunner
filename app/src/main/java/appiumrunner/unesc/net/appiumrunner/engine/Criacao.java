@@ -58,7 +58,7 @@ public class Criacao {
     }
 
     private enum TipoExtraMethods {
-        SELECT, SCROLL, ISFOCUSED, GET_CHILD_TEXT, CHECK, ISCHECKED, PROGRESS
+        SELECT, SCROLL, ISFOCUSED, GET_CHILD_TEXT, CHECK, ISCHECKED, PRESSKEY, PROGRESS
     }
 
     private class ScriptBuilder {
@@ -107,6 +107,9 @@ public class Criacao {
                         break;
                     case ISCHECKED:
                         scriptMetodosExtras += methodBuilder.getIsOptionCheckedMethodDefinition();
+                        break;
+                    case PRESSKEY:
+                        scriptMetodosExtras += methodBuilder.getPressKeyMethodDefinition();
                         break;
                 }
             }
@@ -197,16 +200,16 @@ public class Criacao {
             for (Estado estado :
                     estados) {
 
-
                 String elementName = (String) MethodInvoker.invoke(estado, "getIdentificadorElemento");
                 String elementId = elementName;
-
 
                 Estado.Tecla estadoTecla = (Estado.Tecla) MethodInvoker.invoke(estado, "getEstadoTecla");
                 Estado.Marcacao estadoMarcacaoOpcao = (Estado.Marcacao) MethodInvoker.invoke(estado, "getEstadoMarcacaoOpcao");
                 StringBuilder estadoTexto = (StringBuilder) MethodInvoker.invoke(estado, "getEstadoTexto");
+                StringBuilder estadoTextoLimpo = (StringBuilder) MethodInvoker.invoke(estado, "getEstadoTextoLimpo");
                 StringBuilder estadoSelecao = (StringBuilder) MethodInvoker.invoke(estado, "getEstadoSelecao");
                 Estado.Foco estadoFoco = (Estado.Foco) MethodInvoker.invoke(estado, "getEstadoFoco");
+                Estado.Foco estadoDesfoque = (Estado.Foco) MethodInvoker.invoke(estado, "getEstadoDesfoque");
                 Integer estadoProgresso = (Integer) MethodInvoker.invoke(estado, "getEstadoProgresso");
                 List<Estado.TipoAcao> passos = (List<Estado.TipoAcao>) MethodInvoker.invoke(estado, "getAcoes");
 
@@ -220,8 +223,6 @@ public class Criacao {
                 String checkOptionCall = methodBuilder.getCheckMethod(elementName, estadoMarcacaoOpcao);
                 String pressKeyCall = methodBuilder.getPressKeyMethod(estadoTecla);
 
-                String verificaoTexto = methodBuilder.getTextAssertionMethod(elementName, utils.getSafeString(estadoTexto));
-                String verificaoFoco = methodBuilder.getFocusAssertionMethod(elementName, estadoFoco);
                 String verificaoSelecao = methodBuilder.getSpinnerAssertionMethod(elementName, utils.getSafeString(estadoSelecao));
                 String verificarProgresso = methodBuilder.getProgressAssertionMethod(elementName, estadoProgresso);
                 String verificacaoOpcaoMarcada = estadoMarcacaoOpcao == null ? methodBuilder.getCheckAsssertionMethod(elementName, Estado.Marcacao.MARCADO) :
@@ -266,8 +267,22 @@ public class Criacao {
 
                     if (acao != null) {
                         String scriptAcoes = "";
-
-
+                        Estado.Foco estadoFocoDesfoque = null;
+                        String estadoTextoEscritoLimpo = "";
+                        if (acao == Estado.TipoAcao.FOCAR) {
+                            estadoFocoDesfoque = Estado.Foco.FOCADO;
+                        }
+                        if (acao == Estado.TipoAcao.DESFOCAR) {
+                            estadoFocoDesfoque = Estado.Foco.SEM_FOCO;
+                        }
+                        if (acao == Estado.TipoAcao.ESCREVER) {
+                            estadoTextoEscritoLimpo = estadoTexto.toString();
+                        }
+                        if (acao == Estado.TipoAcao.LIMPAR) {
+                            estadoTextoEscritoLimpo = estadoTextoLimpo.toString();
+                        }
+                        String verificaoFoco = methodBuilder.getFocusAssertionMethod(elementName, estadoFocoDesfoque);
+                        String verificaoTexto = methodBuilder.getTextAssertionMethod(elementName, estadoTextoEscritoLimpo);
                         switch (acao) {
 
                             case CLICAR:
@@ -276,28 +291,36 @@ public class Criacao {
 
                             case PRESSIONAR:
                                 scriptCompleto += pressKeyCall;
+                                utils.addExtraMethod(TipoExtraMethods.PRESSKEY);
                                 break;
 
                             case FOCAR:
                                 if (estadoFoco == Estado.Foco.FOCADO) {
                                     scriptAcoes = clickCall;
-                                } else if (estadoFoco == Estado.Foco.SEM_FOCO) {
-                                    scriptAcoes = methodBuilder.getLongPressMethod(elementName, 66);
                                 }
-
+                                scriptCompleto += utils.construirComandoEmOrdem(tipoOrdem, scriptAcoes, verificaoFoco);
+                                break;
+                            case DESFOCAR:
+                                if (estadoDesfoque == Estado.Foco.SEM_FOCO) {
+                                    scriptAcoes = methodBuilder.getPressKeyMethod(Estado.Tecla.ENTER);
+                                    utils.addExtraMethod(TipoExtraMethods.PRESSKEY);
+                                }
                                 scriptCompleto += utils.construirComandoEmOrdem(tipoOrdem, scriptAcoes, verificaoFoco);
                                 break;
 
                             case ESCREVER:
                                 if (estadoTexto != null) {
-
-                                    if (estadoTexto.toString().isEmpty()) {
-                                        scriptAcoes = clearCall;
-
-                                    } else {
+                                    if (!estadoTexto.toString().isEmpty()) {
                                         scriptAcoes = sendKeysCall;
                                     }
                                 }
+                                scriptCompleto += utils.construirComandoEmOrdem(tipoOrdem, scriptAcoes, verificaoTexto);
+                                break;
+                            case LIMPAR:
+                                scriptAcoes = clearCall;
+                                scriptCompleto += utils.construirComandoEmOrdem(tipoOrdem, scriptAcoes, verificaoTexto);
+                                break;
+                            case LER:
                                 scriptCompleto += utils.construirComandoEmOrdem(tipoOrdem, scriptAcoes, verificaoTexto);
                                 break;
 
@@ -344,11 +367,6 @@ public class Criacao {
 
         private String getProgressMethod(String elementName, Integer estadoProgresso) {
             String method = "\n" + "progressTo(" + elementName + ", " + estadoProgresso + ");";
-            return method;
-        }
-
-        private String getLongPressMethod(String elementName, int keyCode) {
-            String method = "\n" + "driver.longPressKeyCode(" + keyCode + ");";
             return method;
         }
 
@@ -524,9 +542,19 @@ public class Criacao {
                     case VOLTAR:
                         key = "AndroidKeyCode.BACK";
                         break;
+                    case ENTER:
+                        key = "AndroidKeyCode.ENTER";
+                        break;
                 }
             }
-            String method = "\n" + "driver.pressKeyCode(" + key + ");";
+            String method = "\n" + "pressKey(" + key + ");";
+            return method;
+        }
+        public String getPressKeyMethodDefinition() {
+            String method =
+                    "\n\n" + "private void pressKey(int key) {"
+                            + "\n\t" + "driver.pressKeyCode(key);"
+                            + "\n" + "}";
             return method;
         }
     }

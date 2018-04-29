@@ -23,17 +23,17 @@ public class AcaoFinal {
         registrador.registrar(estado);
         return this;
     }
-
     public AcaoFinal verificarValores() {
         List<Estado.TipoAcao> acoes = (List<Estado.TipoAcao>) MethodInvoker.invoke(estado, "getAcoes");
         acoes.add(Estado.TipoAcao.VERIFICAR);
         registrador.registrar(estado);
         return this;
     }
-    /*public Boolean concluir() {
-
+    public AcaoFinal verificarValores(String valor) {
+        List<Estado.TipoAcao> acoes = (List<Estado.TipoAcao>) MethodInvoker.invoke(estado, "getAcoes");
+        acoes.add(Estado.TipoAcao.VERIFICAR);
+        estado.lerValor(valor);
         registrador.registrar(estado);
-        return true;
-    }*/
-
+        return this;
+    }
 }

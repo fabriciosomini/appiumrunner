@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
         GeradorTestes.init(registrador);
 
         setEventosInterface();
-        registrarEstadoInicialTela();
+        //registrarEstadoInicialTela();
 
     }
 
@@ -145,8 +145,17 @@ public class MainActivity extends AppCompatActivity {
                     GeradorTestes.iniciarTesteElemento(cpfMotorista)
                             .focarCampo()
                             .escreverValor(text)
+                            .desfocarCampo()
                             .reproduzirAcoes()
                             .verificarValores();
+                    String maskedText = getCpfMaskedText(text);
+                    if (maskedText == null) {
+                        cpfMotorista.setError("CPF Inválido");
+                    } else {
+                        cpfMotorista.setText(maskedText);
+                        GeradorTestes.iniciarTesteElemento(cpfMotorista)
+                                .verificarValores(maskedText);
+                    }
 
                 }
             }
@@ -254,7 +263,13 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
-
+    private String getCpfMaskedText(String cpf) {
+        if (cpf.length() > 11 || cpf.length() < 11) {
+            return null;
+        }
+        cpf = cpf.substring(0, 3) + "." + cpf.substring(3, 6) + "." + cpf.substring(6, 9) + "-" + cpf.substring(9, 11);
+        return cpf;
+    }
     @Override
     public void onBackPressed() {
         super.onBackPressed();

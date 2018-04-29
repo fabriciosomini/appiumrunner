@@ -20,10 +20,9 @@ public class Estado extends AcaoFinal {
     private StringBuilder estadoSelecao;
     private Estado.Marcacao estadoMarcacaoOpcao;
     private int estadoProgresso;
-
     private Tecla estadoTecla;
-
-
+    private Foco estadoDesfoque;
+    private StringBuilder estadoTextoLimpo;
     public Estado(Registrador registrador) {
         super(registrador);
         this.registrador = registrador;
@@ -44,15 +43,19 @@ public class Estado extends AcaoFinal {
     }
 
     public Estado limparValor() {
-        this.estadoTexto = new StringBuilder("");
-        acoes.add(TipoAcao.ESCREVER);
+        this.estadoTextoLimpo = new StringBuilder("");
+        acoes.add(TipoAcao.LIMPAR);
         return this;
     }
 
     public Estado escreverValor(String estadoTexto) {
-
         this.estadoTexto = estadoTexto == null ? null : new StringBuilder(estadoTexto);
         acoes.add(TipoAcao.ESCREVER);
+        return this;
+    }
+    public Estado lerValor(String estadoTexto) {
+        this.estadoTexto = estadoTexto == null ? null : new StringBuilder(estadoTexto);
+        acoes.add(TipoAcao.LER);
         return this;
     }
 
@@ -68,8 +71,8 @@ public class Estado extends AcaoFinal {
     }
 
     public Estado desfocarCampo() {
-        this.estadoFoco = Foco.SEM_FOCO;
-        acoes.add(TipoAcao.FOCAR);
+        this.estadoDesfoque = Foco.SEM_FOCO;
+        acoes.add(TipoAcao.DESFOCAR);
         return this;
     }
 
@@ -137,7 +140,6 @@ public class Estado extends AcaoFinal {
         return this;
     }
 
-
     private Estado.Marcacao getEstadoMarcacaoOpcao() {
         return estadoMarcacaoOpcao;
     }
@@ -145,7 +147,12 @@ public class Estado extends AcaoFinal {
     private Integer getEstadoProgresso() {
         return estadoProgresso;
     }
-
+    private Foco getEstadoDesfoque() {
+        return estadoDesfoque;
+    }
+    private StringBuilder getEstadoTextoLimpo() {
+        return estadoTextoLimpo;
+    }
 
     public enum Verificao {
         FINAL_ESTADO,
@@ -161,7 +168,7 @@ public class Estado extends AcaoFinal {
     public enum TipoAcao {
         FOCAR,
         ESCREVER,
-        VERIFICAR, REPRODUZIR, ROLAR, CLICAR, PROGREDIR, MARCAR_OPCAO, MARCAR_OPCAO_DESMARCAVEL, PRESSIONAR, SELECIONAR
+        VERIFICAR, REPRODUZIR, ROLAR, CLICAR, PROGREDIR, MARCAR_OPCAO, MARCAR_OPCAO_DESMARCAVEL, PRESSIONAR, SELECIONAR, DESFOCAR, LIMPAR, LER
     }
 
 
@@ -169,6 +176,5 @@ public class Estado extends AcaoFinal {
         MARCADO,
         DESMARCADO
     }
-
-    public enum Tecla {VOLTAR}
+    public enum Tecla {ENTER, VOLTAR}
 }
