@@ -10,7 +10,6 @@ import appiumrunner.unesc.net.appiumrunner.models.AcaoFinal;
 /**
  * Created by fabri on 18/03/2018.
  */
-
 public class Estado extends AcaoFinal {
     private final Registrador registrador;
     private List<Estado.TipoAcao> acoes;
@@ -24,6 +23,7 @@ public class Estado extends AcaoFinal {
     private Foco estadoDesfoque;
     private StringBuilder estadoTextoLimpo;
     private StringBuilder estadoLeitura;
+
     public Estado(Registrador registrador) {
         super(registrador);
         this.registrador = registrador;
@@ -54,6 +54,7 @@ public class Estado extends AcaoFinal {
         acoes.add(TipoAcao.ESCREVER);
         return this;
     }
+
     public Estado lerValor(String estadoLeitura) {
         this.estadoLeitura = estadoLeitura == null ? null : new StringBuilder(estadoLeitura);
         acoes.add(TipoAcao.LER);
@@ -83,7 +84,6 @@ public class Estado extends AcaoFinal {
         return this;
     }
 
-
     public Estado marcarOpcaoDesmarcavel(Estado.Marcacao marcacao) {
         this.estadoMarcacaoOpcao = marcacao;
         acoes.add(TipoAcao.MARCAR_OPCAO_DESMARCAVEL);
@@ -91,7 +91,6 @@ public class Estado extends AcaoFinal {
     }
 
     public Estado marcarOpcao() {
-
         acoes.add(TipoAcao.MARCAR_OPCAO);
         return this;
     }
@@ -103,13 +102,10 @@ public class Estado extends AcaoFinal {
     }
 
     public Estado selecionarData(Calendar estadoData) {
-
         return this;
     }
 
     //-------------------------------------------
-
-
     private List<TipoAcao> getAcoes() {
         return acoes;
     }
@@ -130,13 +126,11 @@ public class Estado extends AcaoFinal {
         return estadoTexto;
     }
 
-
     private String getIdentificadorElemento() {
         return identificadorElemento;
     }
 
     private Estado setIdentificadorElemento(String identificador) {
-
         this.identificadorElemento = identificador;
         return this;
     }
@@ -148,12 +142,15 @@ public class Estado extends AcaoFinal {
     private Integer getEstadoProgresso() {
         return estadoProgresso;
     }
+
     private Foco getEstadoDesfoque() {
         return estadoDesfoque;
     }
+
     private StringBuilder getEstadoTextoLimpo() {
         return estadoTextoLimpo;
     }
+
     private StringBuilder getEstadoLeitura() {
         return estadoLeitura;
     }
@@ -175,10 +172,10 @@ public class Estado extends AcaoFinal {
         VERIFICAR, REPRODUZIR, ROLAR, CLICAR, PROGREDIR, MARCAR_OPCAO, MARCAR_OPCAO_DESMARCAVEL, PRESSIONAR, SELECIONAR, DESFOCAR, LIMPAR, LER
     }
 
-
     public enum Marcacao {
         MARCADO,
         DESMARCADO
     }
+
     public enum Tecla {ENTER, VOLTAR}
 }

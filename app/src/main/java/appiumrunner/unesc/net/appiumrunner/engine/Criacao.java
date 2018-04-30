@@ -1,4 +1,5 @@
 package appiumrunner.unesc.net.appiumrunner.engine;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -6,50 +7,65 @@ import java.util.Set;
 
 import appiumrunner.unesc.net.appiumrunner.helpers.MethodInvoker;
 import appiumrunner.unesc.net.appiumrunner.states.Estado;
+
 /**
  * Created by fabri on 18/03/2018.
  */
 public class Criacao {
-    private final Setup setup;
-    private final String nomeTeste;
-    private final Utils utils;
     String fullScript = "";
+    private Setup setup;
+    private String nomeTeste;
+    private Utils utils;
     private Set<TipoExtraMethods> tipoExtraMethods;
     private String teardownScript;
     private ArrayList<Estado> estados;
+    private Preferences preferences;
+
     public Criacao(Setup setup) {
         this.setup = setup;
         utils = new Utils();
         nomeTeste = utils.gerarNomeTeste();
         tipoExtraMethods = new HashSet<>();
     }
-    public String criar(ArrayList<Estado> estados) {
+
+    public Criacao() {
+        this(null);
+    }
+
+    public String criar(ArrayList<Estado> estados, Preferences preferences, String nomeTeste) {
+        this.preferences = preferences == null ? new Preferences() : preferences;
+        this.nomeTeste = nomeTeste == null ? this.nomeTeste : nomeTeste;
         ScriptBuilder scriptBuilder = new ScriptBuilder();
         this.estados = estados;
         fullScript = scriptBuilder.criarSetup();
         fullScript += scriptBuilder.criarScript();
-        if (setup.isUseDefaultTearDown()) {
+        if (!this.preferences.isSkipTearDownDeclaration()) {
             teardownScript = scriptBuilder.createTeardown();
+            fullScript += teardownScript;
         }
-        fullScript += teardownScript;
         fullScript = scriptBuilder.criarClasseTeste();
         fullScript = fullScript.replace("\n\n\n\n", "\n\n");
         return fullScript;
     }
+
     private enum TipoOrdem {
         VERIFICAR_DEPOIS_REPRODUZIR,
         REPRODUZIR_DEPOIS_VERIFICAR,
         VERIFICAR,
         NONE, REPRODUZIR
     }
+
     private enum TipoExtraMethods {
         SELECT, SCROLL, ISFOCUSED, GET_CHILD_TEXT, CHECK, ISCHECKED, PRESSKEY, PROGRESS
     }
+
     private class ScriptBuilder {
         private final MethodBuilder methodBuilder;
+
         public ScriptBuilder() {
             methodBuilder = new MethodBuilder();
         }
+
         private String criarScript() {
             String scriptAcoes = construirScriptAcoesVerificacoes();
             scriptAcoes = scriptAcoes.replace("\n", "\n\t");
@@ -60,8 +76,14 @@ public class Criacao {
                     + criarMetodosExtras();
             return scriptAcoes;
         }
+
         private String criarMetodosExtras() {
             String scriptMetodosExtras = "";
+            if (preferences != null) {
+                if (preferences.isSkipMethodsDeclaration()) {
+                    return scriptMetodosExtras;
+                }
+            }
             for (TipoExtraMethods extra :
                     tipoExtraMethods) {
                 switch (extra) {
@@ -93,8 +115,20 @@ public class Criacao {
             }
             return scriptMetodosExtras;
         }
+
         private String criarClasseTeste() {
-            String packageName = setup.getPackageName();
+            String addedImports = "";
+            if (preferences.getPackages() != null) {
+                for (String packageName : preferences.getPackages()) {
+                    addedImports += "\n" + "import " + packageName + ";";
+                }
+            }
+            String extendedClass = "";
+            if (preferences.getExtendedClass() != null) {
+                extendedClass = " extends " + preferences.getExtendedClass();
+            }
+            String packageName = preferences.getTestPackageName() == null ?
+                    "appiumrunner.unesc.net.appiumrunner.tests" : preferences.getTestPackageName();
             fullScript = fullScript.replace("\n", "\n\t");
             String packages = "package " + packageName + ";";
             String imports =
@@ -113,14 +147,16 @@ public class Criacao {
                             + "\n" + "import io.appium.java_client.android.AndroidElement;"
                             + "\n" + "import io.appium.java_client.android.AndroidKeyCode;"
                             + "\n" + "import io.appium.java_client.remote.MobileCapabilityType;"
-                            + "\n" + "import io.appium.java_client.touch.offset.PointOption;";
+                            + "\n" + "import io.appium.java_client.touch.offset.PointOption;"
+                            + addedImports;
             String classe =
-                    "\n\n" + "public class " + nomeTeste + " {"
+                    "\n\n" + "public class " + nomeTeste + extendedClass + " {"
                             + "\n\t" + "private AndroidDriver<AndroidElement> driver = null;"
                             + fullScript
                             + "\n" + "}";
             return packages + imports + classe;
         }
+
         private String createTeardown() {
             String teardown =
                     "\n\n" + "@After"
@@ -131,34 +167,37 @@ public class Criacao {
                             + "\n" + "}";
             return teardown;
         }
+
         private String criarSetup() {
-            //String activity = setup.getAppActivity();
-            String platformVersion = setup.getPlatformVersion();
-            String deviceName = setup.getDeviceName();
-            String appPath = setup.getAppPath();
-            String apkName = setup.getApkName();
-            String appiumServerAddress = setup.getAppiumServerAddress();
-            appPath = appPath.replace("\\", "\\\\");
-            fullScript =
-                    "\n" + "@Before"
-                            + "\n" + "public void setup() {"
-                            + "\n\t" + "File app = new File(\"" + appPath + "\", \"" + apkName + "\");"
-                            + "\n\t" + "DesiredCapabilities capabilities = new DesiredCapabilities();"
-                            + "\n\t" + "capabilities.setCapability(MobileCapabilityType.PLATFORM_VERSION, \"" + platformVersion + "\");"
-                            + "\n\t" + "capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, \"" + deviceName + "\");"
-                            + "\n\t" + "capabilities.setCapability(MobileCapabilityType.PLATFORM_NAME, \"Android\");"
-                            //+ "\n\t" + "capabilities.setCapability(MobileCapabilityType.APP_ACTIVITY,\"" + activity + "\");"
-                            + "\n\t" + "capabilities.setCapability(MobileCapabilityType.APP, app.getAbsolutePath());"
-                            + "\n"
-                            + "\n\t" + "try {"
-                            + "\n\t\t" + "driver = new AndroidDriver(new URL(\"" + appiumServerAddress + "\"), capabilities);"
-                            + "\n\t" + "} catch (MalformedURLException e) {"
-                            + "\n\t\t" + "e.printStackTrace();"
-                            + "\n\t" + "}"
-                            + "\n\t" + "driver.manage().timeouts().implicitlyWait(15, TimeUnit.SECONDS);"
-                            + "\n" + "}";
+            if (setup != null) {
+                String platformVersion = setup.getPlatformVersion();
+                String deviceName = setup.getDeviceName();
+                String appPath = setup.getAppPath();
+                String apkName = setup.getApkName();
+                String appiumServerAddress = setup.getAppiumServerAddress();
+                appPath = appPath.replace("\\", "\\\\");
+                fullScript =
+                        "\n" + "@Before"
+                                + "\n" + "public void setup() {"
+                                + "\n\t" + "File app = new File(\"" + appPath + "\", \"" + apkName + "\");"
+                                + "\n\t" + "DesiredCapabilities capabilities = new DesiredCapabilities();"
+                                + "\n\t" + "capabilities.setCapability(MobileCapabilityType.PLATFORM_VERSION, \"" + platformVersion + "\");"
+                                + "\n\t" + "capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, \"" + deviceName + "\");"
+                                + "\n\t" + "capabilities.setCapability(MobileCapabilityType.PLATFORM_NAME, \"Android\");"
+                                //+ "\n\t" + "capabilities.setCapability(MobileCapabilityType.APP_ACTIVITY,\"" + activity + "\");"
+                                + "\n\t" + "capabilities.setCapability(MobileCapabilityType.APP, app.getAbsolutePath());"
+                                + "\n"
+                                + "\n\t" + "try {"
+                                + "\n\t\t" + "driver = new AndroidDriver(new URL(\"" + appiumServerAddress + "\"), capabilities);"
+                                + "\n\t" + "} catch (MalformedURLException e) {"
+                                + "\n\t\t" + "e.printStackTrace();"
+                                + "\n\t" + "}"
+                                + "\n\t" + "driver.manage().timeouts().implicitlyWait(15, TimeUnit.SECONDS);"
+                                + "\n" + "}";
+            }
             return fullScript;
         }
+
         private String construirScriptAcoesVerificacoes() {
             String scriptCompleto = "";
             for (Estado estado :
@@ -300,19 +339,23 @@ public class Criacao {
             return scriptCompleto;
         }
     }
+
     private class MethodBuilder {
         private String getProgressMethod(String elementName, Integer estadoProgresso) {
             String method = "\n" + "progressTo(" + elementName + ", " + estadoProgresso + ");";
             return method;
         }
+
         private String getSpinnerAssertionMethod(String elementName, String estadoSelecao) {
             String method = "\n" + "Assert.assertEquals(\"" + estadoSelecao + "\", getChildText(" + elementName + ", 0));";
             return method;
         }
+
         private String getTextAssertionMethod(String elementName, String estadoTexto) {
             String method = "\n" + "Assert.assertEquals(\"" + estadoTexto + "\", " + elementName + ".getText()" + ");";
             return method;
         }
+
         private String getFocusAssertionMethod(String elementName, Estado.Foco foco) {
             boolean focar = false;
             if (foco == Estado.Foco.FOCADO) {
@@ -321,43 +364,53 @@ public class Criacao {
             String method = "\n" + "Assert.assertEquals(" + focar + ", elementHasFocus(" + elementName + "));";
             return method;
         }
+
         private String getSelectItemMethod(String elementName, String estadoSelecao) {
             String method = getClickMethod(elementName)
                     + "\n" + "getElementUsingTextAndScroll(" + "\"" + estadoSelecao + "\").click();";
             return method;
         }
+
         private String getSendKeysMethod(String elementName, String estadoTexto) {
             String method = "\n" + elementName + ".sendKeys(\"" + estadoTexto + "\");";
             return method;
         }
+
         private String getSendInputMethod(String elementName, String input) {
             String method = "\n" + elementName + ".sendKeys(" + input + ");";
             return method;
         }
+
         private String getClearMethod(String elementName) {
             String method = "\n" + elementName + ".clear();";
             return method;
         }
+
         private String getScrollToMethodById(String elementName) {
             String method = "\n" + "getElementByIdAndScrollTo(" + "\"" + elementName + "\");";
             return method;
         }
+
         private String getClickMethod(String elementName) {
             String method = "\n" + elementName + ".click();";
             return method;
         }
+
         private String getFindElementByIdMethod(String elementId, String variableName) {
             String method = "\n" + "AndroidElement " + variableName + " = driver.findElement(By.id(\"" + elementId + "\"));";
             return method;
         }
+
         private String getFindElementByNameMethod(String elementName, String variableName) {
             String method = "\n" + "AndroidElement " + variableName + " = driver.findElement(By.name(\"" + elementName + "\"));";
             return method;
         }
+
         public String getFocusElementMethod() {
             String method = "driver.findElementByAndroidUIAutomator(\"new UiSelector().focused(true)\")";
             return method;
         }
+
         private String getElementUsingTextAndScrollMethodDefinition() {
             String method =
                     "\n\n" + "public AndroidElement getElementUsingTextAndScroll(String texto){"
@@ -365,6 +418,7 @@ public class Criacao {
                             + "\n" + "}";
             return method;
         }
+
         private String getElementByIdAndScrollToMethodDefinition() {
             String method =
                     "\n\n" + "public AndroidElement getElementByIdAndScrollTo(String texto){"
@@ -372,6 +426,7 @@ public class Criacao {
                             + "\n" + "}";
             return method;
         }
+
         public String getProgressMethodDefinition() {
             String method =
                     "\n\n" + "public void progressTo(AndroidElement seekBar, int progress) {"
@@ -389,6 +444,7 @@ public class Criacao {
                             + "\n" + "}";
             return method;
         }
+
         public String getElementHasFocusMethodDefinition() {
             String method =
                     "\n\n" + "private boolean elementHasFocus(AndroidElement element) {"
@@ -396,6 +452,7 @@ public class Criacao {
                             + "\n" + "}";
             return method;
         }
+
         public String getChildTextMethodDefinition() {
             String method =
                     "\n\n" + "private String getChildText(AndroidElement element, int index) {"
@@ -403,6 +460,7 @@ public class Criacao {
                             + "\n" + "}";
             return method;
         }
+
         public String getCheckMethodDefinition() {
             String method =
                     "\n\n" + "private void checkOption(AndroidElement element, boolean check) {"
@@ -413,6 +471,7 @@ public class Criacao {
                             + "\n" + "}";
             return method;
         }
+
         public String getIsOptionCheckedMethodDefinition() {
             String method =
                     "\n\n" + "private boolean isOptionChecked(AndroidElement element) {"
@@ -421,20 +480,24 @@ public class Criacao {
                             + "\n" + "}";
             return method;
         }
+
         public String getProgressAssertionMethod(String elementName, int progresso) {
             String method = "\n//TODO: Implementar método de verificação de progressbar";
             return method;
         }
+
         public String getCheckMethod(String elementName, Estado.Marcacao marcacao) {
             boolean marcar = marcacao == Estado.Marcacao.MARCADO;
             String method = "checkOption( " + elementName + ", " + marcar + ");";
             return method;
         }
+
         public String getCheckAsssertionMethod(String elementName, Estado.Marcacao marcacao) {
             boolean marcar = marcacao == Estado.Marcacao.MARCADO;
             String method = "\n" + "Assert.assertEquals(" + marcar + ", isOptionChecked(" + elementName + "));";
             return method;
         }
+
         public String getPressKeyMethod(Estado.Tecla estadoTecla) {
             String key = "-1";
             if (estadoTecla != null) {
@@ -450,6 +513,7 @@ public class Criacao {
             String method = "\n" + "pressKey(" + key + ");";
             return method;
         }
+
         public String getPressKeyMethodDefinition() {
             String method =
                     "\n\n" + "private void pressKey(int key) {"
@@ -458,10 +522,12 @@ public class Criacao {
             return method;
         }
     }
+
     private class Utils {
         private String gerarNomeTeste() {
             return "ClasseTesteTCC3";
         }
+
         private String getSafeString(StringBuilder stringBuilder) {
             if (stringBuilder != null) {
                 return stringBuilder.toString();
@@ -469,11 +535,13 @@ public class Criacao {
                 return "";
             }
         }
+
         private void addExtraMethod(TipoExtraMethods progress) {
             if (!tipoExtraMethods.contains(progress)) {
                 tipoExtraMethods.add(progress);
             }
         }
+
         private String construirComandoEmOrdem(TipoOrdem tipoOrdem, String reproduzir, String verificar) {
             switch (tipoOrdem) {
                 case REPRODUZIR:
@@ -489,6 +557,7 @@ public class Criacao {
             }
             return null;
         }
+
         private TipoOrdem getOrdem(List<Estado.TipoAcao> passos) {
             TipoOrdem tipoOrdem = TipoOrdem.NONE;
             for (Estado.TipoAcao acao :

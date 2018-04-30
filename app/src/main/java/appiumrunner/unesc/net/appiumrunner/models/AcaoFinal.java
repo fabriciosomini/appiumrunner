@@ -7,11 +7,8 @@ import appiumrunner.unesc.net.appiumrunner.helpers.MethodInvoker;
 import appiumrunner.unesc.net.appiumrunner.states.Estado;
 
 public class AcaoFinal {
-
-
     protected Estado estado;
     Registrador registrador;
-
 
     public AcaoFinal(Registrador registrador) {
         this.registrador = registrador;
@@ -23,6 +20,7 @@ public class AcaoFinal {
         registrador.registrar(estado);
         return this;
     }
+
     public AcaoFinal verificarValores() {
         List<Estado.TipoAcao> acoes = (List<Estado.TipoAcao>) MethodInvoker.invoke(estado, "getAcoes");
         acoes.add(Estado.TipoAcao.VERIFICAR);

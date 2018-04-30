@@ -8,18 +8,15 @@ import appiumrunner.unesc.net.appiumrunner.states.Estado;
 public class GeradorTestes {
     private static Registrador registrador;
 
-
     public static void init(Registrador registrador) {
         GeradorTestes.registrador = registrador;
         GeradorTestes.registrador.registrarEstadoAparelho();
     }
 
-    public static Estado iniciarTesteElemento(View elemento) {
-
+    public static Estado gerarTesteElemento(View elemento) {
         String id = IdUtil.getStringId(elemento);
         Estado estado = new Estado(registrador);
         MethodInvoker.invoke(estado, "setIdentificadorElemento", String.class, id);
-
         return estado;
     }
 
@@ -27,13 +24,17 @@ public class GeradorTestes {
         registrador.parar();
     }
 
+    public static void terminarTeste(String nomeTeste) {
+        registrador.parar(nomeTeste);
+    }
+
     public static String getTeste() {
         return registrador.getScript();
     }
+
     public static EstadoDispositivoUtil.EstadoAparelhoMovel getEstadoAparelhoMovel() {
         return registrador.getEstadoAparelhoMovel();
     }
-
 
     public static void pressionar(Estado.Tecla tecla) {
         Estado estado = new Estado(registrador);

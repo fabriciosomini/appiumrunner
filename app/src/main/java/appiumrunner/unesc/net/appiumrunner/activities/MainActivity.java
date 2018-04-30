@@ -23,16 +23,13 @@ import android.widget.ToggleButton;
 import java.util.ArrayList;
 
 import appiumrunner.unesc.net.appiumrunner.R;
-import appiumrunner.unesc.net.appiumrunner.engine.Preferences;
 import appiumrunner.unesc.net.appiumrunner.engine.Registrador;
 import appiumrunner.unesc.net.appiumrunner.engine.Setup;
 import appiumrunner.unesc.net.appiumrunner.helpers.EstadoDispositivoUtil;
 import appiumrunner.unesc.net.appiumrunner.helpers.GeradorTestes;
 import appiumrunner.unesc.net.appiumrunner.states.Estado;
 
-
 public class MainActivity extends AppCompatActivity {
-
     private Registrador registrador;
     private TextView nomeEmpresa;
     private Button abrirListaMercadorias;
@@ -51,49 +48,48 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         Setup setup = new Setup();
         setup.setDeviceName("adroid");
         setup.setPlatformVersion("5.0");
-        setup.setUseDefaultTearDown(true);
-        setup.setPackageName(getPackageName());
         setup.setAppiumServerAddress("http://127.0.0.1:4723/wd/hub");
         setup.setAppPath(".\\build\\outputs\\apk\\debug\\", "app-debug.apk");
-        Preferences preferences = new Preferences();
-        preferences.addImport("com.google.test");
-        preferences.skipMethodsDeclaration(true);
-        registrador = new Registrador(this, setup);
-        registrador.setPreferences(preferences);
-        GeradorTestes.init(registrador);
 
+        /*List<String> imports = new ArrayList<>();
+        imports.add("com.import.1");
+        imports.add("com.import.2");*/
+
+        /*Preferences preferences = new Preferences();
+        preferences.addImports(imports);
+        preferences.addImport("com.import.3");
+        preferences.setTestPackageName("com.tests");
+        preferences.setExtendedClass("TestBase");
+        preferences.skipMethodsDeclaration(true);
+        preferences.skipTearDownDeclaration(true);*/
+
+        registrador = new Registrador(this, setup);
+        //registrador.setPreferences(preferences);
+        GeradorTestes.init(registrador);
         setEventosInterface();
         registrarEstadoInicialTela();
-
     }
 
     private void registrarEstadoInicialTela() {
-
-        GeradorTestes.iniciarTesteElemento(nomeMotorista)
+        GeradorTestes.gerarTesteElemento(nomeMotorista)
                 .desfocarCampo()
                 .limparValor()
                 .verificarValores();
-
-        GeradorTestes.iniciarTesteElemento(cpfMotorista)
+        GeradorTestes.gerarTesteElemento(cpfMotorista)
                 .desfocarCampo()
                 .limparValor()
                 .verificarValores();
-
-        GeradorTestes.iniciarTesteElemento(estadoMotorista)
+        GeradorTestes.gerarTesteElemento(estadoMotorista)
                 .desfocarCampo()
                 .escreverValor("")
                 .verificarValores();
-
     }
-
 
     private void setEventosInterface() {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-
         nomeEmpresa = findViewById(R.id.nome_empresa);
         nomeMotorista = findViewById(R.id.nomeMotorista);
         cpfMotorista = findViewById(R.id.cpfMotorista);
@@ -104,50 +100,41 @@ public class MainActivity extends AppCompatActivity {
         motoristaAtivo = findViewById(R.id.motoristaAtivo);
         bitrem = findViewById(R.id.bitrem);
         abrirListaMercadorias = findViewById(R.id.abrirListaMercadorias);
-
         nomeEmpresa.setText(getString(R.string.company_name));
         estadoMotorista.setAdapter(getEstadoAdapter());
-
         nomeMotorista.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
-
                 String text = nomeMotorista.getText().toString();
                 if (hasFocus && !ignoreFocus) {
                     if (!text.isEmpty()) {
-                        GeradorTestes.iniciarTesteElemento(nomeMotorista)
+                        GeradorTestes.gerarTesteElemento(nomeMotorista)
                                 .limparValor()
                                 .reproduzirAcoes();
                     }
                 }
-
                 if (!hasFocus && !ignoreFocus) {
-
-                    GeradorTestes.iniciarTesteElemento(nomeMotorista)
+                    GeradorTestes.gerarTesteElemento(nomeMotorista)
                             .focarCampo()
                             .escreverValor(text)
                             .reproduzirAcoes()
                             .verificarValores();
-
                 }
             }
         });
-
         cpfMotorista.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
                 String text = cpfMotorista.getText().toString();
                 if (hasFocus && !ignoreFocus) {
                     if (!text.isEmpty()) {
-                        GeradorTestes.iniciarTesteElemento(cpfMotorista)
+                        GeradorTestes.gerarTesteElemento(cpfMotorista)
                                 .limparValor()
                                 .reproduzirAcoes();
                     }
                 }
-
                 if (!hasFocus && !ignoreFocus) {
-
-                    GeradorTestes.iniciarTesteElemento(cpfMotorista)
+                    GeradorTestes.gerarTesteElemento(cpfMotorista)
                             .focarCampo()
                             .escreverValor(text)
                             .desfocarCampo()
@@ -158,34 +145,29 @@ public class MainActivity extends AppCompatActivity {
                         cpfMotorista.setError("CPF Inválido");
                     } else {
                         cpfMotorista.setText(maskedText);
-                        GeradorTestes.iniciarTesteElemento(cpfMotorista)
+                        GeradorTestes.gerarTesteElemento(cpfMotorista)
                                 .lerValor(maskedText)
                                 .verificarValores();
                     }
-
                 }
             }
         });
-
         estadoMotorista.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 if (++estadoMotoristaSelected > 1) {
                     final String newValue = (String) estadoMotorista.getItemAtPosition(i);
-                    GeradorTestes.iniciarTesteElemento(estadoMotorista)
+                    GeradorTestes.gerarTesteElemento(estadoMotorista)
                             .escolherValor(newValue)
                             .reproduzirAcoes()
                             .verificarValores();
-
                 }
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-
             }
         });
-
         volumeCarga.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             int pos = 0;
 
@@ -197,78 +179,64 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
-                GeradorTestes.iniciarTesteElemento(volumeCarga)
+                GeradorTestes.gerarTesteElemento(volumeCarga)
                         .deslizarBarraProgresso(pos)
                         .reproduzirAcoes()
                         .verificarValores();
             }
         });
-
-
         tipoCarga.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
-
                 RadioButton radioButton = findViewById(radioGroup.getCheckedRadioButtonId());
-                GeradorTestes.iniciarTesteElemento(radioButton)
+                GeradorTestes.gerarTesteElemento(radioButton)
                         .marcarOpcao()
                         .reproduzirAcoes()
                         .verificarValores();
-
             }
         });
-
         motoristaAtivo.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 Estado.Marcacao marcacao = b ? Estado.Marcacao.MARCADO : Estado.Marcacao.DESMARCADO;
-                GeradorTestes.iniciarTesteElemento(motoristaAtivo)
+                GeradorTestes.gerarTesteElemento(motoristaAtivo)
                         .marcarOpcaoDesmarcavel(marcacao)
                         .rolarAteCampo()
                         .reproduzirAcoes()
                         .verificarValores();
-
             }
         });
-
         bitrem.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 Estado.Marcacao marcacao = b ? Estado.Marcacao.MARCADO : Estado.Marcacao.DESMARCADO;
-                GeradorTestes.iniciarTesteElemento(bitrem)
+                GeradorTestes.gerarTesteElemento(bitrem)
                         .marcarOpcaoDesmarcavel(marcacao)
                         .rolarAteCampo()
                         .reproduzirAcoes()
                         .verificarValores();
             }
         });
-
         abrirListaMercadorias.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 //Altera o foco para o botão, solucionando o problema de não disparar o evento onFocusChange
                 ignoreFocus = true;
                 abrirListaMercadorias.requestFocusFromTouch();
-
-                GeradorTestes.iniciarTesteElemento(abrirListaMercadorias)
+                GeradorTestes.gerarTesteElemento(abrirListaMercadorias)
                         .rolarAteCampo()
                         .clicarCampo()
                         .reproduzirAcoes();
-
                 Intent i = new Intent(getBaseContext(), SearchActivity.class);
                 startActivity(i);
-
             }
         });
-
     }
+
     private String getCpfMaskedText(String cpf) {
         if (cpf.length() > 11 || cpf.length() < 11) {
             return null;
@@ -276,6 +244,7 @@ public class MainActivity extends AppCompatActivity {
         cpf = cpf.substring(0, 3) + "." + cpf.substring(3, 6) + "." + cpf.substring(6, 9) + "-" + cpf.substring(9, 11);
         return cpf;
     }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -286,7 +255,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         ignoreFocus = false;
-        GeradorTestes.iniciarTesteElemento(nomeMotorista)
+        GeradorTestes.gerarTesteElemento(nomeMotorista)
                 .rolarAteCampo()
                 .reproduzirAcoes();
     }
@@ -294,10 +263,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        GeradorTestes.terminarTeste();
+        GeradorTestes.terminarTeste("TestePrincipal");
         String script = GeradorTestes.getTeste();
         EstadoDispositivoUtil.EstadoAparelhoMovel estadoAparelhoMovel = GeradorTestes.getEstadoAparelhoMovel();
-        Log.d("Teste Automatizado", script);
+        Log.d("Teste Automatizado: \n", script);
     }
 
     public ArrayList<String> getEstados() {
@@ -333,7 +302,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public SpinnerAdapter getEstadoAdapter() {
-
         ArrayList<String> estados = getEstados();
         SpinnerAdapter estadoAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, estados);
         return estadoAdapter;

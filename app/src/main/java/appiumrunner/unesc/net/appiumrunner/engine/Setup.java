@@ -3,17 +3,10 @@ package appiumrunner.unesc.net.appiumrunner.engine;
 /**
  * Created by fabri on 18/03/2018.
  */
-
 public class Setup {
-
     private String platformVersion;
     private String deviceName;
-    private String platformName;
-    //private String appActivity;
-    private String appDirectory;
-    private boolean useDefaultTearDown;
     private String apkName;
-    private String packageName;
     private String appiumServerAddress;
     private String appPath;
 
@@ -28,14 +21,6 @@ public class Setup {
 
     public String getApkName() {
         return apkName;
-    }
-
-    public boolean isUseDefaultTearDown() {
-        return useDefaultTearDown;
-    }
-
-    public void setUseDefaultTearDown(boolean useDefaultTearDown) {
-        this.useDefaultTearDown = useDefaultTearDown;
     }
 
     public String getPlatformVersion() {
@@ -54,39 +39,11 @@ public class Setup {
         this.deviceName = deviceName;
     }
 
-    public String getPlatformName() {
-        return platformName;
-    }
-
-    public void setPlatformName(String platformName) {
-        this.platformName = platformName;
-    }
-
-    /*/public String getAppActivity() {
-        return appActivity;
-    }*/
-
-    /*public void setAppActivity(String appActivity) {
-        this.appActivity = appActivity;
-    }*/
-
-    public void setAppDirectory(String appDirectory) {
-        this.appDirectory = appDirectory;
-    }
-
     public String getAppiumServerAddress() {
         return appiumServerAddress;
     }
 
     public void setAppiumServerAddress(String appiumServerAddress) {
         this.appiumServerAddress = appiumServerAddress;
-    }
-
-    public String getPackageName() {
-        return packageName;
-    }
-
-    public void setPackageName(String packageName) {
-        this.packageName = packageName;
     }
 }
