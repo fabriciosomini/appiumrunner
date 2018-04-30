@@ -23,8 +23,10 @@ import android.widget.ToggleButton;
 import java.util.ArrayList;
 
 import appiumrunner.unesc.net.appiumrunner.R;
+import appiumrunner.unesc.net.appiumrunner.engine.Preferences;
 import appiumrunner.unesc.net.appiumrunner.engine.Registrador;
 import appiumrunner.unesc.net.appiumrunner.engine.Setup;
+import appiumrunner.unesc.net.appiumrunner.helpers.EstadoDispositivoUtil;
 import appiumrunner.unesc.net.appiumrunner.helpers.GeradorTestes;
 import appiumrunner.unesc.net.appiumrunner.states.Estado;
 
@@ -57,12 +59,15 @@ public class MainActivity extends AppCompatActivity {
         setup.setPackageName(getPackageName());
         setup.setAppiumServerAddress("http://127.0.0.1:4723/wd/hub");
         setup.setAppPath(".\\build\\outputs\\apk\\debug\\", "app-debug.apk");
-
-        registrador = new Registrador(setup);
+        Preferences preferences = new Preferences();
+        preferences.addImport("com.google.test");
+        preferences.skipMethodsDeclaration(true);
+        registrador = new Registrador(this, setup);
+        registrador.setPreferences(preferences);
         GeradorTestes.init(registrador);
 
         setEventosInterface();
-        //registrarEstadoInicialTela();
+        registrarEstadoInicialTela();
 
     }
 
@@ -154,7 +159,8 @@ public class MainActivity extends AppCompatActivity {
                     } else {
                         cpfMotorista.setText(maskedText);
                         GeradorTestes.iniciarTesteElemento(cpfMotorista)
-                                .verificarValores(maskedText);
+                                .lerValor(maskedText)
+                                .verificarValores();
                     }
 
                 }
@@ -290,6 +296,7 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         GeradorTestes.terminarTeste();
         String script = GeradorTestes.getTeste();
+        EstadoDispositivoUtil.EstadoAparelhoMovel estadoAparelhoMovel = GeradorTestes.getEstadoAparelhoMovel();
         Log.d("Teste Automatizado", script);
     }
 

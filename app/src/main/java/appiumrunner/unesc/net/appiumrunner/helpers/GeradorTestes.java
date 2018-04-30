@@ -30,8 +30,7 @@ public class GeradorTestes {
     public static String getTeste() {
         return registrador.getScript();
     }
-
-    public static String getEstadoAparelhoMovel() {
+    public static EstadoDispositivoUtil.EstadoAparelhoMovel getEstadoAparelhoMovel() {
         return registrador.getEstadoAparelhoMovel();
     }
 

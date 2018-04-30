@@ -23,6 +23,7 @@ public class Estado extends AcaoFinal {
     private Tecla estadoTecla;
     private Foco estadoDesfoque;
     private StringBuilder estadoTextoLimpo;
+    private StringBuilder estadoLeitura;
     public Estado(Registrador registrador) {
         super(registrador);
         this.registrador = registrador;
@@ -53,8 +54,8 @@ public class Estado extends AcaoFinal {
         acoes.add(TipoAcao.ESCREVER);
         return this;
     }
-    public Estado lerValor(String estadoTexto) {
-        this.estadoTexto = estadoTexto == null ? null : new StringBuilder(estadoTexto);
+    public Estado lerValor(String estadoLeitura) {
+        this.estadoLeitura = estadoLeitura == null ? null : new StringBuilder(estadoLeitura);
         acoes.add(TipoAcao.LER);
         return this;
     }
@@ -152,6 +153,9 @@ public class Estado extends AcaoFinal {
     }
     private StringBuilder getEstadoTextoLimpo() {
         return estadoTextoLimpo;
+    }
+    private StringBuilder getEstadoLeitura() {
+        return estadoLeitura;
     }
 
     public enum Verificao {
