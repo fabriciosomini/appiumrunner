@@ -1,10 +1,10 @@
 <resources>
     <string name="app_name">AppiumRunner</string>
     <string name="user_name">DEFAULT_USER_NAME</string>
-    <string name="open_cargo_list">CARGAS ALOCADAS</string>
+    <string name="add_driver_btn">+ Adicionar</string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="hint_search">Pesquisar Carga</string>
+    <string name="hint_search">Pesquisar Motorista</string>
     <string name="driver_name">Nome Motorista</string>
     <string name="cpf">CPF</string>
     <string name="state">Estado Origem</string>
@@ -12,9 +12,11 @@
     <string name="is_active">Ativo</string>
     <string name="double_cargo">Caminhão Bitrem</string>
     <string name="food_cargo">Carga Alimentícia</string>
-    <string name="toxic_cargo">Carga Toxica</string>
+    <string name="toxic_cargo">Carga Perigosa</string>
     <string name="alive_cargo">Carga Viva</string>
     <string name="company_name">Somini Transportes Ltda.</string>
     <string name="cargo_type">Tipo de Carga</string>
     <string name="recebeEmDinheiro">Recebe em Dinheiro</string>
+    <string name="save">Salvar</string>
+    <string name="cancel">Cancelar</string>
 </resources>
