@@ -1,45 +1,46 @@
-package appiumrunner.unesc.net.appiumrunner.engine;
+package unesc.com.unesctcc3.motor;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import appiumrunner.unesc.net.appiumrunner.helpers.MethodInvoker;
-import appiumrunner.unesc.net.appiumrunner.states.Estado;
+import unesc.com.unesctcc3.modelos.Atividade;
+import unesc.com.unesctcc3.utilitarios.UtilitarioMetodos;
+
 
 /**
  * Created by fabri on 18/03/2018.
  */
-public class Criacao {
+public class AlgoritmoCriacao {
     String fullScript = "";
     private Setup setup;
     private String nomeTeste;
     private Utils utils;
     private Set<TipoExtraMethods> tipoExtraMethods;
     private String teardownScript;
-    private ArrayList<Estado> estados;
-    private Preferences preferences;
+    private ArrayList<Atividade> atividades;
+    private Preferencias preferencias;
 
-    public Criacao(Setup setup) {
+    public AlgoritmoCriacao(Setup setup) {
         this.setup = setup;
         utils = new Utils();
         nomeTeste = utils.gerarNomeTeste();
         tipoExtraMethods = new HashSet<>();
     }
 
-    public Criacao() {
+    public AlgoritmoCriacao() {
         this(null);
     }
 
-    public String criar(ArrayList<Estado> estados, Preferences preferences, String nomeTeste) {
-        this.preferences = preferences == null ? new Preferences() : preferences;
+    public String criar(ArrayList<Atividade> atividades, Preferencias preferencias, String nomeTeste) {
+        this.preferencias = preferencias == null ? new Preferencias() : preferencias;
         this.nomeTeste = nomeTeste == null ? this.nomeTeste : nomeTeste;
         ScriptBuilder scriptBuilder = new ScriptBuilder();
-        this.estados = estados;
+        this.atividades = atividades;
         fullScript = scriptBuilder.criarSetup();
         fullScript += scriptBuilder.criarScript();
-        if (!this.preferences.isSkipTearDownDeclaration()) {
+        if (!this.preferencias.isSkipTearDownDeclaration()) {
             teardownScript = scriptBuilder.createTeardown();
             fullScript += teardownScript;
         }
@@ -79,8 +80,8 @@ public class Criacao {
 
         private String criarMetodosExtras() {
             String scriptMetodosExtras = "";
-            if (preferences != null) {
-                if (preferences.isSkipMethodsDeclaration()) {
+            if (preferencias != null) {
+                if (preferencias.isSkipMethodsDeclaration()) {
                     return scriptMetodosExtras;
                 }
             }
@@ -118,17 +119,17 @@ public class Criacao {
 
         private String criarClasseTeste() {
             String addedImports = "";
-            if (preferences.getPackages() != null) {
-                for (String packageName : preferences.getPackages()) {
+            if (preferencias.getPackages() != null) {
+                for (String packageName : preferencias.getPackages()) {
                     addedImports += "\n" + "import " + packageName + ";";
                 }
             }
             String extendedClass = "";
-            if (preferences.getExtendedClass() != null) {
-                extendedClass = " extends " + preferences.getExtendedClass();
+            if (preferencias.getExtendedClass() != null) {
+                extendedClass = " extends " + preferencias.getExtendedClass();
             }
-            String packageName = preferences.getTestPackageName() == null ?
-                    "appiumrunner.unesc.net.appiumrunner.tests" : preferences.getTestPackageName();
+            String packageName = preferencias.getTestPackageName() == null ?
+                    "appiumrunner.unesc.net.appiumrunner.tests" : preferencias.getTestPackageName();
             fullScript = fullScript.replace("\n", "\n\t");
             String packages = "package " + packageName + ";";
             String imports =
@@ -200,20 +201,20 @@ public class Criacao {
 
         private String construirScriptAcoesVerificacoes() {
             String scriptCompleto = "";
-            for (Estado estado :
-                    estados) {
-                String elementName = (String) MethodInvoker.invoke(estado, "getIdentificadorElemento");
+            for (Atividade atividade :
+                    atividades) {
+                String elementName = (String) UtilitarioMetodos.invocarMetodo(atividade, "getIdentificadorElemento");
                 String elementId = elementName;
-                Estado.Tecla estadoTecla = (Estado.Tecla) MethodInvoker.invoke(estado, "getEstadoTecla");
-                Estado.Marcacao estadoMarcacaoOpcao = (Estado.Marcacao) MethodInvoker.invoke(estado, "getEstadoMarcacaoOpcao");
-                StringBuilder estadoTexto = (StringBuilder) MethodInvoker.invoke(estado, "getEstadoTexto");
-                StringBuilder estadoTextoLimpo = (StringBuilder) MethodInvoker.invoke(estado, "getEstadoTextoLimpo");
-                StringBuilder estadoLeitura = (StringBuilder) MethodInvoker.invoke(estado, "getEstadoLeitura");
-                StringBuilder estadoSelecao = (StringBuilder) MethodInvoker.invoke(estado, "getEstadoSelecao");
-                Estado.Foco estadoFoco = (Estado.Foco) MethodInvoker.invoke(estado, "getEstadoFoco");
-                Estado.Foco estadoDesfoque = (Estado.Foco) MethodInvoker.invoke(estado, "getEstadoDesfoque");
-                Integer estadoProgresso = (Integer) MethodInvoker.invoke(estado, "getEstadoProgresso");
-                List<Estado.TipoAcao> passos = (List<Estado.TipoAcao>) MethodInvoker.invoke(estado, "getAcoes");
+                Atividade.Tecla estadoTecla = (Atividade.Tecla) UtilitarioMetodos.invocarMetodo(atividade, "getEstadoTecla");
+                Atividade.Marcacao estadoMarcacaoOpcao = (Atividade.Marcacao) UtilitarioMetodos.invocarMetodo(atividade, "getEstadoMarcacaoOpcao");
+                StringBuilder estadoTexto = (StringBuilder) UtilitarioMetodos.invocarMetodo(atividade, "getEstadoTexto");
+                StringBuilder estadoTextoLimpo = (StringBuilder) UtilitarioMetodos.invocarMetodo(atividade, "getEstadoTextoLimpo");
+                StringBuilder estadoLeitura = (StringBuilder) UtilitarioMetodos.invocarMetodo(atividade, "getEstadoLeitura");
+                StringBuilder estadoSelecao = (StringBuilder) UtilitarioMetodos.invocarMetodo(atividade, "getEstadoSelecao");
+                Atividade.Foco estadoFoco = (Atividade.Foco) UtilitarioMetodos.invocarMetodo(atividade, "getEstadoFoco");
+                Atividade.Foco estadoDesfoque = (Atividade.Foco) UtilitarioMetodos.invocarMetodo(atividade, "getEstadoDesfoque");
+                Integer estadoProgresso = (Integer) UtilitarioMetodos.invocarMetodo(atividade, "getEstadoProgresso");
+                List<Atividade.TipoAcao> passos = (List<Atividade.TipoAcao>) UtilitarioMetodos.invocarMetodo(atividade, "getAcoes");
                 String findElementByIdCall = methodBuilder.getFindElementByIdMethod(elementId, elementName);
                 String clickCall = methodBuilder.getClickMethod(elementName);
                 String clearCall = methodBuilder.getClearMethod(elementName);
@@ -225,53 +226,53 @@ public class Criacao {
                 String pressKeyCall = methodBuilder.getPressKeyMethod(estadoTecla);
                 String verificaoSelecao = methodBuilder.getSpinnerAssertionMethod(elementName, utils.getSafeString(estadoSelecao));
                 String verificarProgresso = methodBuilder.getProgressAssertionMethod(elementName, estadoProgresso);
-                String verificacaoOpcaoMarcada = estadoMarcacaoOpcao == null ? methodBuilder.getCheckAsssertionMethod(elementName, Estado.Marcacao.MARCADO) :
+                String verificacaoOpcaoMarcada = estadoMarcacaoOpcao == null ? methodBuilder.getCheckAsssertionMethod(elementName, Atividade.Marcacao.MARCADO) :
                         methodBuilder.getCheckAsssertionMethod(elementName, estadoMarcacaoOpcao);
-                if (passos.contains(Estado.TipoAcao.FOCAR) && passos.contains(Estado.TipoAcao.VERIFICAR)
-                        && estadoFoco != null && estadoFoco != Estado.Foco.IGNORAR) {
+                if (passos.contains(Atividade.TipoAcao.FOCAR) && passos.contains(Atividade.TipoAcao.VERIFICAR)
+                        && estadoFoco != null && estadoFoco != Atividade.Foco.IGNORAR) {
                     utils.addExtraMethod(TipoExtraMethods.ISFOCUSED);
                 }
                 //Marcar opção desmarcável usa o método isOptionChecked na ação e na asserção, então adicione
-                if (passos.contains(Estado.TipoAcao.MARCAR_OPCAO_DESMARCAVEL)) {
+                if (passos.contains(Atividade.TipoAcao.MARCAR_OPCAO_DESMARCAVEL)) {
                     utils.addExtraMethod(TipoExtraMethods.ISCHECKED);
                 }
                 //Marcar opcao não usa o método isOptionChecked, então apenas adicione se tiver asserção
-                if (passos.contains(Estado.TipoAcao.MARCAR_OPCAO) && passos.contains(Estado.TipoAcao.VERIFICAR)) {
+                if (passos.contains(Atividade.TipoAcao.MARCAR_OPCAO) && passos.contains(Atividade.TipoAcao.VERIFICAR)) {
                     utils.addExtraMethod(TipoExtraMethods.ISCHECKED);
                 }
-                if (passos.contains(Estado.TipoAcao.SELECIONAR) && estadoSelecao != null) {
+                if (passos.contains(Atividade.TipoAcao.SELECIONAR) && estadoSelecao != null) {
                     utils.addExtraMethod(TipoExtraMethods.GET_CHILD_TEXT);
                 }
-                if (passos.contains(Estado.TipoAcao.ROLAR)) {
+                if (passos.contains(Atividade.TipoAcao.ROLAR)) {
                     scriptCompleto += scrollToCall;
                     utils.addExtraMethod(TipoExtraMethods.SCROLL);
                 }
-                if (passos.contains(Estado.TipoAcao.MARCAR_OPCAO)) {
+                if (passos.contains(Atividade.TipoAcao.MARCAR_OPCAO)) {
                     utils.addExtraMethod(TipoExtraMethods.CHECK);
                 }
                 if (elementName != null && !scriptCompleto.contains(findElementByIdCall)) {
                     scriptCompleto += findElementByIdCall;
                 }
                 TipoOrdem tipoOrdem = utils.getOrdem(passos);
-                for (Estado.TipoAcao acao :
+                for (Atividade.TipoAcao acao :
                         passos) {
                     if (acao != null) {
                         String scriptAcoes = "";
-                        Estado.Foco estadoFocoDesfoque = null;
+                        Atividade.Foco estadoFocoDesfoque = null;
                         String texto = "";
-                        if (acao == Estado.TipoAcao.FOCAR) {
-                            estadoFocoDesfoque = Estado.Foco.FOCADO;
+                        if (acao == Atividade.TipoAcao.FOCAR) {
+                            estadoFocoDesfoque = Atividade.Foco.FOCADO;
                         }
-                        if (acao == Estado.TipoAcao.DESFOCAR) {
-                            estadoFocoDesfoque = Estado.Foco.SEM_FOCO;
+                        if (acao == Atividade.TipoAcao.DESFOCAR) {
+                            estadoFocoDesfoque = Atividade.Foco.SEM_FOCO;
                         }
-                        if (acao == Estado.TipoAcao.ESCREVER) {
+                        if (acao == Atividade.TipoAcao.ESCREVER) {
                             texto = estadoTexto.toString();
                         }
-                        if (acao == Estado.TipoAcao.LIMPAR) {
+                        if (acao == Atividade.TipoAcao.LIMPAR) {
                             texto = estadoTextoLimpo.toString();
                         }
-                        if (acao == Estado.TipoAcao.LER) {
+                        if (acao == Atividade.TipoAcao.LER) {
                             texto = estadoLeitura.toString();
                         }
                         String verificaoFoco = methodBuilder.getFocusAssertionMethod(elementName, estadoFocoDesfoque);
@@ -285,14 +286,14 @@ public class Criacao {
                                 utils.addExtraMethod(TipoExtraMethods.PRESSKEY);
                                 break;
                             case FOCAR:
-                                if (estadoFoco == Estado.Foco.FOCADO) {
+                                if (estadoFoco == Atividade.Foco.FOCADO) {
                                     scriptAcoes = clickCall;
                                 }
                                 scriptCompleto += utils.construirComandoEmOrdem(tipoOrdem, scriptAcoes, verificaoFoco);
                                 break;
                             case DESFOCAR:
-                                if (estadoDesfoque == Estado.Foco.SEM_FOCO) {
-                                    scriptAcoes = methodBuilder.getPressKeyMethod(Estado.Tecla.ENTER);
+                                if (estadoDesfoque == Atividade.Foco.SEM_FOCO) {
+                                    scriptAcoes = methodBuilder.getPressKeyMethod(Atividade.Tecla.ENTER);
                                     utils.addExtraMethod(TipoExtraMethods.PRESSKEY);
                                 }
                                 scriptCompleto += utils.construirComandoEmOrdem(tipoOrdem, scriptAcoes, verificaoFoco);
@@ -356,9 +357,9 @@ public class Criacao {
             return method;
         }
 
-        private String getFocusAssertionMethod(String elementName, Estado.Foco foco) {
+        private String getFocusAssertionMethod(String elementName, Atividade.Foco foco) {
             boolean focar = false;
-            if (foco == Estado.Foco.FOCADO) {
+            if (foco == Atividade.Foco.FOCADO) {
                 focar = true;
             }
             String method = "\n" + "Assert.assertEquals(" + focar + ", elementHasFocus(" + elementName + "));";
@@ -486,19 +487,19 @@ public class Criacao {
             return method;
         }
 
-        public String getCheckMethod(String elementName, Estado.Marcacao marcacao) {
-            boolean marcar = marcacao == Estado.Marcacao.MARCADO;
+        public String getCheckMethod(String elementName, Atividade.Marcacao marcacao) {
+            boolean marcar = marcacao == Atividade.Marcacao.MARCADO;
             String method = "checkOption( " + elementName + ", " + marcar + ");";
             return method;
         }
 
-        public String getCheckAsssertionMethod(String elementName, Estado.Marcacao marcacao) {
-            boolean marcar = marcacao == Estado.Marcacao.MARCADO;
+        public String getCheckAsssertionMethod(String elementName, Atividade.Marcacao marcacao) {
+            boolean marcar = marcacao == Atividade.Marcacao.MARCADO;
             String method = "\n" + "Assert.assertEquals(" + marcar + ", isOptionChecked(" + elementName + "));";
             return method;
         }
 
-        public String getPressKeyMethod(Estado.Tecla estadoTecla) {
+        public String getPressKeyMethod(Atividade.Tecla estadoTecla) {
             String key = "-1";
             if (estadoTecla != null) {
                 switch (estadoTecla) {
@@ -558,11 +559,11 @@ public class Criacao {
             return null;
         }
 
-        private TipoOrdem getOrdem(List<Estado.TipoAcao> passos) {
+        private TipoOrdem getOrdem(List<Atividade.TipoAcao> passos) {
             TipoOrdem tipoOrdem = TipoOrdem.NONE;
-            for (Estado.TipoAcao acao :
+            for (Atividade.TipoAcao acao :
                     passos) {
-                if (acao == Estado.TipoAcao.REPRODUZIR) {
+                if (acao == Atividade.TipoAcao.REPRODUZIR) {
                     if (tipoOrdem == TipoOrdem.NONE) {
                         tipoOrdem = TipoOrdem.REPRODUZIR;
                     }
@@ -570,7 +571,7 @@ public class Criacao {
                         tipoOrdem = TipoOrdem.VERIFICAR_DEPOIS_REPRODUZIR;
                     }
                 }
-                if (acao == Estado.TipoAcao.VERIFICAR) {
+                if (acao == Atividade.TipoAcao.VERIFICAR) {
                     if (tipoOrdem == TipoOrdem.NONE) {
                         tipoOrdem = TipoOrdem.VERIFICAR;
                     }

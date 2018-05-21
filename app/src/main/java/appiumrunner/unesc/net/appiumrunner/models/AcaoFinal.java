@@ -2,28 +2,29 @@ package appiumrunner.unesc.net.appiumrunner.models;
 
 import java.util.List;
 
-import appiumrunner.unesc.net.appiumrunner.engine.Registrador;
-import appiumrunner.unesc.net.appiumrunner.helpers.MethodInvoker;
-import appiumrunner.unesc.net.appiumrunner.states.Estado;
+import unesc.com.unesctcc3.modelos.Atividade;
+import unesc.com.unesctcc3.motor.AlgoritmoRegistro;
+import unesc.com.unesctcc3.utilitarios.UtilitarioMetodos;
+
 
 public class AcaoFinal {
-    protected Estado estado;
-    Registrador registrador;
+    protected Atividade estado;
+    AlgoritmoRegistro registrador;
 
-    public AcaoFinal(Registrador registrador) {
+    public AcaoFinal(AlgoritmoRegistro registrador) {
         this.registrador = registrador;
     }
 
     public AcaoFinal reproduzirAcoes() {
-        List<Estado.TipoAcao> acoes = (List<Estado.TipoAcao>) MethodInvoker.invoke(estado, "getAcoes");
-        acoes.add(Estado.TipoAcao.REPRODUZIR);
+        List<Atividade.TipoAcao> acoes = (List<Atividade.TipoAcao>) UtilitarioMetodos.invocarMetodo(estado, "getAcoes");
+        acoes.add(Atividade.TipoAcao.REPRODUZIR);
         registrador.registrar(estado);
         return this;
     }
 
     public AcaoFinal verificarValores() {
-        List<Estado.TipoAcao> acoes = (List<Estado.TipoAcao>) MethodInvoker.invoke(estado, "getAcoes");
-        acoes.add(Estado.TipoAcao.VERIFICAR);
+        List<Atividade.TipoAcao> acoes = (List<Atividade.TipoAcao>) UtilitarioMetodos.invocarMetodo(estado, "getAcoes");
+        acoes.add(Atividade.TipoAcao.VERIFICAR);
         registrador.registrar(estado);
         return this;
     }

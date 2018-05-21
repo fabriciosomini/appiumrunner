@@ -1,9 +1,9 @@
-package appiumrunner.unesc.net.appiumrunner.engine;
+package unesc.com.unesctcc3.motor;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Preferences {
+public class Preferencias {
     private boolean skipMethodsDeclaration;
     private boolean skipTearDownDeclaration;
     private List<String> packages;

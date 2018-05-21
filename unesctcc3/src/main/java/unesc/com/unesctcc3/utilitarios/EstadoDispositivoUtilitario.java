@@ -1,4 +1,4 @@
-package appiumrunner.unesc.net.appiumrunner.helpers;
+package unesc.com.unesctcc3.utilitarios;
 
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -8,14 +8,14 @@ import android.os.StatFs;
 
 import java.io.File;
 
-public class EstadoDispositivoUtil {
+public class EstadoDispositivoUtilitario {
     private static Activity activity;
 
     public static EstadoAparelhoMovel getInfo(Activity activity) {
         if (activity == null) {
             return null;
         }
-        EstadoDispositivoUtil.activity = activity;
+        EstadoDispositivoUtilitario.activity = activity;
         long availableRamMemorySize = getAvailableRamMemorySize();
         long totalRamMemorySize = getTotalRamMemorySize();
         long availableInternalMemorySize = getAvailableInternalMemorySize();
@@ -49,7 +49,7 @@ public class EstadoDispositivoUtil {
     }
 
     public static boolean externalMemoryAvailable() {
-        return android.os.Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED);
+        return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
     }
 
     public static long getAvailableInternalMemorySize() {

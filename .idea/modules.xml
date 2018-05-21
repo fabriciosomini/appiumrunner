@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/appiumrunner.iml" filepath="$PROJECT_DIR$/appiumrunner.iml" />
+      <module fileurl="file://$PROJECT_DIR$/unesctcc3/unesctcc3.iml" filepath="$PROJECT_DIR$/unesctcc3/unesctcc3.iml" />
     </modules>
   </component>
 </project>

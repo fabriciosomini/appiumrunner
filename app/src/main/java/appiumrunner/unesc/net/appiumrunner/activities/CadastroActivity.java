@@ -23,10 +23,10 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import appiumrunner.unesc.net.appiumrunner.R;
-import appiumrunner.unesc.net.appiumrunner.helpers.GeradorTestes;
 import appiumrunner.unesc.net.appiumrunner.models.Motorista;
 import appiumrunner.unesc.net.appiumrunner.models.Repository;
-import appiumrunner.unesc.net.appiumrunner.states.Estado;
+import unesc.com.unesctcc3.modelos.Atividade;
+import unesc.com.unesctcc3.utilitarios.GeradorTestes;
 
 public class CadastroActivity extends AppCompatActivity {
 
@@ -195,7 +195,7 @@ public class CadastroActivity extends AppCompatActivity {
         motoristaAtivo.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                Estado.Marcacao marcacao = b ? Estado.Marcacao.MARCADO : Estado.Marcacao.DESMARCADO;
+                Atividade.Marcacao marcacao = b ? Atividade.Marcacao.MARCADO : Atividade.Marcacao.DESMARCADO;
                 GeradorTestes.gerarTesteElemento(motoristaAtivo)
                         .marcarOpcaoDesmarcavel(marcacao)
                         .rolarAteCampo()
@@ -206,7 +206,7 @@ public class CadastroActivity extends AppCompatActivity {
         bitrem.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                Estado.Marcacao marcacao = b ? Estado.Marcacao.MARCADO : Estado.Marcacao.DESMARCADO;
+                Atividade.Marcacao marcacao = b ? Atividade.Marcacao.MARCADO : Atividade.Marcacao.DESMARCADO;
                 GeradorTestes.gerarTesteElemento(bitrem)
                         .marcarOpcaoDesmarcavel(marcacao)
                         .rolarAteCampo()
@@ -314,7 +314,7 @@ public class CadastroActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        GeradorTestes.pressionar(Estado.Tecla.VOLTAR);
+        GeradorTestes.pressionar(Atividade.Tecla.VOLTAR);
     }
 
     @Override

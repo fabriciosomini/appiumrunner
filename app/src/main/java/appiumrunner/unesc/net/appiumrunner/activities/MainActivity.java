@@ -13,20 +13,20 @@ import android.widget.ListView;
 
 import appiumrunner.unesc.net.appiumrunner.R;
 import appiumrunner.unesc.net.appiumrunner.adapters.MotoristaAdapter;
-import appiumrunner.unesc.net.appiumrunner.engine.Registrador;
-import appiumrunner.unesc.net.appiumrunner.engine.Setup;
-import appiumrunner.unesc.net.appiumrunner.helpers.EstadoDispositivoUtil;
-import appiumrunner.unesc.net.appiumrunner.helpers.GeradorTestes;
 import appiumrunner.unesc.net.appiumrunner.models.Motorista;
 import appiumrunner.unesc.net.appiumrunner.models.Repository;
-import appiumrunner.unesc.net.appiumrunner.states.Estado;
+import unesc.com.unesctcc3.modelos.Atividade;
+import unesc.com.unesctcc3.motor.AlgoritmoRegistro;
+import unesc.com.unesctcc3.motor.Setup;
+import unesc.com.unesctcc3.utilitarios.EstadoDispositivoUtilitario;
+import unesc.com.unesctcc3.utilitarios.GeradorTestes;
 
 public class MainActivity extends AppCompatActivity {
     private EditText searchEditTxt;
     private Button adicionarMotorista;
     private ListView listView;
     private boolean ignoreFocus;
-    private Registrador registrador;
+    private AlgoritmoRegistro algoritmoRegistro;
     private MotoristaAdapter motoristaAdapter;
 
     @Override
@@ -39,9 +39,9 @@ public class MainActivity extends AppCompatActivity {
         setup.setAppiumServerAddress("http://127.0.0.1:4723/wd/hub");
         setup.setAppPath(".\\build\\outputs\\apk\\debug\\", "app-debug.apk");
 
-        registrador = new Registrador(this, setup);
+        algoritmoRegistro = new AlgoritmoRegistro(this, setup);
 
-        GeradorTestes.init(registrador);
+        GeradorTestes.init(algoritmoRegistro);
 
         setEventosInterface();
         registrarEstadoInicialTela();
@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        GeradorTestes.pressionar(Estado.Tecla.VOLTAR);
+        GeradorTestes.pressionar(Atividade.Tecla.VOLTAR);
     }
 
     @Override
@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
     private void showTest() {
         GeradorTestes.terminarTeste("TestePrincipal");
         String script = GeradorTestes.getTeste();
-        EstadoDispositivoUtil.EstadoAparelhoMovel estadoAparelhoMovel = GeradorTestes.getEstadoAparelhoMovel();
+        EstadoDispositivoUtilitario.EstadoAparelhoMovel estadoAparelhoMovel = GeradorTestes.getEstadoAparelhoMovel();
         Log.d("Teste Automatizado: \n", script);
     }
 
