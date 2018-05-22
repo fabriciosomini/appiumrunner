@@ -217,6 +217,7 @@ public class AlgoritmoCriacao {
                 List<Atividade.TipoAcao> passos = (List<Atividade.TipoAcao>) UtilitarioMetodos.invocarMetodo(atividade, "getAcoes");
                 String findElementByIdCall = methodBuilder.getFindElementByIdMethod(elementId, elementName);
                 String clickCall = methodBuilder.getClickMethod(elementName);
+                String focusCall = methodBuilder.getFocusElementMethod(elementName);
                 String clearCall = methodBuilder.getClearMethod(elementName);
                 String sendKeysCall = methodBuilder.getSendKeysMethod(elementName, utils.getSafeString(estadoTexto));
                 String scrollToCall = methodBuilder.getScrollToMethodById(elementId);
@@ -287,8 +288,9 @@ public class AlgoritmoCriacao {
                                 break;
                             case FOCAR:
                                 if (estadoFoco == Atividade.Foco.FOCADO) {
-                                    scriptAcoes = clickCall;
+                                    scriptAcoes = focusCall;
                                 }
+                                utils.addExtraMethod(TipoExtraMethods.ISFOCUSED);
                                 scriptCompleto += utils.construirComandoEmOrdem(tipoOrdem, scriptAcoes, verificaoFoco);
                                 break;
                             case DESFOCAR:
@@ -362,8 +364,12 @@ public class AlgoritmoCriacao {
             if (foco == Atividade.Foco.FOCADO) {
                 focar = true;
             }
-            String method = "\n" + "Assert.assertEquals(" + focar + ", elementHasFocus(" + elementName + "));";
+            String method = "\n" + "Assert.assertEquals(" + focar + ", " + getElementHasFocusMethod(elementName) + ");";
             return method;
+        }
+
+        private String getElementHasFocusMethod(String elementName) {
+            return "elementHasFocus(" + elementName + ")";
         }
 
         private String getSelectItemMethod(String elementName, String estadoSelecao) {
@@ -407,7 +413,7 @@ public class AlgoritmoCriacao {
             return method;
         }
 
-        public String getFocusElementMethod() {
+        public String getFindFocusedElementMethod() {
             String method = "driver.findElementByAndroidUIAutomator(\"new UiSelector().focused(true)\")";
             return method;
         }
@@ -449,7 +455,7 @@ public class AlgoritmoCriacao {
         public String getElementHasFocusMethodDefinition() {
             String method =
                     "\n\n" + "private boolean elementHasFocus(AndroidElement element) {"
-                            + "\n\t" + "return element" + ".getCenter().equals(" + getFocusElementMethod() + ".getCenter());"
+                            + "\n\t" + "return element" + ".getCenter().equals(" + getFindFocusedElementMethod() + ".getCenter());"
                             + "\n" + "}";
             return method;
         }
@@ -520,6 +526,11 @@ public class AlgoritmoCriacao {
                     "\n\n" + "private void pressKey(int key) {"
                             + "\n\t" + "driver.pressKeyCode(key);"
                             + "\n" + "}";
+            return method;
+        }
+
+        public String getFocusElementMethod(String elementName) {
+            String method = "\nif(!" + getElementHasFocusMethod(elementName) + "){\n" + "\t" + elementName + ".click();\n}";
             return method;
         }
     }
