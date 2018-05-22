@@ -2,14 +2,19 @@ package appiumrunner.unesc.net.appiumrunner.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import appiumrunner.unesc.net.appiumrunner.R;
 import appiumrunner.unesc.net.appiumrunner.adapters.MotoristaAdapter;
@@ -28,6 +33,9 @@ public class MainActivity extends AppCompatActivity {
     private boolean ignoreFocus;
     private AlgoritmoRegistro algoritmoRegistro;
     private MotoristaAdapter motoristaAdapter;
+    private TextView emptyView;
+    private TextView nomeEmpresa;
+    private ConstraintLayout listContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,9 +66,13 @@ public class MainActivity extends AppCompatActivity {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         searchEditTxt = findViewById(R.id.searchEditTxt);
         listView = findViewById(R.id.list);
-        adicionarMotorista = findViewById(R.id.abrirListaMercadorias);
+        adicionarMotorista = findViewById(R.id.add_driver_btn);
+        nomeEmpresa = findViewById(R.id.nome_empresa);
+        listContainer = findViewById(R.id.list_container);
+
         motoristaAdapter = new MotoristaAdapter(this, android.R.layout.simple_list_item_1, Repository.getMotoristaList());
         listView.setAdapter(motoristaAdapter);
+        nomeEmpresa.setText(getString(R.string.company_name));
         searchEditTxt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
@@ -72,6 +84,24 @@ public class MainActivity extends AppCompatActivity {
                             .reproduzirAcoes()
                             .verificarValores();
                 }
+            }
+        });
+
+        searchEditTxt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                motoristaAdapter.getFilter().filter(charSequence);
+                toggleEmptyText();
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
             }
         });
 
@@ -99,6 +129,30 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        ViewTreeObserver observer = listView.getViewTreeObserver();
+        observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+
+            @Override
+            public void onGlobalLayout() {
+                toggleEmptyText();
+            }
+        });
+    }
+
+    private void toggleEmptyText() {
+        if (listView.getChildCount() == 0) {
+            showNoItemsText(true);
+        } else {
+            showNoItemsText(false);
+        }
+    }
+
+    private void showNoItemsText(boolean show) {
+        if (show) {
+            listContainer.setVisibility(View.VISIBLE);
+        } else {
+            listContainer.setVisibility(View.GONE);
+        }
     }
 
     @Override

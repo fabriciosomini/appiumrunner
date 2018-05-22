@@ -4,6 +4,7 @@
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true"
     android:layout_width="match_parent"
+    android:background="#ffff"
     android:layout_height="match_parent">
 
     <ScrollView
@@ -174,7 +175,7 @@
                 android:layout_marginTop="8dp"
                 android:checked="true"
                 android:text="ToggleButton"
-                app:layout_constraintBottom_toTopOf="@+id/abrirListaMercadorias"
+                app:layout_constraintBottom_toTopOf="@+id/add_driver_btn"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0"
                 app:layout_constraintStart_toStartOf="parent"

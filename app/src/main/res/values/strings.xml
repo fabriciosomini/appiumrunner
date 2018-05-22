@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AppiumRunner</string>
+    <string name="app_name">Aplicação de Testes - Unesc</string>
     <string name="user_name">DEFAULT_USER_NAME</string>
     <string name="add_driver_btn">+ Adicionar</string>
 
@@ -19,4 +19,5 @@
     <string name="recebeEmDinheiro">Recebe em Dinheiro</string>
     <string name="save">Salvar</string>
     <string name="cancel">Cancelar</string>
+    <string name="nenhum_item">Nenhum registro encontrado</string>
 </resources>
