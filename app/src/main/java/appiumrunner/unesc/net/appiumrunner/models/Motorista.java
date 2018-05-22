@@ -80,4 +80,9 @@ public class Motorista implements Serializable {
         ALIMENTICIA, PERIGOSA, VIVA
     }
 
+    @Override
+    public String toString() {
+        return nome == null ? "" : nome;
+    }
+
 }

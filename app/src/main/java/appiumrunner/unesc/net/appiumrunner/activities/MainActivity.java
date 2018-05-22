@@ -1,6 +1,7 @@
 package appiumrunner.unesc.net.appiumrunner.activities;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -8,11 +9,12 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Filter;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -36,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView emptyView;
     private TextView nomeEmpresa;
     private ConstraintLayout listContainer;
+    private ImageButton copyTestBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Setup setup = new Setup();
         setup.setDeviceName("adroid");
-        setup.setPlatformVersion("5.0");
+        setup.setPlatformVersion(Build.VERSION.RELEASE);
         setup.setAppiumServerAddress("http://127.0.0.1:4723/wd/hub");
         setup.setAppPath(".\\build\\outputs\\apk\\debug\\", "app-debug.apk");
 
@@ -64,28 +67,25 @@ public class MainActivity extends AppCompatActivity {
 
     private void setEventosInterface() {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
         searchEditTxt = findViewById(R.id.searchEditTxt);
         listView = findViewById(R.id.list);
         adicionarMotorista = findViewById(R.id.add_driver_btn);
         nomeEmpresa = findViewById(R.id.nome_empresa);
         listContainer = findViewById(R.id.list_container);
+        copyTestBtn = findViewById(R.id.copy_test_btn);
 
-        motoristaAdapter = new MotoristaAdapter(this, android.R.layout.simple_list_item_1, Repository.getMotoristaList());
-        listView.setAdapter(motoristaAdapter);
-        nomeEmpresa.setText(getString(R.string.company_name));
-        searchEditTxt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        copyTestBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onFocusChange(View view, boolean hasFocus) {
-                if (!hasFocus && !ignoreFocus) {
-                    String text = searchEditTxt.getText().toString();
-                    GeradorTestes.gerarTesteElemento(searchEditTxt)
-                            .focarCampo()
-                            .escreverValor(text)
-                            .reproduzirAcoes()
-                            .verificarValores();
-                }
+            public void onClick(View view) {
+                showTest();
             }
         });
+
+        motoristaAdapter = new MotoristaAdapter(this, android.R.layout.simple_list_item_1);
+        Repository.setAdapter(motoristaAdapter);
+        listView.setAdapter(motoristaAdapter);
+        nomeEmpresa.setText(getString(R.string.company_name));
 
         searchEditTxt.addTextChangedListener(new TextWatcher() {
             @Override
@@ -95,13 +95,17 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                motoristaAdapter.getFilter().filter(charSequence);
-                toggleEmptyText();
+                filter(charSequence);
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
-
+                String text = editable.toString();
+                GeradorTestes.gerarTesteElemento(searchEditTxt)
+                        .focarCampo()
+                        .escreverValor(text)
+                        .reproduzirAcoes()
+                        .verificarValores();
             }
         });
 
@@ -123,28 +127,29 @@ public class MainActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
                 Motorista motorista = (Motorista) view.getTag();
                 Intent intent = new Intent(getBaseContext(), CadastroActivity.class);
                 intent.putExtra("motorista", motorista);
                 startActivity(intent);
-            }
-        });
-        ViewTreeObserver observer = listView.getViewTreeObserver();
-        observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
 
-            @Override
-            public void onGlobalLayout() {
-                toggleEmptyText();
+                GeradorTestes.gerarTesteElemento(listView)
+                        .escolherValor(motorista.getNome())
+                        .reproduzirAcoes();
             }
         });
     }
 
-    private void toggleEmptyText() {
-        if (listView.getChildCount() == 0) {
-            showNoItemsText(true);
-        } else {
-            showNoItemsText(false);
-        }
+    private void filter(CharSequence charSequence) {
+        Filter filter = motoristaAdapter.getFilter();
+
+        filter.filter(charSequence.toString(), new Filter.FilterListener() {
+            @Override
+            public void onFilterComplete(int count) {
+                boolean noItems = count == 0;
+                showNoItemsText(noItems);
+            }
+        });
     }
 
     private void showNoItemsText(boolean show) {
@@ -165,10 +170,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         ignoreFocus = false;
-        if (motoristaAdapter != null) {
-            motoristaAdapter.notifyDataSetChanged();
-        }
 
+        filter(searchEditTxt.getText());
     }
 
     private void showTest() {
@@ -176,6 +179,9 @@ public class MainActivity extends AppCompatActivity {
         String script = GeradorTestes.getTeste();
         EstadoDispositivoUtilitario.EstadoAparelhoMovel estadoAparelhoMovel = GeradorTestes.getEstadoAparelhoMovel();
         Log.d("Teste Automatizado: \n", script);
+        //TODO: fix na aplicação que está sem id no primeiro item
+        //TODO: Adicionar verificação para elementos NULL
+        //TODO: Adicionar dialog para mostrar o test output
     }
 
 }

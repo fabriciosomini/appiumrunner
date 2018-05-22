@@ -129,7 +129,7 @@ public class AlgoritmoCriacao {
                 extendedClass = " extends " + preferencias.getExtendedClass();
             }
             String packageName = preferencias.getTestPackageName() == null ?
-                    "appiumrunner.unesc.net.appiumrunner.tests" : preferencias.getTestPackageName();
+                    "appiumrunner.unesc.net.appiumrunner" : preferencias.getTestPackageName();
             fullScript = fullScript.replace("\n", "\n\t");
             String packages = "package " + packageName + ";";
             String imports =

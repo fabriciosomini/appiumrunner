@@ -36,4 +36,6 @@ public class MotoristaAdapter extends ArrayAdapter<Motorista> {
         v.setTag(p);
         return v;
     }
+
+
 }

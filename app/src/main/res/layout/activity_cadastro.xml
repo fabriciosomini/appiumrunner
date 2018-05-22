@@ -1,20 +1,28 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:descendantFocusability="beforeDescendants"
-    android:focusableInTouchMode="true"
     android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="#ffff"
-    android:layout_height="match_parent">
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true">
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true">
+        android:layout_marginBottom="0dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="0dp"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp">
+            android:layout_height="match_parent">
 
             <TextView
                 android:id="@+id/nome_empresa"
@@ -132,9 +140,9 @@
                     android:layout_width="35dp"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
-                    android:visibility="gone"
                     android:text="0%"
                     android:textAlignment="textEnd"
+                    android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent" />
 
                 <SeekBar
@@ -165,7 +173,6 @@
                 app:layout_constraintTop_toBottomOf="@+id/tipoCarga" />
 
             <ToggleButton
-                app:layout_constraintVertical_bias="0"
                 android:id="@+id/motoristaAtivo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -175,11 +182,12 @@
                 android:layout_marginTop="8dp"
                 android:checked="true"
                 android:text="ToggleButton"
-                app:layout_constraintBottom_toTopOf="@+id/add_driver_btn"
+
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView6" />
+                app:layout_constraintTop_toBottomOf="@+id/textView6"
+                app:layout_constraintVertical_bias="0" />
 
             <TextView
                 android:id="@+id/textView6"
@@ -206,6 +214,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/cargo_type" />
+
                 <RadioButton
                     android:id="@+id/radioButton_alimenticia"
                     android:layout_width="wrap_content"
@@ -244,7 +253,8 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/guideline3"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/motoristaAtivo" />
+                app:layout_constraintTop_toBottomOf="@+id/deleteBtn"
+                app:layout_constraintVertical_bias="1" />
 
             <Button
                 android:id="@+id/cancelarBtn"
@@ -253,18 +263,36 @@
                 android:layout_marginBottom="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
                 android:text="@string/cancel"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/guideline3" />
-
+                app:layout_constraintStart_toStartOf="@+id/guideline3"
+                app:layout_constraintTop_toBottomOf="@+id/deleteBtn"
+                app:layout_constraintVertical_bias="1" />
 
             <android.support.constraint.Guideline
                 android:id="@+id/guideline3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:layout_constraintGuide_begin="207dp" />
+                android:visibility="visible"
+                app:layout_constraintGuide_percent="0.5" />
+
+            <ImageButton
+                android:id="@+id/deleteBtn"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:background="@null"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_action_delete"
+                android:tint="#000"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/motoristaAtivo" />
         </android.support.constraint.ConstraintLayout>
     </ScrollView>
 

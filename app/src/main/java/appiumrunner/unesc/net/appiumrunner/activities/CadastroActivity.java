@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
@@ -43,33 +44,21 @@ public class CadastroActivity extends AppCompatActivity {
     private CheckBox bitrem;
     private Button salvarBtn;
     private Button cancelarBtn;
-    private Motorista motoristaSerializable;
+    private Motorista motorista;
+    private ImageButton deleteBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cadastro);
         setEventosInterface();
-        registrarEstadoInicialTela();
+
     }
 
-    private void registrarEstadoInicialTela() {
-        GeradorTestes.gerarTesteElemento(nomeMotorista)
-                .desfocarCampo()
-                .limparValor()
-                .verificarValores();
-        GeradorTestes.gerarTesteElemento(cpfMotorista)
-                .desfocarCampo()
-                .limparValor()
-                .verificarValores();
-        GeradorTestes.gerarTesteElemento(estadoMotorista)
-                .desfocarCampo()
-                .escreverValor("")
-                .verificarValores();
-    }
 
     private void setEventosInterface() {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
         nomeEmpresa = findViewById(R.id.nome_empresa);
         nomeMotorista = findViewById(R.id.nomeMotorista);
         cpfMotorista = findViewById(R.id.cpfMotorista);
@@ -83,17 +72,43 @@ public class CadastroActivity extends AppCompatActivity {
         salvarBtn = findViewById(R.id.salvarBtn);
         cancelarBtn = findViewById(R.id.cancelarBtn);
         estadoMotorista.setAdapter(getEstadoAdapter());
+        deleteBtn = findViewById(R.id.deleteBtn);
         Intent intent = getIntent();
-        motoristaSerializable = (Motorista) intent.getSerializableExtra("motorista");
-        if (motoristaSerializable != null) {
-            nomeMotorista.setText(motoristaSerializable.getNome());
-            cpfMotorista.setText(motoristaSerializable.getCpf());
-            estadoMotorista.setSelection(getEstadoIndex(motoristaSerializable.getEstado()));
-            volumeCarga.setProgress(motoristaSerializable.getVolumeCarga());
-            tipoCarga.check(getTipoCargaId(motoristaSerializable.getTipoCarga()));
-            bitrem.setChecked(motoristaSerializable.isBitrem());
-            motoristaAtivo.setChecked(motoristaSerializable.isAtivo());
+        motorista = (Motorista) intent.getSerializableExtra("motorista");
+        if (motorista != null) {
+            nomeMotorista.setText(motorista.getNome());
+            cpfMotorista.setText(motorista.getCpf());
+            estadoMotorista.setSelection(getEstadoIndex(motorista.getEstado()));
+            volumeCarga.setProgress(motorista.getVolumeCarga());
+            tipoCarga.check(getTipoCargaId(motorista.getTipoCarga()));
+            bitrem.setChecked(motorista.isBitrem());
+            motoristaAtivo.setChecked(motorista.isAtivo());
         }
+
+        motorista = motorista == null ? new Motorista() : motorista;
+
+
+        if (motorista.getNome() != null) {
+            GeradorTestes.gerarTesteElemento(nomeMotorista)
+                    .desfocarCampo()
+                    .lerValor(motorista.getNome())
+                    .verificarValores();
+        } else {
+            GeradorTestes.gerarTesteElemento(nomeMotorista)
+                    .desfocarCampo()
+                    .limparValor()
+                    .verificarValores();
+        }
+
+
+        /*GeradorTestes.gerarTesteElemento(cpfMotorista)
+                .desfocarCampo()
+                .limparValor()
+                .verificarValores();
+        GeradorTestes.gerarTesteElemento(estadoMotorista)
+                .desfocarCampo()
+                .escreverValor("")
+                .verificarValores();*/
 
         nomeMotorista.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -187,6 +202,7 @@ public class CadastroActivity extends AppCompatActivity {
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
                 RadioButton radioButton = findViewById(radioGroup.getCheckedRadioButtonId());
                 GeradorTestes.gerarTesteElemento(radioButton)
+                        .rolarAteCampo()
                         .marcarOpcao()
                         .reproduzirAcoes()
                         .verificarValores();
@@ -218,7 +234,7 @@ public class CadastroActivity extends AppCompatActivity {
         salvarBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Motorista motorista = motoristaSerializable == null ? new Motorista() : motoristaSerializable;
+
                 String nomeMotoristaValor = nomeMotorista.getText().toString();
                 String cpfMotoristaValor = cpfMotorista.getText().toString();
                 String estadoOrigemValor = estadoMotorista.getSelectedItem().toString();
@@ -254,6 +270,7 @@ public class CadastroActivity extends AppCompatActivity {
                 motorista.setAtivo(ativo);
 
                 GeradorTestes.gerarTesteElemento(salvarBtn)
+                        .rolarAteCampo()
                         .clicarCampo()
                         .reproduzirAcoes();
 
@@ -268,12 +285,28 @@ public class CadastroActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 GeradorTestes.gerarTesteElemento(cancelarBtn)
+                        .rolarAteCampo()
                         .clicarCampo()
                         .reproduzirAcoes();
 
                 finish();
             }
         });
+
+        if (motorista.getCodigo() > 0) {
+            deleteBtn.setVisibility(View.VISIBLE);
+            deleteBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    GeradorTestes.gerarTesteElemento(deleteBtn)
+                            .rolarAteCampo()
+                            .clicarCampo()
+                            .reproduzirAcoes();
+                    Repository.remove(motorista);
+                    finish();
+                }
+            });
+        }
 
     }
 
