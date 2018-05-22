@@ -182,6 +182,7 @@ public class MainActivity extends AppCompatActivity {
         //TODO: fix na aplicação que está sem id no primeiro item
         //TODO: Adicionar verificação para elementos NULL
         //TODO: Adicionar dialog para mostrar o test output
+        //TODO: voltar a gerar teste no sair do foco do searchedittext
     }
 
 }
