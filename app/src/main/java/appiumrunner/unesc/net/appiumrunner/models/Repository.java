@@ -56,4 +56,14 @@ public class Repository {
     public static List<Motorista> getMotoristaList() {
         return motoristaList;
     }
+
+    public static boolean contains(Motorista motorista) {
+        for (Motorista m :
+                motoristaList) {
+            if (m.getCodigo() == motorista.getCodigo()) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

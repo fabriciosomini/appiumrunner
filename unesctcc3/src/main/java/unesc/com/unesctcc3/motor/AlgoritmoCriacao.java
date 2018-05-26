@@ -226,6 +226,7 @@ public class AlgoritmoCriacao {
                 StringBuilder estadoSelecao = (StringBuilder) UtilitarioMetodos.invocarMetodo(atividade, "getEstadoSelecao");
                 Atividade.Foco estadoFoco = (Atividade.Foco) UtilitarioMetodos.invocarMetodo(atividade, "getEstadoFoco");
                 Atividade.Foco estadoDesfoque = (Atividade.Foco) UtilitarioMetodos.invocarMetodo(atividade, "getEstadoDesfoque");
+                Atividade.Visibilidade estadoVisibilidade = (Atividade.Visibilidade) UtilitarioMetodos.invocarMetodo(atividade, "getEstadoVisibilidade");
                 Integer estadoProgresso = (Integer) UtilitarioMetodos.invocarMetodo(atividade, "getEstadoProgresso");
                 List<Atividade.TipoAcao> passos = (List<Atividade.TipoAcao>) UtilitarioMetodos.invocarMetodo(atividade, "getAcoes");
                 String findElementByIdCall = methodBuilder.getFindElementByIdMethod(elementId, elementName);
@@ -238,6 +239,7 @@ public class AlgoritmoCriacao {
                 String selecItemCall = methodBuilder.getSelectItemMethod(elementName, utils.getSafeString(estadoSelecao));
                 String checkOptionCall = methodBuilder.getCheckMethod(elementName, estadoMarcacaoOpcao);
                 String pressKeyCall = methodBuilder.getPressKeyMethod(estadoTecla);
+                String verificacaoVisibilidade = methodBuilder.getVisibilityAssertionMethod(elementName, estadoVisibilidade);
                 String verificaoSelecao = methodBuilder.getSpinnerAssertionMethod(elementName, utils.getSafeString(estadoSelecao));
                 String verificarProgresso = methodBuilder.getProgressAssertionMethod(elementName, estadoProgresso);
                 String verificacaoOpcaoMarcada = estadoMarcacaoOpcao == null ? methodBuilder.getCheckAsssertionMethod(elementName, Atividade.Marcacao.MARCADO) :
@@ -356,6 +358,10 @@ public class AlgoritmoCriacao {
                             case MARCAR_OPCAO_DESMARCAVEL:
                                 scriptAcoes = checkOptionCall;
                                 scriptCompleto += utils.construirComandoEmOrdem(tipoOrdem, scriptAcoes, verificacaoOpcaoMarcada);
+                                break;
+                            case VISUALIZAR:
+                                scriptCompleto += utils.construirComandoEmOrdem(tipoOrdem, scriptAcoes, verificacaoVisibilidade);
+                                break;
                         }
                     }
                 }
@@ -396,7 +402,7 @@ public class AlgoritmoCriacao {
 
         private String getSelectItemMethod(String elementName, String estadoSelecao) {
             String method = getClickMethod(elementName)
-                    + "\n" + "getElementUsingTextAndScroll(" + "\"" + estadoSelecao + "\").click();";
+                    + "\n" + "getElementUsingTextAndScrollTo(" + "\"" + estadoSelecao + "\").click();";
             return method;
         }
 
@@ -439,7 +445,7 @@ public class AlgoritmoCriacao {
 
         private String getElementUsingTextAndScrollMethodDefinition() {
             String method =
-                    "\n\n" + "public AndroidElement getElementUsingTextAndScroll(String texto){"
+                    "\n\n" + "public AndroidElement getElementUsingTextAndScrollTo(String texto){"
                             + "\n\t" + "return driver.findElementByAndroidUIAutomator(\"new UiScrollable(new UiSelector().scrollable(true).instance(0)).scrollIntoView(new UiSelector().textContains(" + "\\" + "\"\"+texto+\"\\" + "\"" + ").instance(0))\");"
                             + "\n" + "}";
             return method;
@@ -447,8 +453,8 @@ public class AlgoritmoCriacao {
 
         private String getElementByIdAndScrollToMethodDefinition() {
             String method =
-                    "\n\n" + "public AndroidElement getElementByIdAndScrollTo(String texto){"
-                            + "\n\t" + "return driver.findElementByAndroidUIAutomator(\"new UiScrollable(new UiSelector().scrollable(true).instance(0)).scrollIntoView(new UiSelector().resourceIdMatches(" + "\\" + "\".*\"+texto+\"\\" + "\"" + ").instance(0))\");"
+                    "\n\n" + "public AndroidElement getElementByIdAndScrollTo(String id){"
+                            + "\n\t" + "return driver.findElementByAndroidUIAutomator(\"new UiScrollable(new UiSelector().scrollable(true).instance(0)).scrollIntoView(new UiSelector().resourceIdMatches(" + "\\" + "\".*\"+id+\"\\" + "\"" + ").instance(0))\");"
                             + "\n" + "}";
             return method;
         }
@@ -550,6 +556,17 @@ public class AlgoritmoCriacao {
 
         public String getFocusElementMethod(String elementName) {
             String method = "\nif(!" + getElementHasFocusMethod(elementName) + "){\n" + "\t" + elementName + ".click();\n}";
+            return method;
+        }
+
+        public String getVisibilityMethod(String elementName) {
+            String method = "\n" + elementName + ".isDisplayed();";
+            return method;
+        }
+
+        public String getVisibilityAssertionMethod(String elementName, Atividade.Visibilidade visibilidade) {
+            boolean visible = visibilidade == Atividade.Visibilidade.VISIVEL;
+            String method = "\n" + "Assert.assertEquals(" + visible + ", " + elementName + ".isDisplayed());";
             return method;
         }
     }

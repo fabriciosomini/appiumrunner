@@ -1,7 +1,6 @@
 package unesc.com.unesctcc3.modelos;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import unesc.com.unesctcc3.motor.AlgoritmoRegistro;
@@ -23,6 +22,7 @@ public class Atividade extends AcaoFinal {
     private Foco estadoDesfoque;
     private StringBuilder estadoTextoLimpo;
     private StringBuilder estadoLeitura;
+    private Visibilidade estadoVisibilidade;
 
     public Atividade(AlgoritmoRegistro algoritmoRegistro) {
         super(algoritmoRegistro);
@@ -101,7 +101,9 @@ public class Atividade extends AcaoFinal {
         return this;
     }
 
-    public Atividade selecionarData(Calendar estadoData) {
+    public Atividade visibilidade(Visibilidade estadoVisibilidade) {
+        this.estadoVisibilidade = estadoVisibilidade;
+        acoes.add(TipoAcao.VISUALIZAR);
         return this;
     }
 
@@ -155,6 +157,10 @@ public class Atividade extends AcaoFinal {
         return estadoLeitura;
     }
 
+    private Visibilidade getEstadoVisibilidade() {
+        return estadoVisibilidade;
+    }
+
     public enum Verificao {
         FINAL_ESTADO,
         POR_PROPRIEDADE
@@ -180,7 +186,7 @@ public class Atividade extends AcaoFinal {
         SELECIONAR,
         DESFOCAR,
         LIMPAR,
-        LER
+        VISUALIZAR, LER
     }
 
     public enum Marcacao {
@@ -189,4 +195,9 @@ public class Atividade extends AcaoFinal {
     }
 
     public enum Tecla {ENTER, VOLTAR}
+
+    public enum Visibilidade {
+        VISIVEL,
+        OCULTO
+    }
 }

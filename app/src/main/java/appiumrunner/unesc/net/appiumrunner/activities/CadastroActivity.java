@@ -283,7 +283,7 @@ public class CadastroActivity extends AppCompatActivity {
             }
         });
 
-        if (motorista.getCodigo() > 0) {
+        if (Repository.contains(motorista)) {
             deleteBtn.setVisibility(View.VISIBLE);
             deleteBtn.setOnClickListener(new View.OnClickListener() {
                 @Override

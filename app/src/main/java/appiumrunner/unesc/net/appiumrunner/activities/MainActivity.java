@@ -39,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView nomeEmpresa;
     private ConstraintLayout listContainer;
     private ImageButton copyTestBtn;
+    private TextView emptyText;
+    private boolean noItems;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,31 +57,28 @@ public class MainActivity extends AppCompatActivity {
         GeradorTestes.init(algoritmoRegistro);
 
         setEventosInterface();
-        registrarEstadoInicialTela();
-    }
-
-    private void registrarEstadoInicialTela() {
-        GeradorTestes.gerarTesteElemento(searchEditTxt)
-                .escreverValor(getString(R.string.hint_search))
-                .desfocarCampo()
-                .verificarValores();
     }
 
     private void setEventosInterface() {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
         searchEditTxt = findViewById(R.id.searchEditTxt);
+        emptyText = findViewById(R.id.empty_text);
         listView = findViewById(R.id.list);
         adicionarMotorista = findViewById(R.id.add_driver_btn);
         nomeEmpresa = findViewById(R.id.nome_empresa);
         listContainer = findViewById(R.id.list_container);
         copyTestBtn = findViewById(R.id.copy_test_btn);
+        adicionarMotorista.setFocusable(true);
+        adicionarMotorista.setFocusableInTouchMode(true);
         copyTestBtn.setFocusable(true);
         copyTestBtn.setFocusableInTouchMode(true);
         copyTestBtn.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public void onFocusChange(View view, boolean b) {
-                showTest();
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (hasFocus) {
+                    showTest();
+                }
             }
         });
 
@@ -96,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                filter(charSequence);
+                filter(true, charSequence);
             }
 
             @Override
@@ -118,27 +117,48 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
                 if (!hasFocus && !ignoreFocus) {
-                    GeradorTestes.gerarTesteElemento(searchEditTxt)
-                            .focarCampo()
-                            .escreverValor(text)
-                            .reproduzirAcoes()
-                            .verificarValores();
+
+                    if (text.isEmpty()) {
+                        GeradorTestes.gerarTesteElemento(searchEditTxt)
+                                .focarCampo()
+                                .limparValor()
+                                .verificarValores();
+                    } else {
+                        GeradorTestes.gerarTesteElemento(searchEditTxt)
+                                .focarCampo()
+                                .escreverValor(text)
+                                .reproduzirAcoes()
+                                .verificarValores();
+                    }
+
+
+                    if (noItems) {
+                        GeradorTestes.gerarTesteElemento(emptyText)
+                                .visibilidade(Atividade.Visibilidade.VISIVEL)
+                                .verificarValores();
+                    } else {
+                        GeradorTestes.gerarTesteElemento(emptyText)
+                                .visibilidade(Atividade.Visibilidade.OCULTO)
+                                .verificarValores();
+                    }
                 }
             }
         });
 
-        adicionarMotorista.setOnClickListener(new View.OnClickListener() {
+        adicionarMotorista.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public void onClick(View view) {
-                //Altera o foco para o botão, solucionando o problema de não disparar o evento onFocusChange
-                ignoreFocus = true;
-                adicionarMotorista.requestFocusFromTouch();
-                GeradorTestes.gerarTesteElemento(adicionarMotorista)
-                        .rolarAteCampo()
-                        .clicarCampo()
-                        .reproduzirAcoes();
-                Intent intent = new Intent(getBaseContext(), CadastroActivity.class);
-                startActivity(intent);
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (hasFocus) {
+                    //Altera o foco para o botão, solucionando o problema de não disparar o evento onFocusChange
+                    ignoreFocus = true;
+                    adicionarMotorista.requestFocusFromTouch();
+                    GeradorTestes.gerarTesteElemento(adicionarMotorista)
+                            .rolarAteCampo()
+                            .clicarCampo()
+                            .reproduzirAcoes();
+                    Intent intent = new Intent(getBaseContext(), CadastroActivity.class);
+                    startActivity(intent);
+                }
             }
         });
 
@@ -158,14 +178,26 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void filter(CharSequence charSequence) {
+    private void filter(final boolean isResume, CharSequence charSequence) {
         Filter filter = motoristaAdapter.getFilter();
 
         filter.filter(charSequence.toString(), new Filter.FilterListener() {
             @Override
             public void onFilterComplete(int count) {
-                boolean noItems = count == 0;
+                noItems = count == 0;
                 showNoItemsText(noItems);
+
+                if (isResume && !searchEditTxt.getText().toString().isEmpty()) {
+                    if (noItems) {
+                        GeradorTestes.gerarTesteElemento(emptyText)
+                                .visibilidade(Atividade.Visibilidade.VISIVEL)
+                                .verificarValores();
+                    } else {
+                        GeradorTestes.gerarTesteElemento(emptyText)
+                                .visibilidade(Atividade.Visibilidade.OCULTO)
+                                .verificarValores();
+                    }
+                }
             }
         });
     }
@@ -173,8 +205,10 @@ public class MainActivity extends AppCompatActivity {
     private void showNoItemsText(boolean show) {
         if (show) {
             listContainer.setVisibility(View.VISIBLE);
+            emptyText.setVisibility(View.VISIBLE);
         } else {
             listContainer.setVisibility(View.GONE);
+            emptyText.setVisibility(View.GONE);
         }
     }
 
@@ -189,7 +223,8 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         ignoreFocus = false;
 
-        filter(searchEditTxt.getText());
+        filter(true, searchEditTxt.getText());
+
     }
 
     private void showTest() {
