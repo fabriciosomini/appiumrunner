@@ -100,12 +100,29 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                String text = editable.toString();
-                GeradorTestes.gerarTesteElemento(searchEditTxt)
-                        .focarCampo()
-                        .escreverValor(text)
-                        .reproduzirAcoes()
-                        .verificarValores();
+
+            }
+        });
+
+        searchEditTxt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                String text = searchEditTxt.getText().toString();
+
+                if (hasFocus && !ignoreFocus) {
+                    if (!text.isEmpty()) {
+                        GeradorTestes.gerarTesteElemento(searchEditTxt)
+                                .limparValor()
+                                .reproduzirAcoes();
+                    }
+                }
+                if (!hasFocus && !ignoreFocus) {
+                    GeradorTestes.gerarTesteElemento(searchEditTxt)
+                            .focarCampo()
+                            .escreverValor(text)
+                            .reproduzirAcoes()
+                            .verificarValores();
+                }
             }
         });
 
@@ -182,7 +199,6 @@ public class MainActivity extends AppCompatActivity {
         //TODO: fix na aplicação que está sem id no primeiro item
         //TODO: Adicionar verificação para elementos NULL
         //TODO: Adicionar dialog para mostrar o test output
-        //TODO: voltar a gerar teste no sair do foco do searchedittext
     }
 
 }

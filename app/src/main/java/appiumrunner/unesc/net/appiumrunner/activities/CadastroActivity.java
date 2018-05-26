@@ -100,16 +100,6 @@ public class CadastroActivity extends AppCompatActivity {
                     .verificarValores();
         }
 
-
-        /*GeradorTestes.gerarTesteElemento(cpfMotorista)
-                .desfocarCampo()
-                .limparValor()
-                .verificarValores();
-        GeradorTestes.gerarTesteElemento(estadoMotorista)
-                .desfocarCampo()
-                .escreverValor("")
-                .verificarValores();*/
-
         nomeMotorista.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
