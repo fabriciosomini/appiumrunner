@@ -74,10 +74,11 @@ public class MainActivity extends AppCompatActivity {
         nomeEmpresa = findViewById(R.id.nome_empresa);
         listContainer = findViewById(R.id.list_container);
         copyTestBtn = findViewById(R.id.copy_test_btn);
-
-        copyTestBtn.setOnClickListener(new View.OnClickListener() {
+        copyTestBtn.setFocusable(true);
+        copyTestBtn.setFocusableInTouchMode(true);
+        copyTestBtn.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public void onClick(View view) {
+            public void onFocusChange(View view, boolean b) {
                 showTest();
             }
         });
@@ -197,7 +198,6 @@ public class MainActivity extends AppCompatActivity {
         EstadoDispositivoUtilitario.EstadoAparelhoMovel estadoAparelhoMovel = GeradorTestes.getEstadoAparelhoMovel();
         Log.d("Teste Automatizado: \n", script);
         //TODO: fix na aplicação que está sem id no primeiro item
-        //TODO: Adicionar verificação para elementos NULL
         //TODO: Adicionar dialog para mostrar o test output
     }
 

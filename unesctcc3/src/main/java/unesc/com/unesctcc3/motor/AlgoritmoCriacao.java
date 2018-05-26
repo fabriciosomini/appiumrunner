@@ -62,9 +62,11 @@ public class AlgoritmoCriacao {
 
     private class ScriptBuilder {
         private final MethodBuilder methodBuilder;
+        private String glogalVariablesScript;
 
         public ScriptBuilder() {
             methodBuilder = new MethodBuilder();
+            glogalVariablesScript = "";
         }
 
         private String criarScript() {
@@ -131,6 +133,11 @@ public class AlgoritmoCriacao {
             String packageName = preferencias.getTestPackageName() == null ?
                     "appiumrunner.unesc.net.appiumrunner" : preferencias.getTestPackageName();
             fullScript = fullScript.replace("\n", "\n\t");
+
+            if (!glogalVariablesScript.isEmpty()) {
+                glogalVariablesScript = "\n" + glogalVariablesScript;
+            }
+
             String packages = "package " + packageName + ";";
             String imports =
                     "\n" + "import org.junit.After;"
@@ -139,20 +146,25 @@ public class AlgoritmoCriacao {
                             + "\n" + "import org.junit.Test;"
                             + "\n" + "import org.openqa.selenium.By;"
                             + "\n" + "import org.openqa.selenium.remote.DesiredCapabilities;"
+                            + "\n" + "import org.openqa.selenium.support.PageFactory;"
                             + "\n" + "import java.io.File;"
                             + "\n" + "import java.net.MalformedURLException;"
                             + "\n" + "import java.net.URL;"
+                            + "\n" + "import java.time.Duration;"
                             + "\n" + "import java.util.concurrent.TimeUnit;"
                             + "\n" + "import io.appium.java_client.TouchAction;"
                             + "\n" + "import io.appium.java_client.android.AndroidDriver;"
                             + "\n" + "import io.appium.java_client.android.AndroidElement;"
                             + "\n" + "import io.appium.java_client.android.AndroidKeyCode;"
+                            + "\n" + "import io.appium.java_client.pagefactory.AndroidFindBy;"
+                            + "\n" + "import io.appium.java_client.pagefactory.AppiumFieldDecorator;"
                             + "\n" + "import io.appium.java_client.remote.MobileCapabilityType;"
                             + "\n" + "import io.appium.java_client.touch.offset.PointOption;"
                             + addedImports;
             String classe =
                     "\n\n" + "public class " + nomeTeste + extendedClass + " {"
                             + "\n\t" + "private AndroidDriver<AndroidElement> driver = null;"
+                            + glogalVariablesScript
                             + fullScript
                             + "\n" + "}";
             return packages + imports + classe;
@@ -194,6 +206,7 @@ public class AlgoritmoCriacao {
                                 + "\n\t\t" + "e.printStackTrace();"
                                 + "\n\t" + "}"
                                 + "\n\t" + "driver.manage().timeouts().implicitlyWait(15, TimeUnit.SECONDS);"
+                                + "\n\t" + "PageFactory.initElements(new AppiumFieldDecorator(driver, Duration.ofSeconds(15)), this);"
                                 + "\n" + "}";
             }
             return fullScript;
@@ -219,7 +232,7 @@ public class AlgoritmoCriacao {
                 String clickCall = methodBuilder.getClickMethod(elementName);
                 String focusCall = methodBuilder.getFocusElementMethod(elementName);
                 String clearCall = methodBuilder.getClearMethod(elementName);
-                String sendKeysCall = methodBuilder.getSendKeysMethod(elementName, utils.getSafeString(estadoTexto));
+                String setValueCall = methodBuilder.getSetValueMethod(elementName, utils.getSafeString(estadoTexto));
                 String scrollToCall = methodBuilder.getScrollToMethodById(elementId);
                 String progressCall = methodBuilder.getProgressMethod(elementName, estadoProgresso);
                 String selecItemCall = methodBuilder.getSelectItemMethod(elementName, utils.getSafeString(estadoSelecao));
@@ -229,10 +242,18 @@ public class AlgoritmoCriacao {
                 String verificarProgresso = methodBuilder.getProgressAssertionMethod(elementName, estadoProgresso);
                 String verificacaoOpcaoMarcada = estadoMarcacaoOpcao == null ? methodBuilder.getCheckAsssertionMethod(elementName, Atividade.Marcacao.MARCADO) :
                         methodBuilder.getCheckAsssertionMethod(elementName, estadoMarcacaoOpcao);
-                if (passos.contains(Atividade.TipoAcao.FOCAR) && passos.contains(Atividade.TipoAcao.VERIFICAR)
+                if (passos.contains(Atividade.TipoAcao.FOCAR)
+                        && passos.contains(Atividade.TipoAcao.VERIFICAR)
                         && estadoFoco != null && estadoFoco != Atividade.Foco.IGNORAR) {
                     utils.addExtraMethod(TipoExtraMethods.ISFOCUSED);
                 }
+
+                if (passos.contains(Atividade.TipoAcao.DESFOCAR)
+                        && passos.contains(Atividade.TipoAcao.VERIFICAR)
+                        && estadoDesfoque != null && estadoDesfoque != Atividade.Foco.IGNORAR) {
+                    utils.addExtraMethod(TipoExtraMethods.ISFOCUSED);
+                }
+
                 //Marcar opção desmarcável usa o método isOptionChecked na ação e na asserção, então adicione
                 if (passos.contains(Atividade.TipoAcao.MARCAR_OPCAO_DESMARCAVEL)) {
                     utils.addExtraMethod(TipoExtraMethods.ISCHECKED);
@@ -248,11 +269,12 @@ public class AlgoritmoCriacao {
                     scriptCompleto += scrollToCall;
                     utils.addExtraMethod(TipoExtraMethods.SCROLL);
                 }
-                if (passos.contains(Atividade.TipoAcao.MARCAR_OPCAO)) {
+                if (passos.contains(Atividade.TipoAcao.MARCAR_OPCAO) ||
+                        passos.contains(Atividade.TipoAcao.MARCAR_OPCAO_DESMARCAVEL)) {
                     utils.addExtraMethod(TipoExtraMethods.CHECK);
                 }
-                if (elementName != null && !scriptCompleto.contains(findElementByIdCall)) {
-                    scriptCompleto += findElementByIdCall;
+                if (elementName != null && !glogalVariablesScript.contains(findElementByIdCall)) {
+                    glogalVariablesScript += findElementByIdCall;
                 }
                 TipoOrdem tipoOrdem = utils.getOrdem(passos);
                 for (Atividade.TipoAcao acao :
@@ -303,7 +325,7 @@ public class AlgoritmoCriacao {
                             case ESCREVER:
                                 if (estadoTexto != null) {
                                     if (!estadoTexto.toString().isEmpty()) {
-                                        scriptAcoes = sendKeysCall;
+                                        scriptAcoes = setValueCall;
                                     }
                                 }
                                 scriptCompleto += utils.construirComandoEmOrdem(tipoOrdem, scriptAcoes, verificaoTexto);
@@ -378,8 +400,8 @@ public class AlgoritmoCriacao {
             return method;
         }
 
-        private String getSendKeysMethod(String elementName, String estadoTexto) {
-            String method = "\n" + elementName + ".sendKeys(\"" + estadoTexto + "\");";
+        private String getSetValueMethod(String elementName, String estadoTexto) {
+            String method = "\n" + elementName + ".setValue(\"" + estadoTexto + "\");";
             return method;
         }
 
@@ -404,12 +426,9 @@ public class AlgoritmoCriacao {
         }
 
         private String getFindElementByIdMethod(String elementId, String variableName) {
-            String method = "\n" + "AndroidElement " + variableName + " = driver.findElement(By.id(\"" + elementId + "\"));";
-            return method;
-        }
-
-        private String getFindElementByNameMethod(String elementName, String variableName) {
-            String method = "\n" + "AndroidElement " + variableName + " = driver.findElement(By.name(\"" + elementName + "\"));";
+            String method = "\n" + "@AndroidFindBy(id = \"" + elementId + "\")"
+                    + "\n" + "AndroidElement " + variableName + ";"
+                    + "\n";
             return method;
         }
 
@@ -495,7 +514,7 @@ public class AlgoritmoCriacao {
 
         public String getCheckMethod(String elementName, Atividade.Marcacao marcacao) {
             boolean marcar = marcacao == Atividade.Marcacao.MARCADO;
-            String method = "checkOption( " + elementName + ", " + marcar + ");";
+            String method = "\n" + "checkOption( " + elementName + ", " + marcar + ");";
             return method;
         }
 

@@ -169,7 +169,18 @@ public class Atividade extends AcaoFinal {
     public enum TipoAcao {
         FOCAR,
         ESCREVER,
-        VERIFICAR, REPRODUZIR, ROLAR, CLICAR, PROGREDIR, MARCAR_OPCAO, MARCAR_OPCAO_DESMARCAVEL, PRESSIONAR, SELECIONAR, DESFOCAR, LIMPAR, LER
+        VERIFICAR,
+        REPRODUZIR,
+        ROLAR,
+        CLICAR,
+        PROGREDIR,
+        MARCAR_OPCAO,
+        MARCAR_OPCAO_DESMARCAVEL,
+        PRESSIONAR,
+        SELECIONAR,
+        DESFOCAR,
+        LIMPAR,
+        LER
     }
 
     public enum Marcacao {
