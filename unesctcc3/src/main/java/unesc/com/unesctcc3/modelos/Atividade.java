@@ -23,6 +23,7 @@ public class Atividade extends AcaoFinal {
     private StringBuilder estadoTextoLimpo;
     private StringBuilder estadoLeitura;
     private Visibilidade estadoVisibilidade;
+    private StringBuilder estadoSelecaoLista;
 
     public Atividade(AlgoritmoRegistro algoritmoRegistro) {
         super(algoritmoRegistro);
@@ -31,9 +32,15 @@ public class Atividade extends AcaoFinal {
         atividade = this;
     }
 
-    public Atividade escolherValor(String estadoSelecao) {
+    public Atividade selecionarOpcao(String estadoSelecao) {
         this.estadoSelecao = estadoSelecao == null ? null : new StringBuilder(estadoSelecao);
-        acoes.add(TipoAcao.SELECIONAR);
+        acoes.add(TipoAcao.SELECIONAR_COMBO);
+        return this;
+    }
+
+    public Atividade clicarItem(String estadoSelecaoLista) {
+        this.estadoSelecaoLista = estadoSelecaoLista == null ? null : new StringBuilder(estadoSelecaoLista);
+        acoes.add(TipoAcao.SELECIONAR_LISTA);
         return this;
     }
 
@@ -120,6 +127,11 @@ public class Atividade extends AcaoFinal {
         return estadoSelecao;
     }
 
+
+    private StringBuilder getEstadoSelecaoLista() {
+        return estadoSelecaoLista;
+    }
+
     private Foco getEstadoFoco() {
         return estadoFoco;
     }
@@ -183,10 +195,10 @@ public class Atividade extends AcaoFinal {
         MARCAR_OPCAO,
         MARCAR_OPCAO_DESMARCAVEL,
         PRESSIONAR,
-        SELECIONAR,
+        SELECIONAR_COMBO,
         DESFOCAR,
         LIMPAR,
-        VISUALIZAR, LER
+        VISUALIZAR, SELECIONAR_LISTA, LER
     }
 
     public enum Marcacao {

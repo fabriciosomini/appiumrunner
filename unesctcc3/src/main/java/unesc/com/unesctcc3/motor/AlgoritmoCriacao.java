@@ -57,7 +57,7 @@ public class AlgoritmoCriacao {
     }
 
     private enum TipoExtraMethods {
-        SELECT, SCROLL, ISFOCUSED, GET_CHILD_TEXT, CHECK, ISCHECKED, PRESSKEY, ISDISPLAYED, PROGRESS
+        SELECT, SCROLL, ISFOCUSED, GET_CHILD_TEXT, CHECK, ISCHECKED, PRESSKEY, ISDISPLAYED, SELECT_LIST_ITEM, PROGRESS
     }
 
     private class ScriptBuilder {
@@ -95,6 +95,9 @@ public class AlgoritmoCriacao {
                         break;
                     case SELECT:
                         scriptMetodosExtras += methodBuilder.getElementUsingTextAndScrollMethodDefinition();
+                        break;
+                    case SELECT_LIST_ITEM:
+                        scriptMetodosExtras += methodBuilder.getElementUsingParentIdAndTextAndScrollMethodDefinition();
                         break;
                     case SCROLL:
                         scriptMetodosExtras += methodBuilder.getElementByIdAndScrollToMethodDefinition();
@@ -227,6 +230,7 @@ public class AlgoritmoCriacao {
                 StringBuilder estadoTextoLimpo = (StringBuilder) UtilitarioMetodos.invocarMetodo(atividade, "getEstadoTextoLimpo");
                 StringBuilder estadoLeitura = (StringBuilder) UtilitarioMetodos.invocarMetodo(atividade, "getEstadoLeitura");
                 StringBuilder estadoSelecao = (StringBuilder) UtilitarioMetodos.invocarMetodo(atividade, "getEstadoSelecao");
+                StringBuilder estadoSelecaoLista = (StringBuilder) UtilitarioMetodos.invocarMetodo(atividade, "getEstadoSelecaoLista");
                 Atividade.Foco estadoFoco = (Atividade.Foco) UtilitarioMetodos.invocarMetodo(atividade, "getEstadoFoco");
                 Atividade.Foco estadoDesfoque = (Atividade.Foco) UtilitarioMetodos.invocarMetodo(atividade, "getEstadoDesfoque");
                 Atividade.Visibilidade estadoVisibilidade = (Atividade.Visibilidade) UtilitarioMetodos.invocarMetodo(atividade, "getEstadoVisibilidade");
@@ -239,11 +243,13 @@ public class AlgoritmoCriacao {
                 String setValueCall = methodBuilder.getSetValueMethod(elementName, utils.getSafeString(estadoTexto));
                 String scrollToCall = methodBuilder.getScrollToMethodById(elementId);
                 String progressCall = methodBuilder.getProgressMethod(elementName, estadoProgresso);
-                String selecItemCall = methodBuilder.getSelectItemMethod(elementName, utils.getSafeString(estadoSelecao));
+                String selectItemCall = methodBuilder.getElementUsingTextAndScrollToItemMethod(elementName, utils.getSafeString(estadoSelecao));
+                String pickListItemCall = methodBuilder.getElementUsingParentIdAndTextAndScrollMethod(elementName, utils.getSafeString(estadoSelecaoLista));
                 String checkOptionCall = methodBuilder.getCheckMethod(elementName, estadoMarcacaoOpcao);
                 String pressKeyCall = methodBuilder.getPressKeyMethod(estadoTecla);
                 String verificacaoVisibilidade = methodBuilder.getVisibilityAssertionMethod(elementName, estadoVisibilidade);
                 String verificaoSelecao = methodBuilder.getSpinnerAssertionMethod(elementName, utils.getSafeString(estadoSelecao));
+                String verificaoSelecaoLista = ""; //TODO
                 String verificarProgresso = methodBuilder.getProgressAssertionMethod(elementName, estadoProgresso);
                 String verificacaoOpcaoMarcada = estadoMarcacaoOpcao == null ? methodBuilder.getCheckAsssertionMethod(elementName, Atividade.Marcacao.MARCADO) :
                         methodBuilder.getCheckAsssertionMethod(elementName, estadoMarcacaoOpcao);
@@ -267,7 +273,9 @@ public class AlgoritmoCriacao {
                 if (passos.contains(Atividade.TipoAcao.MARCAR_OPCAO) && passos.contains(Atividade.TipoAcao.VERIFICAR)) {
                     utils.addExtraMethod(TipoExtraMethods.ISCHECKED);
                 }
-                if (passos.contains(Atividade.TipoAcao.SELECIONAR) && estadoSelecao != null) {
+                if (passos.contains(Atividade.TipoAcao.SELECIONAR_COMBO)
+                        && passos.contains(Atividade.TipoAcao.VERIFICAR)
+                        && estadoSelecao != null) {
                     utils.addExtraMethod(TipoExtraMethods.GET_CHILD_TEXT);
                 }
                 if (passos.contains(Atividade.TipoAcao.ROLAR)) {
@@ -342,12 +350,19 @@ public class AlgoritmoCriacao {
                             case LER:
                                 scriptCompleto += utils.construirComandoEmOrdem(tipoOrdem, scriptAcoes, verificaoTexto);
                                 break;
-                            case SELECIONAR:
+                            case SELECIONAR_COMBO:
                                 if (estadoSelecao != null) {
-                                    scriptAcoes = selecItemCall;
+                                    scriptAcoes = selectItemCall;
                                     utils.addExtraMethod(TipoExtraMethods.SELECT);
                                 }
                                 scriptCompleto += utils.construirComandoEmOrdem(tipoOrdem, scriptAcoes, verificaoSelecao);
+                                break;
+                            case SELECIONAR_LISTA:
+                                if (estadoSelecaoLista != null) {
+                                    scriptAcoes = pickListItemCall;
+                                    utils.addExtraMethod(TipoExtraMethods.SELECT_LIST_ITEM);
+                                }
+                                scriptCompleto += utils.construirComandoEmOrdem(tipoOrdem, scriptAcoes, verificaoSelecaoLista);
                                 break;
                             case PROGREDIR:
                                 scriptAcoes = progressCall;
@@ -404,9 +419,14 @@ public class AlgoritmoCriacao {
             return "elementHasFocus(" + elementName + ")";
         }
 
-        private String getSelectItemMethod(String elementName, String estadoSelecao) {
+        private String getElementUsingTextAndScrollToItemMethod(String elementName, String estadoSelecao) {
             String method = getClickMethod(elementName)
-                    + "\n" + "getElementUsingTextAndScrollTo(" + elementName + ", \"" + estadoSelecao + "\").click();";
+                    + "\n" + "getElementUsingTextAndScrollTo(\"" + estadoSelecao + "\").click();";
+            return method;
+        }
+
+        private String getElementUsingParentIdAndTextAndScrollMethod(String elementName, String estadoSelecao) {
+            String method = "\n" + "getElementUsingParentIdAndTextAndScrollTo(\"" + elementName + "\", \"" + estadoSelecao + "\").click();";
             return method;
         }
 
@@ -447,10 +467,18 @@ public class AlgoritmoCriacao {
             return method;
         }
 
+        private String getElementUsingParentIdAndTextAndScrollMethodDefinition() {
+            String method =
+                    "\n\n" + "public AndroidElement getElementUsingParentIdAndTextAndScrollTo(String id, String texto){"
+                            + "\n\t" + "return driver.findElementByAndroidUIAutomator(\"new UiScrollable(new UiSelector().scrollable(true).instance(0)).scrollIntoView(new UiSelector().resourceIdMatches(" + "\\" + "\".*\"+id+\"\\" + "\"" + ").childSelector(new UiSelector().textContains(" + "\\" + "\"\"+texto+\"\\" + "\"" + ").instance(0)))\");"
+                            + "\n" + "}";
+            return method;
+        }
+
         private String getElementUsingTextAndScrollMethodDefinition() {
             String method =
-                    "\n\n" + "public AndroidElement getElementUsingTextAndScrollTo(String id, String texto){"
-                            + "\n\t" + "return driver.findElementByAndroidUIAutomator(\"new UiScrollable(new UiSelector().scrollable(true).instance(0)).scrollIntoView(new UiSelector().resourceIdMatches(" + "\\" + "\".*\"+id+\"\\" + "\"" + ").childSelector(new UiSelector().textContains(" + "\\" + "\"\"+texto+\"\\" + "\"" + ").instance(0)))\");"
+                    "\n\n" + "public AndroidElement getElementUsingTextAndScrollTo(String texto){"
+                            + "\n\t" + "return driver.findElementByAndroidUIAutomator(\"new UiScrollable(new UiSelector().scrollable(true).instance(0)).scrollIntoView(new UiSelector().textContains(" + "\\" + "\"\"+texto+\"\\" + "\"" + ").instance(0))\");"
                             + "\n" + "}";
             return method;
         }
@@ -583,6 +611,7 @@ public class AlgoritmoCriacao {
             String method = "\n" + "Assert.assertEquals(" + visible + ", isElementDisplayed(" + elementName + "));";
             return method;
         }
+
     }
 
     private class Utils {

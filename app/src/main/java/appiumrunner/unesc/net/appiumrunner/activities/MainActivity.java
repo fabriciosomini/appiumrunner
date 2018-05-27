@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import appiumrunner.unesc.net.appiumrunner.R;
 import appiumrunner.unesc.net.appiumrunner.adapters.MotoristaAdapter;
+import appiumrunner.unesc.net.appiumrunner.components.Popover;
 import appiumrunner.unesc.net.appiumrunner.models.Motorista;
 import appiumrunner.unesc.net.appiumrunner.models.Repository;
 import unesc.com.unesctcc3.modelos.Atividade;
@@ -121,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
                     if (text.isEmpty()) {
                         GeradorTestes.gerarTesteElemento(searchEditTxt)
                                 .focarCampo()
-                                .limparValor()
+                                .lerValor("Pesquisar")
                                 .verificarValores();
                     } else {
                         GeradorTestes.gerarTesteElemento(searchEditTxt)
@@ -172,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
 
                 GeradorTestes.gerarTesteElemento(listView)
-                        .escolherValor(motorista.getNome())
+                        .clicarItem(motorista.getNome())
                         .reproduzirAcoes();
             }
         });
@@ -232,7 +233,7 @@ public class MainActivity extends AppCompatActivity {
         String script = GeradorTestes.getTeste();
         EstadoDispositivoUtilitario.EstadoAparelhoMovel estadoAparelhoMovel = GeradorTestes.getEstadoAparelhoMovel();
         Log.d("Teste Automatizado: \n", script);
-        //TODO: Adicionar dialog para mostrar o test output
+        Popover.show(this, script);
     }
 
 }

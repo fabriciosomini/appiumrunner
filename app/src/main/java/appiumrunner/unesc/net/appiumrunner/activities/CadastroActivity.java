@@ -161,7 +161,7 @@ public class CadastroActivity extends AppCompatActivity {
                 if (++estadoMotoristaSelected > 1) {
                     final String newValue = (String) estadoMotorista.getItemAtPosition(i);
                     GeradorTestes.gerarTesteElemento(estadoMotorista)
-                            .escolherValor(newValue)
+                            .selecionarOpcao(newValue)
                             .reproduzirAcoes()
                             .verificarValores();
                 }
