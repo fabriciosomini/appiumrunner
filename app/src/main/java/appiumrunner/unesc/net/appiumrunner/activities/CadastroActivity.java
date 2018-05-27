@@ -47,6 +47,7 @@ public class CadastroActivity extends AppCompatActivity {
     private Button cancelarBtn;
     private Motorista motorista;
     private ImageButton deleteBtn;
+    private boolean gravar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +60,7 @@ public class CadastroActivity extends AppCompatActivity {
 
     private void setEventosInterface() {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-
+        gravar = true;
         nomeEmpresa = findViewById(R.id.nome_empresa);
         nomeMotorista = findViewById(R.id.nomeMotorista);
         cpfMotorista = findViewById(R.id.cpfMotorista);
@@ -74,10 +75,6 @@ public class CadastroActivity extends AppCompatActivity {
         cancelarBtn = findViewById(R.id.cancelarBtn);
         estadoMotorista.setAdapter(getEstadoAdapter());
         deleteBtn = findViewById(R.id.deleteBtn);
-        salvarBtn.setFocusable(true);
-        salvarBtn.setFocusableInTouchMode(true);
-        cancelarBtn.setFocusable(true);
-        cancelarBtn.setFocusableInTouchMode(true);
         Intent intent = getIntent();
         motorista = (Motorista) intent.getSerializableExtra("motorista");
         if (motorista != null) {
@@ -105,6 +102,8 @@ public class CadastroActivity extends AppCompatActivity {
                     .verificarValores();
         }
 
+        nomeMotorista.setFocusable(true);
+        nomeMotorista.setFocusableInTouchMode(true);
         nomeMotorista.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
@@ -125,18 +124,21 @@ public class CadastroActivity extends AppCompatActivity {
                 }
             }
         });
+
+        cpfMotorista.setFocusable(true);
+        cpfMotorista.setFocusableInTouchMode(true);
         cpfMotorista.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
                 String text = cpfMotorista.getText().toString();
-                if (hasFocus && !ignoreFocus) {
+                if (hasFocus) {
                     if (!text.isEmpty()) {
                         GeradorTestes.gerarTesteElemento(cpfMotorista)
                                 .limparValor()
                                 .reproduzirAcoes();
                     }
                 }
-                if (!hasFocus && !ignoreFocus) {
+                if (!hasFocus) {
                     GeradorTestes.gerarTesteElemento(cpfMotorista)
                             .focarCampo()
                             .escreverValor(text)
@@ -146,7 +148,9 @@ public class CadastroActivity extends AppCompatActivity {
                     String maskedText = getCpfMaskedText(text);
                     if (maskedText == null) {
                         cpfMotorista.setError("CPF Inválido");
+                        gravar = false;
                     } else {
+                        gravar = true;
                         cpfMotorista.setText(maskedText);
                         GeradorTestes.gerarTesteElemento(cpfMotorista)
                                 .lerValor(maskedText)
@@ -226,36 +230,48 @@ public class CadastroActivity extends AppCompatActivity {
             }
         });
 
-        salvarBtn.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        salvarBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onFocusChange(View view, boolean hasFocus) {
-                if (hasFocus) {
-                    String nomeMotoristaValor = nomeMotorista.getText().toString();
-                    String cpfMotoristaValor = cpfMotorista.getText().toString();
-                    String estadoOrigemValor = estadoMotorista.getSelectedItem().toString();
-                    int volumeCargaValor = volumeCarga.getProgress();
-                    Motorista.TipoCarga tipoCargaValor = getTipoCarga();
-                    boolean bitremValor = bitrem.isChecked();
-                    boolean ativo = motoristaAtivo.isChecked();
-                    boolean gravar = true;
+            public void onClick(View view) {
+                salvarBtn.requestFocusFromTouch();
+                String nomeMotoristaValor = nomeMotorista.getText().toString();
+                String cpfMotoristaValor = cpfMotorista.getText().toString();
+                String estadoOrigemValor = estadoMotorista.getSelectedItem().toString();
+                int volumeCargaValor = volumeCarga.getProgress();
+                Motorista.TipoCarga tipoCargaValor = getTipoCarga();
+                boolean bitremValor = bitrem.isChecked();
+                boolean ativo = motoristaAtivo.isChecked();
 
-                    if (nomeMotoristaValor.isEmpty()) {
-                        nomeMotorista.setError("Nome do Motorista Requerido");
-                        gravar = false;
-                    } else {
+                if (nomeMotoristaValor.isEmpty()) {
+                    nomeMotorista.setError("Nome do Motorista Requerido");
+                    gravar = false;
+                } else {
+                    if (gravar) {
                         nomeMotorista.setError(null);
                     }
 
-                    if (cpfMotoristaValor.isEmpty()) {
-                        cpfMotorista.setError("CPF do Motorista Requerido");
-                        gravar = false;
-                    } else {
+                }
+
+                if (cpfMotoristaValor.isEmpty()) {
+                    cpfMotorista.setError("CPF do Motorista Requerido");
+                    gravar = false;
+                } else {
+                    if (gravar) {
                         cpfMotorista.setError(null);
                     }
+                }
 
-                    if (motorista.getCodigo() == 0) {
-                        motorista.setCodigo(generateCodigo());
-                    }
+                if (motorista.getCodigo() == 0) {
+                    motorista.setCodigo(generateCodigo());
+                }
+
+                GeradorTestes.gerarTesteElemento(salvarBtn)
+                        .rolarAteCampo()
+                        .clicarCampo()
+                        .reproduzirAcoes();
+
+                if (gravar) {
+
                     motorista.setNome(nomeMotoristaValor);
                     motorista.setCpf(cpfMotoristaValor);
                     motorista.setEstado(estadoOrigemValor);
@@ -264,35 +280,27 @@ public class CadastroActivity extends AppCompatActivity {
                     motorista.setBitrem(bitremValor);
                     motorista.setAtivo(ativo);
 
-                    GeradorTestes.gerarTesteElemento(salvarBtn)
-                            .rolarAteCampo()
-                            .clicarCampo()
-                            .reproduzirAcoes();
-
-                    if (gravar) {
-                        int result = Repository.addOrUptate(motorista);
-                        if (result == 0) {
-                            MessageToast.show(CadastroActivity.this, "Seu registro foi adicionado");
-                        } else if (result == 1) {
-                            MessageToast.show(CadastroActivity.this, "Seu registro foi atualizado");
-                        }
-                        finish();
+                    int result = Repository.addOrUptate(motorista);
+                    if (result == 0) {
+                        MessageToast.show(CadastroActivity.this, "Seu registro foi adicionado");
+                    } else if (result == 1) {
+                        MessageToast.show(CadastroActivity.this, "Seu registro foi atualizado");
                     }
+                    finish();
                 }
             }
         });
 
-        cancelarBtn.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        cancelarBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onFocusChange(View view, boolean hasFocus) {
-                if (hasFocus) {
-                    GeradorTestes.gerarTesteElemento(cancelarBtn)
-                            .rolarAteCampo()
-                            .clicarCampo()
-                            .reproduzirAcoes();
+            public void onClick(View view) {
+                cancelarBtn.requestFocusFromTouch();
+                GeradorTestes.gerarTesteElemento(cancelarBtn)
+                        .rolarAteCampo()
+                        .clicarCampo()
+                        .reproduzirAcoes();
 
-                    finish();
-                }
+                finish();
             }
         });
 

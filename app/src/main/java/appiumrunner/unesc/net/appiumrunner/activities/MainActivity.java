@@ -70,16 +70,10 @@ public class MainActivity extends AppCompatActivity {
         nomeEmpresa = findViewById(R.id.nome_empresa);
         listContainer = findViewById(R.id.list_container);
         copyTestBtn = findViewById(R.id.copy_test_btn);
-        adicionarMotorista.setFocusable(true);
-        adicionarMotorista.setFocusableInTouchMode(true);
-        copyTestBtn.setFocusable(true);
-        copyTestBtn.setFocusableInTouchMode(true);
-        copyTestBtn.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        copyTestBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onFocusChange(View view, boolean hasFocus) {
-                if (hasFocus) {
-                    showTest();
-                }
+            public void onClick(View view) {
+                showTest();
             }
         });
 
@@ -105,19 +99,21 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        searchEditTxt.setFocusable(true);
+        searchEditTxt.setFocusableInTouchMode(true);
         searchEditTxt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
                 String text = searchEditTxt.getText().toString();
 
-                if (hasFocus && !ignoreFocus) {
+                if (hasFocus) {
                     if (!text.isEmpty()) {
                         GeradorTestes.gerarTesteElemento(searchEditTxt)
                                 .limparValor()
                                 .reproduzirAcoes();
                     }
                 }
-                if (!hasFocus && !ignoreFocus) {
+                if (!hasFocus) {
 
                     if (text.isEmpty()) {
                         GeradorTestes.gerarTesteElemento(searchEditTxt)
@@ -146,20 +142,18 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        adicionarMotorista.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        adicionarMotorista.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onFocusChange(View view, boolean hasFocus) {
-                if (hasFocus) {
-                    //Altera o foco para o botão, solucionando o problema de não disparar o evento onFocusChange
-                    ignoreFocus = true;
-                    adicionarMotorista.requestFocusFromTouch();
-                    GeradorTestes.gerarTesteElemento(adicionarMotorista)
-                            .rolarAteCampo()
-                            .clicarCampo()
-                            .reproduzirAcoes();
-                    Intent intent = new Intent(getBaseContext(), CadastroActivity.class);
-                    startActivity(intent);
-                }
+            public void onClick(View view) {
+                //Altera o foco para o botão, solucionando o problema de não disparar o evento onFocusChange
+                ignoreFocus = true;
+                adicionarMotorista.requestFocusFromTouch();
+                GeradorTestes.gerarTesteElemento(adicionarMotorista)
+                        .rolarAteCampo()
+                        .clicarCampo()
+                        .reproduzirAcoes();
+                Intent intent = new Intent(getBaseContext(), CadastroActivity.class);
+                startActivity(intent);
             }
         });
 
