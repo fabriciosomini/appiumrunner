@@ -57,7 +57,7 @@ public class AlgoritmoCriacao {
     }
 
     private enum TipoExtraMethods {
-        SELECT, SCROLL, ISFOCUSED, GET_CHILD_TEXT, CHECK, ISCHECKED, PRESSKEY, PROGRESS
+        SELECT, SCROLL, ISFOCUSED, GET_CHILD_TEXT, CHECK, ISCHECKED, PRESSKEY, ISDISPLAYED, PROGRESS
     }
 
     private class ScriptBuilder {
@@ -114,6 +114,9 @@ public class AlgoritmoCriacao {
                     case PRESSKEY:
                         scriptMetodosExtras += methodBuilder.getPressKeyMethodDefinition();
                         break;
+                    case ISDISPLAYED:
+                        scriptMetodosExtras += methodBuilder.getVisibilityMethodDefinition();
+                        break;
                 }
             }
             return scriptMetodosExtras;
@@ -144,7 +147,7 @@ public class AlgoritmoCriacao {
                             + "\n" + "import org.junit.Assert;"
                             + "\n" + "import org.junit.Before;"
                             + "\n" + "import org.junit.Test;"
-                            + "\n" + "import org.openqa.selenium.By;"
+                            + "\n" + "import org.openqa.selenium.WebDriverException;"
                             + "\n" + "import org.openqa.selenium.remote.DesiredCapabilities;"
                             + "\n" + "import org.openqa.selenium.support.PageFactory;"
                             + "\n" + "import java.io.File;"
@@ -361,6 +364,7 @@ public class AlgoritmoCriacao {
                                 break;
                             case VISUALIZAR:
                                 scriptCompleto += utils.construirComandoEmOrdem(tipoOrdem, scriptAcoes, verificacaoVisibilidade);
+                                utils.addExtraMethod(TipoExtraMethods.ISDISPLAYED);
                                 break;
                         }
                     }
@@ -402,7 +406,7 @@ public class AlgoritmoCriacao {
 
         private String getSelectItemMethod(String elementName, String estadoSelecao) {
             String method = getClickMethod(elementName)
-                    + "\n" + "getElementUsingTextAndScrollTo(" + "\"" + estadoSelecao + "\").click();";
+                    + "\n" + "getElementUsingTextAndScrollTo(" + elementName + ", \"" + estadoSelecao + "\").click();";
             return method;
         }
 
@@ -445,8 +449,8 @@ public class AlgoritmoCriacao {
 
         private String getElementUsingTextAndScrollMethodDefinition() {
             String method =
-                    "\n\n" + "public AndroidElement getElementUsingTextAndScrollTo(String texto){"
-                            + "\n\t" + "return driver.findElementByAndroidUIAutomator(\"new UiScrollable(new UiSelector().scrollable(true).instance(0)).scrollIntoView(new UiSelector().textContains(" + "\\" + "\"\"+texto+\"\\" + "\"" + ").instance(0))\");"
+                    "\n\n" + "public AndroidElement getElementUsingTextAndScrollTo(String id, String texto){"
+                            + "\n\t" + "return driver.findElementByAndroidUIAutomator(\"new UiScrollable(new UiSelector().scrollable(true).instance(0)).scrollIntoView(new UiSelector().resourceIdMatches(" + "\\" + "\".*\"+id+\"\\" + "\"" + ").childSelector(new UiSelector().textContains(" + "\\" + "\"\"+texto+\"\\" + "\"" + ").instance(0)))\");"
                             + "\n" + "}";
             return method;
         }
@@ -559,14 +563,24 @@ public class AlgoritmoCriacao {
             return method;
         }
 
-        public String getVisibilityMethod(String elementName) {
-            String method = "\n" + elementName + ".isDisplayed();";
+        public String getVisibilityMethodDefinition() {
+
+            String method = "\n\n" + "private boolean isElementDisplayed(AndroidElement element) {"
+                    + "\n\t" + "boolean result = false;"
+                    + "\n\t" + "try{"
+                    + "\n\t\t" + "result = element.isDisplayed();"
+                    + "\n\t" + "}catch (WebDriverException ex){"
+                    + "\n"
+                    + "\n\t" + "}"
+                    + "\n\t" + "return result;"
+                    + "\n" + "}";
+
             return method;
         }
 
         public String getVisibilityAssertionMethod(String elementName, Atividade.Visibilidade visibilidade) {
             boolean visible = visibilidade == Atividade.Visibilidade.VISIVEL;
-            String method = "\n" + "Assert.assertEquals(" + visible + ", " + elementName + ".isDisplayed());";
+            String method = "\n" + "Assert.assertEquals(" + visible + ", isElementDisplayed(" + elementName + "));";
             return method;
         }
     }

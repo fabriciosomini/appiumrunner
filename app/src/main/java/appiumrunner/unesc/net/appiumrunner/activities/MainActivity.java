@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                filter(true, charSequence);
+                filter(false, charSequence);
             }
 
             @Override
@@ -232,7 +232,6 @@ public class MainActivity extends AppCompatActivity {
         String script = GeradorTestes.getTeste();
         EstadoDispositivoUtilitario.EstadoAparelhoMovel estadoAparelhoMovel = GeradorTestes.getEstadoAparelhoMovel();
         Log.d("Teste Automatizado: \n", script);
-        //TODO: fix na aplicação que está sem id no primeiro item
         //TODO: Adicionar dialog para mostrar o test output
     }
 

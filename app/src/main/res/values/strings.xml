@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Aplicação de Testes - Unesc</string>
     <string name="user_name">DEFAULT_USER_NAME</string>
-    <string name="add_driver_btn">+ Adicionar</string>
+    <string name="add_driver_btn">Novo</string>
     <string name="hint_search">Pesquisar</string>
     <string name="driver_name">Nome Motorista</string>
     <string name="cpf">CPF</string>

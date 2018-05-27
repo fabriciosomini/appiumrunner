@@ -14,19 +14,24 @@ public class Repository {
         Repository.adapter = adapter;
     }
 
-    public static void addOrUptate(Motorista motorista) {
+    public static int addOrUptate(Motorista motorista) {
+        int added = -1;
         if (motorista != null) {
             int index = getIndexOf(motorista);
 
             if (index > -1) {
                 motoristaList.set(index, motorista);
+                added = 1;
             } else {
                 motoristaList.add(motorista);
+                added = 0;
             }
         }
         adapter.clear();
         adapter.addAll(motoristaList);
         adapter.notifyDataSetChanged();
+
+        return added;
     }
 
     private static int getIndexOf(Motorista motorista) {
@@ -40,17 +45,20 @@ public class Repository {
         return index;
     }
 
-    public static void remove(Motorista motorista) {
+    public static int remove(Motorista motorista) {
+        int removed = -1;
         if (motorista != null) {
             int index = getIndexOf(motorista);
             if (index > -1) {
                 motoristaList.remove(index);
+                removed = 0;
             }
         }
 
         adapter.clear();
         adapter.addAll(motoristaList);
         adapter.notifyDataSetChanged();
+        return removed;
     }
 
     public static List<Motorista> getMotoristaList() {

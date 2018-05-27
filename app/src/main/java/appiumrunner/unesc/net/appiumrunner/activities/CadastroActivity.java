@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import appiumrunner.unesc.net.appiumrunner.R;
+import appiumrunner.unesc.net.appiumrunner.components.MessageToast;
 import appiumrunner.unesc.net.appiumrunner.models.Motorista;
 import appiumrunner.unesc.net.appiumrunner.models.Repository;
 import unesc.com.unesctcc3.modelos.Atividade;
@@ -73,6 +74,10 @@ public class CadastroActivity extends AppCompatActivity {
         cancelarBtn = findViewById(R.id.cancelarBtn);
         estadoMotorista.setAdapter(getEstadoAdapter());
         deleteBtn = findViewById(R.id.deleteBtn);
+        salvarBtn.setFocusable(true);
+        salvarBtn.setFocusableInTouchMode(true);
+        cancelarBtn.setFocusable(true);
+        cancelarBtn.setFocusableInTouchMode(true);
         Intent intent = getIntent();
         motorista = (Motorista) intent.getSerializableExtra("motorista");
         if (motorista != null) {
@@ -221,65 +226,73 @@ public class CadastroActivity extends AppCompatActivity {
             }
         });
 
-        salvarBtn.setOnClickListener(new View.OnClickListener() {
+        salvarBtn.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public void onClick(View view) {
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (hasFocus) {
+                    String nomeMotoristaValor = nomeMotorista.getText().toString();
+                    String cpfMotoristaValor = cpfMotorista.getText().toString();
+                    String estadoOrigemValor = estadoMotorista.getSelectedItem().toString();
+                    int volumeCargaValor = volumeCarga.getProgress();
+                    Motorista.TipoCarga tipoCargaValor = getTipoCarga();
+                    boolean bitremValor = bitrem.isChecked();
+                    boolean ativo = motoristaAtivo.isChecked();
+                    boolean gravar = true;
 
-                String nomeMotoristaValor = nomeMotorista.getText().toString();
-                String cpfMotoristaValor = cpfMotorista.getText().toString();
-                String estadoOrigemValor = estadoMotorista.getSelectedItem().toString();
-                int volumeCargaValor = volumeCarga.getProgress();
-                Motorista.TipoCarga tipoCargaValor = getTipoCarga();
-                boolean bitremValor = bitrem.isChecked();
-                boolean ativo = motoristaAtivo.isChecked();
-                boolean gravar = true;
+                    if (nomeMotoristaValor.isEmpty()) {
+                        nomeMotorista.setError("Nome do Motorista Requerido");
+                        gravar = false;
+                    } else {
+                        nomeMotorista.setError(null);
+                    }
 
-                if (nomeMotoristaValor.isEmpty()) {
-                    nomeMotorista.setError("Nome do Motorista Requerido");
-                    gravar = false;
-                } else {
-                    nomeMotorista.setError(null);
-                }
+                    if (cpfMotoristaValor.isEmpty()) {
+                        cpfMotorista.setError("CPF do Motorista Requerido");
+                        gravar = false;
+                    } else {
+                        cpfMotorista.setError(null);
+                    }
 
-                if (cpfMotoristaValor.isEmpty()) {
-                    cpfMotorista.setError("CPF do Motorista Requerido");
-                    gravar = false;
-                } else {
-                    cpfMotorista.setError(null);
-                }
+                    if (motorista.getCodigo() == 0) {
+                        motorista.setCodigo(generateCodigo());
+                    }
+                    motorista.setNome(nomeMotoristaValor);
+                    motorista.setCpf(cpfMotoristaValor);
+                    motorista.setEstado(estadoOrigemValor);
+                    motorista.setVolumeCarga(volumeCargaValor);
+                    motorista.setTipoCarga(tipoCargaValor);
+                    motorista.setBitrem(bitremValor);
+                    motorista.setAtivo(ativo);
 
-                if (motorista.getCodigo() == 0) {
-                    motorista.setCodigo(generateCodigo());
-                }
-                motorista.setNome(nomeMotoristaValor);
-                motorista.setCpf(cpfMotoristaValor);
-                motorista.setEstado(estadoOrigemValor);
-                motorista.setVolumeCarga(volumeCargaValor);
-                motorista.setTipoCarga(tipoCargaValor);
-                motorista.setBitrem(bitremValor);
-                motorista.setAtivo(ativo);
+                    GeradorTestes.gerarTesteElemento(salvarBtn)
+                            .rolarAteCampo()
+                            .clicarCampo()
+                            .reproduzirAcoes();
 
-                GeradorTestes.gerarTesteElemento(salvarBtn)
-                        .rolarAteCampo()
-                        .clicarCampo()
-                        .reproduzirAcoes();
-
-                if (gravar) {
-                    Repository.addOrUptate(motorista);
-                    finish();
+                    if (gravar) {
+                        int result = Repository.addOrUptate(motorista);
+                        if (result == 0) {
+                            MessageToast.show(CadastroActivity.this, "Seu registro foi adicionado");
+                        } else if (result == 1) {
+                            MessageToast.show(CadastroActivity.this, "Seu registro foi atualizado");
+                        }
+                        finish();
+                    }
                 }
             }
         });
 
-        cancelarBtn.setOnClickListener(new View.OnClickListener() {
+        cancelarBtn.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public void onClick(View view) {
-                GeradorTestes.gerarTesteElemento(cancelarBtn)
-                        .rolarAteCampo()
-                        .clicarCampo()
-                        .reproduzirAcoes();
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (hasFocus) {
+                    GeradorTestes.gerarTesteElemento(cancelarBtn)
+                            .rolarAteCampo()
+                            .clicarCampo()
+                            .reproduzirAcoes();
 
-                finish();
+                    finish();
+                }
             }
         });
 
@@ -292,7 +305,9 @@ public class CadastroActivity extends AppCompatActivity {
                             .rolarAteCampo()
                             .clicarCampo()
                             .reproduzirAcoes();
-                    Repository.remove(motorista);
+                    if (Repository.remove(motorista) == 0) {
+                        MessageToast.show(CadastroActivity.this, "Seu registro foi excluído");
+                    }
                     finish();
                 }
             });
