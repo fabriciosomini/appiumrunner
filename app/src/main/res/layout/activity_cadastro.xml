@@ -4,6 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#ffff"
+    android:clickable="true"
+    android:focusable="true"
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true">
 
@@ -100,7 +102,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/cpfMotorista" />
 
-            <Spinner
+            <appiumrunner.unesc.net.appiumrunner.components.LeveragedSpinner
                 android:id="@+id/estadoMotorista"
                 android:layout_width="0dp"
                 android:layout_height="45dp"

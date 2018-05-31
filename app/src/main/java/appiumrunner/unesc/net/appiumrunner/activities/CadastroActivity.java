@@ -24,17 +24,18 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import appiumrunner.unesc.net.appiumrunner.R;
+import appiumrunner.unesc.net.appiumrunner.components.LeveragedSpinner;
 import appiumrunner.unesc.net.appiumrunner.components.MessageToast;
 import appiumrunner.unesc.net.appiumrunner.models.Motorista;
 import appiumrunner.unesc.net.appiumrunner.models.Repository;
 import unesc.com.unesctcc3.modelos.Atividade;
-import unesc.com.unesctcc3.utilitarios.GeradorTestes;
+import unesc.com.unesctcc3.motor.GeradorTestes;
 
 public class CadastroActivity extends AppCompatActivity {
 
     private TextView nomeEmpresa;
     private EditText nomeMotorista;
-    private Spinner estadoMotorista;
+    private LeveragedSpinner estadoMotorista;
     private EditText cpfMotorista;
     private SeekBar volumeCarga;
     private RadioGroup tipoCarga;
@@ -173,8 +174,22 @@ public class CadastroActivity extends AppCompatActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
+
             }
         });
+
+        estadoMotorista.setSpinnerEventsListener(new LeveragedSpinner.OnSpinnerEventsListener() {
+            @Override
+            public void onSpinnerExpanded(Spinner spinner) {
+                estadoMotorista.requestFocusFromTouch();
+            }
+
+            @Override
+            public void onSpinnerCollapsed(Spinner spinner) {
+
+            }
+        });
+
         volumeCarga.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             int pos = 0;
 
@@ -186,6 +201,7 @@ public class CadastroActivity extends AppCompatActivity {
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
+                volumeCarga.requestFocusFromTouch();
             }
 
             @Override
@@ -199,6 +215,7 @@ public class CadastroActivity extends AppCompatActivity {
         tipoCarga.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                tipoCarga.requestFocusFromTouch();
                 RadioButton radioButton = findViewById(radioGroup.getCheckedRadioButtonId());
                 GeradorTestes.gerarTesteElemento(radioButton)
                         .rolarAteCampo()
@@ -210,6 +227,7 @@ public class CadastroActivity extends AppCompatActivity {
         motoristaAtivo.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                motoristaAtivo.requestFocusFromTouch();
                 Atividade.Marcacao marcacao = b ? Atividade.Marcacao.MARCADO : Atividade.Marcacao.DESMARCADO;
                 GeradorTestes.gerarTesteElemento(motoristaAtivo)
                         .marcarOpcaoDesmarcavel(marcacao)
@@ -221,6 +239,7 @@ public class CadastroActivity extends AppCompatActivity {
         bitrem.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                bitrem.requestFocusFromTouch();
                 Atividade.Marcacao marcacao = b ? Atividade.Marcacao.MARCADO : Atividade.Marcacao.DESMARCADO;
                 GeradorTestes.gerarTesteElemento(bitrem)
                         .marcarOpcaoDesmarcavel(marcacao)
@@ -281,12 +300,26 @@ public class CadastroActivity extends AppCompatActivity {
                     motorista.setAtivo(ativo);
 
                     int result = Repository.addOrUptate(motorista);
+                    String successMessage = "";
                     if (result == 0) {
-                        MessageToast.show(CadastroActivity.this, "Seu registro foi adicionado");
+                        successMessage = "Seu registro foi adicionado";
+                        MessageToast.show(CadastroActivity.this,
+                                successMessage);
                     } else if (result == 1) {
-                        MessageToast.show(CadastroActivity.this, "Seu registro foi atualizado");
+                        successMessage = "Seu registro foi atualizado";
+                        MessageToast.show(CadastroActivity.this,
+                                successMessage);
                     }
+
+
                     finish();
+                } else {
+                    String errorMessage = "Por favor revise as informações inseridas";
+
+
+                    MessageToast.show(CadastroActivity.this,
+                            errorMessage,
+                            MessageToast.Tipo.ERRO);
                 }
             }
         });
@@ -309,12 +342,13 @@ public class CadastroActivity extends AppCompatActivity {
             deleteBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    String deleteMessage = "Seu registro foi excluído";
                     GeradorTestes.gerarTesteElemento(deleteBtn)
                             .rolarAteCampo()
                             .clicarCampo()
                             .reproduzirAcoes();
                     if (Repository.remove(motorista) == 0) {
-                        MessageToast.show(CadastroActivity.this, "Seu registro foi excluído");
+                        MessageToast.show(CadastroActivity.this, deleteMessage);
                     }
                     finish();
                 }

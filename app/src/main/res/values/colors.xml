@@ -5,4 +5,7 @@
     <color name="colorAccent">#f44141</color>
     <color name="colorPrimaryButton">#536dfe</color>
     <color name="colorSecondaryButton">#7c7f91</color>
+
+    <color name="redish">#f44141</color>
+    <color name="greenish">#229142</color>
 </resources>

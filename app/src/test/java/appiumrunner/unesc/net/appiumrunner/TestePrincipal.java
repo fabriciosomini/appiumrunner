@@ -4,7 +4,6 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.PageFactory;
 
@@ -26,38 +25,35 @@ import io.appium.java_client.touch.offset.PointOption;
 public class TestePrincipal {
     private AndroidDriver<AndroidElement> driver = null;
 
-    @AndroidFindBy(id = "searchEditTxt")
-    AndroidElement searchEditTxt;
-
-    @AndroidFindBy(id = "empty_text")
-    AndroidElement empty_text;
-
     @AndroidFindBy(id = "add_driver_btn")
     AndroidElement add_driver_btn;
 
     @AndroidFindBy(id = "nomeMotorista")
     AndroidElement nomeMotorista;
 
-    @AndroidFindBy(id = "estadoMotorista")
-    AndroidElement estadoMotorista;
-
-    @AndroidFindBy(id = "volumeCarga")
-    AndroidElement volumeCarga;
-
-    @AndroidFindBy(id = "radioButton_alimenticia")
-    AndroidElement radioButton_alimenticia;
-
-    @AndroidFindBy(id = "bitrem")
-    AndroidElement bitrem;
-
-    @AndroidFindBy(id = "motoristaAtivo")
-    AndroidElement motoristaAtivo;
+    @AndroidFindBy(id = "salvarBtn")
+    AndroidElement salvarBtn;
 
     @AndroidFindBy(id = "cpfMotorista")
     AndroidElement cpfMotorista;
 
-    @AndroidFindBy(id = "salvarBtn")
-    AndroidElement salvarBtn;
+    @AndroidFindBy(id = "list")
+    AndroidElement list;
+
+    @AndroidFindBy(id = "bitrem")
+    AndroidElement bitrem;
+
+    @AndroidFindBy(id = "radioButton_perigosa")
+    AndroidElement radioButton_perigosa;
+
+    @AndroidFindBy(id = "volumeCarga")
+    AndroidElement volumeCarga;
+
+    @AndroidFindBy(id = "estadoMotorista")
+    AndroidElement estadoMotorista;
+
+    @AndroidFindBy(id = "deleteBtn")
+    AndroidElement deleteBtn;
 
     @Before
     public void setup() {
@@ -80,17 +76,6 @@ public class TestePrincipal {
     @Test
     public void teste() {
 
-        if (!elementHasFocus(searchEditTxt)) {
-            searchEditTxt.click();
-        }
-        Assert.assertEquals(true, elementHasFocus(searchEditTxt));
-        searchEditTxt.setValue("test");
-        Assert.assertEquals("test", searchEditTxt.getText());
-
-
-        Assert.assertEquals(true, isElementDisplayed(empty_text));
-
-
         getElementByIdAndScrollTo("add_driver_btn");
         add_driver_btn.click();
 
@@ -110,18 +95,35 @@ public class TestePrincipal {
         Assert.assertEquals("test", nomeMotorista.getText());
 
 
-        estadoMotorista.click();
-        getElementUsingTextAndScrollTo("Amapá - AP").click();
-        Assert.assertEquals("Amapá - AP", getChildText(estadoMotorista, 0));
+        getElementByIdAndScrollTo("salvarBtn");
+        salvarBtn.click();
 
 
-        progressTo(volumeCarga, 48);
-        //TODO: Implementar método de verificação de progressbar
+        if (!elementHasFocus(cpfMotorista)) {
+            cpfMotorista.click();
+        }
+        Assert.assertEquals(true, elementHasFocus(cpfMotorista));
+        cpfMotorista.setValue("08223597900");
+        Assert.assertEquals("08223597900", cpfMotorista.getText());
+        pressKey(AndroidKeyCode.ENTER);
+        Assert.assertEquals(false, elementHasFocus(cpfMotorista));
 
 
-        getElementByIdAndScrollTo("radioButton_alimenticia");
-        radioButton_alimenticia.click();
-        Assert.assertEquals(true, isOptionChecked(radioButton_alimenticia));
+        Assert.assertEquals("082.235.979-00", cpfMotorista.getText());
+
+
+        getElementByIdAndScrollTo("salvarBtn");
+        salvarBtn.click();
+
+
+        getElementUsingParentIdAndTextAndScrollTo("list", "test").click();
+
+
+        Assert.assertEquals(false, elementHasFocus(nomeMotorista));
+        Assert.assertEquals("test", nomeMotorista.getText());
+
+
+        getElementByIdAndScrollTo("nomeMotorista");
 
 
         getElementByIdAndScrollTo("bitrem");
@@ -129,65 +131,51 @@ public class TestePrincipal {
         Assert.assertEquals(true, isOptionChecked(bitrem));
 
 
-        getElementByIdAndScrollTo("motoristaAtivo");
-        checkOption(motoristaAtivo, false);
-        Assert.assertEquals(false, isOptionChecked(motoristaAtivo));
+        getElementByIdAndScrollTo("radioButton_perigosa");
+        radioButton_perigosa.click();
+        Assert.assertEquals(true, isOptionChecked(radioButton_perigosa));
 
 
-        if (!elementHasFocus(cpfMotorista)) {
-            cpfMotorista.click();
-        }
-        Assert.assertEquals(true, elementHasFocus(cpfMotorista));
-        cpfMotorista.setValue("2525252422");
-        Assert.assertEquals("2525252422", cpfMotorista.getText());
-        pressKey(AndroidKeyCode.ENTER);
-        Assert.assertEquals(false, elementHasFocus(cpfMotorista));
+        progressTo(volumeCarga, 51);
+        //TODO: Implementar método de verificação de progressbar
 
 
-        getElementByIdAndScrollTo("salvarBtn");
-        salvarBtn.click();
-
-
-        cpfMotorista.clear();
-
-
-        if (!elementHasFocus(cpfMotorista)) {
-            cpfMotorista.click();
-        }
-        Assert.assertEquals(true, elementHasFocus(cpfMotorista));
-        cpfMotorista.setValue("252525242");
-        Assert.assertEquals("252525242", cpfMotorista.getText());
-        pressKey(AndroidKeyCode.ENTER);
-        Assert.assertEquals(false, elementHasFocus(cpfMotorista));
+        estadoMotorista.click();
+        getElementUsingTextAndScrollTo("Piauí - PI").click();
+        Assert.assertEquals("Piauí - PI", getChildText(estadoMotorista, 0));
 
 
         getElementByIdAndScrollTo("salvarBtn");
         salvarBtn.click();
 
 
-        cpfMotorista.clear();
+        getElementUsingParentIdAndTextAndScrollTo("list", "test").click();
 
 
-        if (!elementHasFocus(cpfMotorista)) {
-            cpfMotorista.click();
-        }
-        Assert.assertEquals(true, elementHasFocus(cpfMotorista));
-        cpfMotorista.setValue("25252524288");
-        Assert.assertEquals("25252524288", cpfMotorista.getText());
-        pressKey(AndroidKeyCode.ENTER);
-        Assert.assertEquals(false, elementHasFocus(cpfMotorista));
+        Assert.assertEquals(false, elementHasFocus(nomeMotorista));
+        Assert.assertEquals("test", nomeMotorista.getText());
 
 
-        Assert.assertEquals("252.525.242-88", cpfMotorista.getText());
+        getElementByIdAndScrollTo("nomeMotorista");
 
 
-        getElementByIdAndScrollTo("salvarBtn");
-        salvarBtn.click();
+        getElementByIdAndScrollTo("deleteBtn");
+        deleteBtn.click();
 
 
-        Assert.assertEquals(false, isElementDisplayed(empty_text));
+    }
 
+    private void pressKey(int key) {
+        driver.pressKeyCode(key);
+    }
 
+    public AndroidElement getElementUsingParentIdAndTextAndScrollTo(String id, String texto) {
+        return driver.findElementByAndroidUIAutomator("new UiScrollable(new UiSelector().scrollable(true).instance(0)).scrollIntoView(new UiSelector().resourceIdMatches(\".*" + id + "\").childSelector(new UiSelector().textContains(\"" + texto + "\").instance(0)))");
+    }
+
+    private boolean isOptionChecked(AndroidElement element) {
+        boolean isChecked = Boolean.valueOf(element.getAttribute("checked"));
+        return isChecked;
     }
 
     private void checkOption(AndroidElement element, boolean check) {
@@ -197,16 +185,16 @@ public class TestePrincipal {
         }
     }
 
-    private boolean elementHasFocus(AndroidElement element) {
-        return element.getCenter().equals(driver.findElementByAndroidUIAutomator("new UiSelector().focused(true)").getCenter());
-    }
-
-    private void pressKey(int key) {
-        driver.pressKeyCode(key);
-    }
-
     public AndroidElement getElementByIdAndScrollTo(String id) {
         return driver.findElementByAndroidUIAutomator("new UiScrollable(new UiSelector().scrollable(true).instance(0)).scrollIntoView(new UiSelector().resourceIdMatches(\".*" + id + "\").instance(0))");
+    }
+
+    private String getChildText(AndroidElement element, int index) {
+        return element.findElementByAndroidUIAutomator("new UiSelector().index(" + index + ")").getText();
+    }
+
+    private boolean elementHasFocus(AndroidElement element) {
+        return element.getCenter().equals(driver.findElementByAndroidUIAutomator("new UiSelector().focused(true)").getCenter());
     }
 
     public AndroidElement getElementUsingTextAndScrollTo(String texto) {
@@ -228,25 +216,6 @@ public class TestePrincipal {
 
         TouchAction action = new TouchAction(driver);
         action.longPress(from).moveTo(to).release().perform();
-    }
-
-    private boolean isOptionChecked(AndroidElement element) {
-        boolean isChecked = Boolean.valueOf(element.getAttribute("checked"));
-        return isChecked;
-    }
-
-    private boolean isElementDisplayed(AndroidElement element) {
-        boolean result = false;
-        try {
-            result = element.isDisplayed();
-        } catch (WebDriverException ex) {
-
-        }
-        return result;
-    }
-
-    private String getChildText(AndroidElement element, int index) {
-        return element.findElementByAndroidUIAutomator("new UiSelector().index(" + index + ")").getText();
     }
 
     @After

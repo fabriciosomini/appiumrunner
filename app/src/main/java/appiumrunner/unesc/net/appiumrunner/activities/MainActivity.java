@@ -24,10 +24,10 @@ import appiumrunner.unesc.net.appiumrunner.components.Popover;
 import appiumrunner.unesc.net.appiumrunner.models.Motorista;
 import appiumrunner.unesc.net.appiumrunner.models.Repository;
 import unesc.com.unesctcc3.modelos.Atividade;
+import unesc.com.unesctcc3.modelos.Setup;
 import unesc.com.unesctcc3.motor.AlgoritmoRegistro;
-import unesc.com.unesctcc3.motor.Setup;
+import unesc.com.unesctcc3.motor.GeradorTestes;
 import unesc.com.unesctcc3.utilitarios.EstadoDispositivoUtilitario;
-import unesc.com.unesctcc3.utilitarios.GeradorTestes;
 
 public class MainActivity extends AppCompatActivity {
     private EditText searchEditTxt;
@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
 
         algoritmoRegistro = new AlgoritmoRegistro(this, setup);
 
-        GeradorTestes.init(algoritmoRegistro);
+        GeradorTestes.inicializar(algoritmoRegistro);
 
         setEventosInterface();
     }
