@@ -18,12 +18,16 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import appiumrunner.unesc.net.appiumrunner.R;
 import appiumrunner.unesc.net.appiumrunner.adapters.MotoristaAdapter;
 import appiumrunner.unesc.net.appiumrunner.components.Popover;
 import appiumrunner.unesc.net.appiumrunner.models.Motorista;
 import appiumrunner.unesc.net.appiumrunner.models.Repository;
 import unesc.com.unesctcc3.modelos.Atividade;
+import unesc.com.unesctcc3.modelos.Preferencias;
 import unesc.com.unesctcc3.modelos.Setup;
 import unesc.com.unesctcc3.motor.AlgoritmoRegistro;
 import unesc.com.unesctcc3.motor.GeradorTestes;
@@ -53,7 +57,18 @@ public class MainActivity extends AppCompatActivity {
         setup.setAppiumServerAddress("http://127.0.0.1:4723/wd/hub");
         setup.setAppPath(".\\build\\outputs\\apk\\debug\\", "app-debug.apk");
 
+        List<String> packages = new ArrayList<>();
+        packages.add("com.gooogle");
+        packages.add("net.test");
+        packages.add("org.pop.try");
+
+        Preferencias preferencias = new Preferencias();
+        preferencias.setExtendedClass("TesteBase", true);
+        preferencias.skipMethodsDeclaration(true);
+        preferencias.setPackages(packages);
+
         algoritmoRegistro = new AlgoritmoRegistro(this, setup);
+        //algoritmoRegistro.setPreferencias(preferencias);
 
         GeradorTestes.inicializar(algoritmoRegistro);
 
