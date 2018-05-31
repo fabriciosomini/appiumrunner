@@ -1,5 +1,7 @@
 apply plugin: 'com.android.library'
-
+apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: "com.jfrog.bintray"
+version = "2018.05.31_13.02"
 android {
     compileSdkVersion 26
     defaultConfig {
@@ -28,4 +30,90 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+}
+
+
+
+def siteUrl = 'https://github.com/fabriciosomini/appiumrunner'
+def gitUrl = 'https://github.com/fabriciosomini/appiumrunner'
+
+
+install {
+    repositories.mavenInstaller {
+
+        pom {
+            project {
+                packaging 'aar'
+
+                // Add your description here
+                name 'unesc.com.unesctcc3:appiumrunner'
+                description = 'Biblioteca para geração de casos de teste automatizados para aplicações móveis com base nas atividades dos usuários.'
+                url siteUrl
+
+                // Set your license
+                licenses {
+                    license {
+                        name 'GPL-3.0'
+                    }
+                }
+                developers {
+                    developer {
+                        id 'fabriciosomini'
+                        name 'Fabricio Somini'
+                        email 'fabricio.somini@gmail.com'
+                    }
+                }
+                scm {
+                    connection gitUrl
+                    developerConnection gitUrl
+                    url siteUrl
+                }
+            }
+        }
+    }
+}
+
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+task javadoc(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}
+
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+
+bintray {
+    user = properties.getProperty("bintray.user")
+    key = properties.getProperty("bintray.apikey")
+
+    configurations = ['archives']
+    pkg {
+        repo = "UnescAppiumRunner"
+        // it is the name that appears in bintray when logged
+        name = "appiumrunner"
+        websiteUrl = siteUrl
+        vcsUrl = gitUrl
+        licenses = ["GPL-3.0"]
+        publish = true
+        version {
+            gpg {
+                sign = true //Determines whether to GPG sign the files. The default is false
+                passphrase = properties.getProperty("bintray.gpg.password") //Optional. The passphrase for GPG signing'
+            }
+        }
+    }
 }
