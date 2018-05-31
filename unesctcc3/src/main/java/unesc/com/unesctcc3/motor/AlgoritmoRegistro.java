@@ -13,10 +13,6 @@ import unesc.com.unesctcc3.utilitarios.EstadoDispositivoUtilitario;
 /**
  * Created by fabri on 18/03/2018.
  */
-//TODO: Verificar se todos os metodos do utilitario de atividades estão aqui (ex: Verificar Barra Progresso)
-//TODO: toggle - reproduzirAcoes e verificarValores
-//TODO: seekbar - reproduzirAcoes e verificarValores
-//TODO: radiogroup - reproduzirAcoes e verificarValores
 public class AlgoritmoRegistro {
     private final Activity activity;
     private Setup setup;
@@ -49,7 +45,6 @@ public class AlgoritmoRegistro {
         return estadoAparelhoMovel;
     }
 
-    //TODO: Adicionar suporte ao método findElement
     public void registrar(Atividade atividade) {
         if (atividades.contains(atividade)) {
             atividades.set(atividades.indexOf(atividade), atividade);

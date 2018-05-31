@@ -555,7 +555,7 @@ public class AlgoritmoCriacao {
         }
 
         public String getProgressAssertionMethod(String elementName, int progresso) {
-            String method = "\n//TODO: Implementar método de verificação de progressbar";
+            String method = "";
             return method;
         }
 
