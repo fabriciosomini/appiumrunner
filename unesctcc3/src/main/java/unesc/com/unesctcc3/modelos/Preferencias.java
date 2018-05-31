@@ -1,4 +1,4 @@
-package unesc.com.unesctcc3.motor;
+package unesc.com.unesctcc3.modelos;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +9,15 @@ public class Preferencias {
     private List<String> packages;
     private String testPackageName;
     private String extendedClass;
+    private boolean extendDriver;
+
+    public boolean isExtendDriver() {
+        return extendDriver;
+    }
+
+    public void setExtendDriver(boolean extendDriver) {
+        this.extendDriver = extendDriver;
+    }
 
     public boolean isSkipTearDownDeclaration() {
         return skipTearDownDeclaration;
@@ -60,7 +69,8 @@ public class Preferencias {
         return extendedClass;
     }
 
-    public void setExtendedClass(String extendedClass) {
-        this.extendedClass = extendedClass;
+    public void setExtendedClass(String extendedClassName, boolean extendDriver) {
+        this.extendedClass = extendedClassName;
+        this.extendDriver = extendDriver;
     }
 }

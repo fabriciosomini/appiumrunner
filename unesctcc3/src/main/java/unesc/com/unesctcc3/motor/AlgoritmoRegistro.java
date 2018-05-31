@@ -5,6 +5,8 @@ import android.app.Activity;
 import java.util.ArrayList;
 
 import unesc.com.unesctcc3.modelos.Atividade;
+import unesc.com.unesctcc3.modelos.Preferencias;
+import unesc.com.unesctcc3.modelos.Setup;
 import unesc.com.unesctcc3.utilitarios.EstadoDispositivoUtilitario;
 
 

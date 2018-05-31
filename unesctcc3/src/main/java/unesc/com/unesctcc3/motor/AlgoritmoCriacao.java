@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Set;
 
 import unesc.com.unesctcc3.modelos.Atividade;
+import unesc.com.unesctcc3.modelos.Preferencias;
+import unesc.com.unesctcc3.modelos.Setup;
 import unesc.com.unesctcc3.utilitarios.UtilitarioMetodos;
 
 
@@ -133,8 +135,10 @@ public class AlgoritmoCriacao {
                 }
             }
             String extendedClass = "";
+            boolean extendDriver = false;
             if (preferencias.getExtendedClass() != null) {
                 extendedClass = " extends " + preferencias.getExtendedClass();
+                extendDriver = preferencias.isExtendDriver();
             }
             String packageName = preferencias.getTestPackageName() == null ?
                     "appiumrunner.unesc.net.appiumrunner" : preferencias.getTestPackageName();
@@ -142,6 +146,11 @@ public class AlgoritmoCriacao {
 
             if (!glogalVariablesScript.isEmpty()) {
                 glogalVariablesScript = "\n" + glogalVariablesScript;
+            }
+
+            String driverDeclaration = "";
+            if (!extendDriver) {
+                driverDeclaration = "\n\t" + "private AndroidDriver<AndroidElement> driver = null;";
             }
 
             String packages = "package " + packageName + ";";
@@ -169,7 +178,7 @@ public class AlgoritmoCriacao {
                             + addedImports;
             String classe =
                     "\n\n" + "public class " + nomeTeste + extendedClass + " {"
-                            + "\n\t" + "private AndroidDriver<AndroidElement> driver = null;"
+                            + driverDeclaration
                             + glogalVariablesScript
                             + fullScript
                             + "\n" + "}";

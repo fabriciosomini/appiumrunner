@@ -1,4 +1,4 @@
-package unesc.com.unesctcc3.motor;
+package unesc.com.unesctcc3.modelos;
 
 /**
  * Created by fabri on 18/03/2018.
