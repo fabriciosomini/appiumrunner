@@ -200,14 +200,35 @@ public class AlgoritmoCriacao {
             if (setup != null) {
                 String platformVersion = setup.getPlatformVersion();
                 String deviceName = setup.getDeviceName();
-                String appPath = setup.getAppPath();
+                String appDirectory = setup.getAppDirectory();
                 String apkName = setup.getApkName();
                 String appiumServerAddress = setup.getAppiumServerAddress();
-                appPath = appPath.replace("\\", "\\\\");
+
+                if(platformVersion == null || platformVersion.isEmpty()){
+                    throw new RuntimeException("É necessário definir um valor para a propriedade 'platformVersion' no Setup do teste");
+                }
+
+                if(deviceName == null || deviceName.isEmpty()){
+                    throw new RuntimeException("É necessário definir um valor para a propriedade 'deviceName' no Setup do teste");
+                }
+
+                if(appDirectory == null || appDirectory.isEmpty()){
+                    throw new RuntimeException("É necessário definir um valor para a propriedade 'appDirectory' no Setup do teste");
+                }
+
+                if(apkName == null || apkName.isEmpty()){
+                    throw new RuntimeException("É necessário definir um valor para a propriedade 'apkName' no Setup do teste");
+                }
+
+                if(appiumServerAddress == null || appiumServerAddress.isEmpty()){
+                    throw new RuntimeException("É necessário definir um valor para a propriedade 'appiumServerAddress' no Setup do teste");
+                }
+
+                appDirectory = appDirectory.replace("\\", "\\\\");
                 fullScript =
                         "\n" + "@Before"
                                 + "\n" + "public void setup() {"
-                                + "\n\t" + "File app = new File(\"" + appPath + "\", \"" + apkName + "\");"
+                                + "\n\t" + "File app = new File(\"" + appDirectory + "\", \"" + apkName + "\");"
                                 + "\n\t" + "DesiredCapabilities capabilities = new DesiredCapabilities();"
                                 + "\n\t" + "capabilities.setCapability(MobileCapabilityType.PLATFORM_VERSION, \"" + platformVersion + "\");"
                                 + "\n\t" + "capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, \"" + deviceName + "\");"

@@ -8,15 +8,15 @@ public class Setup {
     private String deviceName;
     private String apkName;
     private String appiumServerAddress;
-    private String appPath;
+    private String appDirectory;
 
-    public void setAppPath(String appPath, String apkName) {
-        this.appPath = appPath;
+    public void setAppPath(String appDirectory, String apkName) {
+        this.appDirectory = appDirectory;
         this.apkName = apkName;
     }
 
-    public String getAppPath() {
-        return appPath;
+    public String getAppDirectory() {
+        return appDirectory;
     }
 
     public String getApkName() {
