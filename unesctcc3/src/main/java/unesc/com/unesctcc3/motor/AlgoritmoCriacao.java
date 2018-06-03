@@ -95,7 +95,8 @@ public class AlgoritmoCriacao {
                 str = "Passo " + (i) + ": " + str + "\n";
                 documentacao += str;
             }
-
+            documentacao = "Documentação do caso de teste" + "\n-----------------------------\n"
+                    + documentacao;
             teste.setDocumentacao(documentacao);
 
             return teste;
