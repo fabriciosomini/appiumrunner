@@ -199,7 +199,7 @@ public class Atividade extends AcaoFinal {
         SELECIONAR_COMBO,
         DESFOCAR,
         LIMPAR,
-        VISUALIZAR, SELECIONAR_LISTA, LER
+        VISUALIZAR, SELECIONAR_LISTA, ACESSO_TELA, LER
     }
 
     public enum Marcacao {

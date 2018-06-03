@@ -400,6 +400,9 @@ public class CadastroActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        RegistroAtividades.registrarAcessoTela("Cadastro de Motoristas");
+
         ignoreFocus = false;
         RegistroAtividades.registrar(nomeMotorista)
                 .rolarAteCampo()

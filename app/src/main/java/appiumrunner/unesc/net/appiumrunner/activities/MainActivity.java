@@ -243,6 +243,8 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         ignoreFocus = false;
 
+        RegistroAtividades.registrarAcessoTela("Listagem de Motoristas");
+
         filter(true, searchEditTxt.getText());
 
     }

@@ -54,10 +54,6 @@ public class RegistroAtividades {
     }
 
     public static Atividade registrar(View elemento) {
-        if (!inicializado) {
-            throw new RuntimeException("Esta operação não pode ser realizada, " +
-                    "pois não houve uma chamada para o método de inicialização.");
-        }
         if (elemento == null) {
             throw new RuntimeException("O elemento não pode ser nulo");
         }
@@ -70,12 +66,24 @@ public class RegistroAtividades {
             throw new RuntimeException("Esta operação não pode ser realizada, " +
                     "pois não houve uma chamada para o método de inicialização.");
         }
-        if (id == null) {
-            throw new RuntimeException("O identificador do elemento não pode ser nulo");
+        if (id == null || id.isEmpty()) {
+            throw new RuntimeException("O identificador do elemento é requerido");
         }
+
+        if (!id.matches("^[a-zA-Z_$][a-zA-Z_$0-9]*$")) {
+            throw new RuntimeException("O identificador especificado não é valido: '" + id + "'");
+        }
+
         Atividade atividade = new Atividade(INSTANCE);
         MetodosUtilitario.invocarMetodo(atividade, "setIdentificadorElemento", String.class, id);
         return atividade;
+    }
+
+
+    public static void registrarAcessoTela(String tela) {
+        Atividade atividade = new Atividade(INSTANCE);
+        MetodosUtilitario.invocarMetodo(atividade, "setIdentificadorElemento", String.class, "screen:" + tela);
+        adicionarAtividade(atividade);
     }
 
     public static void terminarTeste() {
@@ -124,7 +132,7 @@ public class RegistroAtividades {
         estadoAparelhoMovel = EstadoDispositivoUtilitario.getInfo(activity);
     }
 
-    private void adicionarAtividade(Atividade atividade) {
+    private static void adicionarAtividade(Atividade atividade) {
         if (atividades.contains(atividade)) {
             atividades.set(atividades.indexOf(atividade), atividade);
         } else {
