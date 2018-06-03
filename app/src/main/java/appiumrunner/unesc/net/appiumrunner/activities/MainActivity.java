@@ -1,9 +1,13 @@
 package appiumrunner.unesc.net.appiumrunner.activities;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.constraint.ConstraintLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -18,12 +22,12 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import appiumrunner.unesc.net.appiumrunner.R;
 import appiumrunner.unesc.net.appiumrunner.adapters.MotoristaAdapter;
-import appiumrunner.unesc.net.appiumrunner.components.Popover;
 import appiumrunner.unesc.net.appiumrunner.models.Motorista;
 import appiumrunner.unesc.net.appiumrunner.models.Repository;
 import unesc.com.unesctcc3.modelos.Atividade;
@@ -32,9 +36,11 @@ import unesc.com.unesctcc3.modelos.Setup;
 import unesc.com.unesctcc3.modelos.Teste;
 import unesc.com.unesctcc3.motor.AlgoritmoRegistro;
 import unesc.com.unesctcc3.motor.GeradorTestes;
+import unesc.com.unesctcc3.utilitarios.ArquivoUtilitario;
 import unesc.com.unesctcc3.utilitarios.EstadoDispositivoUtilitario;
 
 public class MainActivity extends AppCompatActivity {
+    private static final int WRITE_FILE_REQUEST_CODE = 1;
     private EditText searchEditTxt;
     private Button adicionarMotorista;
     private ListView listView;
@@ -47,6 +53,8 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton copyTestBtn;
     private TextView emptyText;
     private boolean noItems;
+    private String casoTeste;
+    private String documentacao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -244,11 +252,53 @@ public class MainActivity extends AppCompatActivity {
     private void showTest() {
         GeradorTestes.terminarTeste("TestePrincipal");
         Teste teste = GeradorTestes.getTeste();
-        String script = teste.getCasoTeste();
-        String documentacao = teste.getDocumentacao();
+        casoTeste = teste.getCasoTeste();
+        documentacao = teste.getDocumentacao();
         EstadoDispositivoUtilitario.EstadoAparelhoMovel estadoAparelhoMovel = GeradorTestes.getEstadoAparelhoMovel();
-        Log.d("Teste Automatizado: \n", script);
-        Popover.show(this, script);
+
+        if (isStoragePermissionGranted()) {
+            escreverTestes(casoTeste, documentacao);
+        }
+
+        Log.d("Teste Automatizado: \n", casoTeste);
+        //Popover.show(this, casoTeste);
+    }
+
+    private void escreverTestes(String casoTeste, String documentacao) {
+        File folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+        File docFile = new File(folder, "documentacao.txt");
+        ArquivoUtilitario.writeToFile(docFile, documentacao, this);
+
+        File testeFile = new File(folder, "teste.java");
+        ArquivoUtilitario.writeToFile(testeFile, casoTeste, this);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (grantResults.length > 0) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (requestCode == WRITE_FILE_REQUEST_CODE) {
+                    escreverTestes(casoTeste, documentacao);
+                }
+            }
+        }
+    }
+
+    public boolean isStoragePermissionGranted() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    == PackageManager.PERMISSION_GRANTED) {
+
+                return true;
+            } else {
+
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, WRITE_FILE_REQUEST_CODE);
+                return false;
+            }
+        } else {
+            return true;
+        }
     }
 
 }

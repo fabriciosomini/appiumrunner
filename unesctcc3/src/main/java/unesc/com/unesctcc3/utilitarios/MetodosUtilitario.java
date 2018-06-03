@@ -3,7 +3,7 @@ package unesc.com.unesctcc3.utilitarios;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-public class UtilitarioMetodos {
+public class MetodosUtilitario {
     public static Object invocarMetodo(Object object, String methodName, Class parameterType, Object params) {
         Method method = null;
         try {

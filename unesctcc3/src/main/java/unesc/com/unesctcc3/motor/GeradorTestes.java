@@ -6,7 +6,7 @@ import unesc.com.unesctcc3.modelos.Atividade;
 import unesc.com.unesctcc3.modelos.Teste;
 import unesc.com.unesctcc3.utilitarios.ElementIdParserUtilitario;
 import unesc.com.unesctcc3.utilitarios.EstadoDispositivoUtilitario;
-import unesc.com.unesctcc3.utilitarios.UtilitarioMetodos;
+import unesc.com.unesctcc3.utilitarios.MetodosUtilitario;
 
 public class GeradorTestes {
     private static AlgoritmoRegistro algoritmoRegistro;
@@ -40,7 +40,7 @@ public class GeradorTestes {
             throw new RuntimeException("O identificador do elemento não pode ser nulo");
         }
         Atividade atividade = new Atividade(algoritmoRegistro);
-        UtilitarioMetodos.invocarMetodo(atividade, "setIdentificadorElemento", String.class, id);
+        MetodosUtilitario.invocarMetodo(atividade, "setIdentificadorElemento", String.class, id);
         return atividade;
     }
 

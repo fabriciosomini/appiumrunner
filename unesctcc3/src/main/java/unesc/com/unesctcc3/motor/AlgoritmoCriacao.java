@@ -9,7 +9,7 @@ import unesc.com.unesctcc3.modelos.Atividade;
 import unesc.com.unesctcc3.modelos.Preferencias;
 import unesc.com.unesctcc3.modelos.Setup;
 import unesc.com.unesctcc3.modelos.Teste;
-import unesc.com.unesctcc3.utilitarios.UtilitarioMetodos;
+import unesc.com.unesctcc3.utilitarios.MetodosUtilitario;
 
 
 /**
@@ -274,20 +274,20 @@ public class AlgoritmoCriacao {
             String documentacao = "";
             for (Atividade atividade :
                     atividades) {
-                String elementName = (String) UtilitarioMetodos.invocarMetodo(atividade, "getIdentificadorElemento");
+                String elementName = (String) MetodosUtilitario.invocarMetodo(atividade, "getIdentificadorElemento");
                 String elementId = elementName;
-                Atividade.Tecla estadoTecla = (Atividade.Tecla) UtilitarioMetodos.invocarMetodo(atividade, "getEstadoTecla");
-                Atividade.Marcacao estadoMarcacaoOpcao = (Atividade.Marcacao) UtilitarioMetodos.invocarMetodo(atividade, "getEstadoMarcacaoOpcao");
-                StringBuilder estadoTexto = (StringBuilder) UtilitarioMetodos.invocarMetodo(atividade, "getEstadoTexto");
-                StringBuilder estadoTextoLimpo = (StringBuilder) UtilitarioMetodos.invocarMetodo(atividade, "getEstadoTextoLimpo");
-                StringBuilder estadoLeitura = (StringBuilder) UtilitarioMetodos.invocarMetodo(atividade, "getEstadoLeitura");
-                StringBuilder estadoSelecao = (StringBuilder) UtilitarioMetodos.invocarMetodo(atividade, "getEstadoSelecao");
-                StringBuilder estadoSelecaoLista = (StringBuilder) UtilitarioMetodos.invocarMetodo(atividade, "getEstadoSelecaoLista");
-                Atividade.Foco estadoFoco = (Atividade.Foco) UtilitarioMetodos.invocarMetodo(atividade, "getEstadoFoco");
-                Atividade.Foco estadoDesfoque = (Atividade.Foco) UtilitarioMetodos.invocarMetodo(atividade, "getEstadoDesfoque");
-                Atividade.Visibilidade estadoVisibilidade = (Atividade.Visibilidade) UtilitarioMetodos.invocarMetodo(atividade, "getEstadoVisibilidade");
-                Integer estadoProgresso = (Integer) UtilitarioMetodos.invocarMetodo(atividade, "getEstadoProgresso");
-                List<Atividade.TipoAcao> passos = (List<Atividade.TipoAcao>) UtilitarioMetodos.invocarMetodo(atividade, "getAcoes");
+                Atividade.Tecla estadoTecla = (Atividade.Tecla) MetodosUtilitario.invocarMetodo(atividade, "getEstadoTecla");
+                Atividade.Marcacao estadoMarcacaoOpcao = (Atividade.Marcacao) MetodosUtilitario.invocarMetodo(atividade, "getEstadoMarcacaoOpcao");
+                StringBuilder estadoTexto = (StringBuilder) MetodosUtilitario.invocarMetodo(atividade, "getEstadoTexto");
+                StringBuilder estadoTextoLimpo = (StringBuilder) MetodosUtilitario.invocarMetodo(atividade, "getEstadoTextoLimpo");
+                StringBuilder estadoLeitura = (StringBuilder) MetodosUtilitario.invocarMetodo(atividade, "getEstadoLeitura");
+                StringBuilder estadoSelecao = (StringBuilder) MetodosUtilitario.invocarMetodo(atividade, "getEstadoSelecao");
+                StringBuilder estadoSelecaoLista = (StringBuilder) MetodosUtilitario.invocarMetodo(atividade, "getEstadoSelecaoLista");
+                Atividade.Foco estadoFoco = (Atividade.Foco) MetodosUtilitario.invocarMetodo(atividade, "getEstadoFoco");
+                Atividade.Foco estadoDesfoque = (Atividade.Foco) MetodosUtilitario.invocarMetodo(atividade, "getEstadoDesfoque");
+                Atividade.Visibilidade estadoVisibilidade = (Atividade.Visibilidade) MetodosUtilitario.invocarMetodo(atividade, "getEstadoVisibilidade");
+                Integer estadoProgresso = (Integer) MetodosUtilitario.invocarMetodo(atividade, "getEstadoProgresso");
+                List<Atividade.TipoAcao> passos = (List<Atividade.TipoAcao>) MetodosUtilitario.invocarMetodo(atividade, "getAcoes");
                 String findElementByIdCall = methodBuilder.getFindElementByIdMethod(elementId, elementName);
                 String clickCall = methodBuilder.getClickMethod(elementName);
                 String focusCall = methodBuilder.getFocusElementMethod(elementName);
