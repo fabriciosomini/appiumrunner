@@ -4,7 +4,7 @@ android {
     compileSdkVersion 26
     defaultConfig {
         applicationId "appiumrunner.unesc.net.appiumrunner"
-        minSdkVersion 26
+        minSdkVersion 24
         targetSdkVersion 26
         multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
