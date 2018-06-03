@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import unesc.com.unesctcc3.modelos.Atividade;
 import unesc.com.unesctcc3.modelos.Preferencias;
 import unesc.com.unesctcc3.modelos.Setup;
+import unesc.com.unesctcc3.modelos.Teste;
 import unesc.com.unesctcc3.utilitarios.EstadoDispositivoUtilitario;
 
 
@@ -16,7 +17,7 @@ import unesc.com.unesctcc3.utilitarios.EstadoDispositivoUtilitario;
 public class AlgoritmoRegistro {
     private final Activity activity;
     private Setup setup;
-    private String script;
+    private Teste teste;
     private AlgoritmoCriacao algoritmoCriacao;
     private EstadoDispositivoUtilitario.EstadoAparelhoMovel estadoAparelhoMovel;
     private ArrayList<Atividade> atividades;
@@ -53,16 +54,16 @@ public class AlgoritmoRegistro {
         }
     }
 
-    public String getScript() {
-        return script;
+    public Teste getTeste() {
+        return teste;
     }
 
     public void parar() {
-        script = algoritmoCriacao.criar(atividades, preferencias, null);
+        teste = algoritmoCriacao.criar(atividades, preferencias, null);
     }
 
     public void parar(String nomeTeste) {
-        script = algoritmoCriacao.criar(atividades, preferencias, nomeTeste);
+        teste = algoritmoCriacao.criar(atividades, preferencias, nomeTeste);
     }
 
     public void registrarEstadoAparelho() {

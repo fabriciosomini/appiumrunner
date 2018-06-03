@@ -8,6 +8,7 @@ import java.util.Set;
 import unesc.com.unesctcc3.modelos.Atividade;
 import unesc.com.unesctcc3.modelos.Preferencias;
 import unesc.com.unesctcc3.modelos.Setup;
+import unesc.com.unesctcc3.modelos.Teste;
 import unesc.com.unesctcc3.utilitarios.UtilitarioMetodos;
 
 
@@ -35,20 +36,24 @@ public class AlgoritmoCriacao {
         this(null);
     }
 
-    public String criar(ArrayList<Atividade> atividades, Preferencias preferencias, String nomeTeste) {
+    public Teste criar(ArrayList<Atividade> atividades, Preferencias preferencias, String nomeTeste) {
         this.preferencias = preferencias == null ? new Preferencias() : preferencias;
         this.nomeTeste = nomeTeste == null ? this.nomeTeste : nomeTeste;
         ScriptBuilder scriptBuilder = new ScriptBuilder();
         this.atividades = atividades;
+        Teste teste = scriptBuilder.criarScript();
         fullScript = scriptBuilder.criarSetup();
-        fullScript += scriptBuilder.criarScript();
+        fullScript += teste.getCasoTeste();
         if (!this.preferencias.isSkipTearDownDeclaration()) {
             teardownScript = scriptBuilder.createTeardown();
             fullScript += teardownScript;
         }
         fullScript = scriptBuilder.criarClasseTeste();
         fullScript = fullScript.replace("\n\n\n\n", "\n\n");
-        return fullScript;
+
+
+        teste.setCasoTeste(fullScript);
+        return teste;
     }
 
     private enum TipoOrdem {
@@ -71,15 +76,18 @@ public class AlgoritmoCriacao {
             glogalVariablesScript = "";
         }
 
-        private String criarScript() {
-            String scriptAcoes = construirScriptAcoesVerificacoes();
+        private Teste criarScript() {
+            Teste teste = construirScriptAcoesVerificacoes();
+            String scriptAcoes = teste.getCasoTeste();
             scriptAcoes = scriptAcoes.replace("\n", "\n\t");
             scriptAcoes = "\n\n" + "@Test"
                     + "\n" + "public void teste() throws Exception {"
                     + "\n" + scriptAcoes
                     + "\n" + "}"
                     + criarMetodosExtras();
-            return scriptAcoes;
+
+            teste.setCasoTeste(scriptAcoes);
+            return teste;
         }
 
         private String criarMetodosExtras() {
@@ -204,23 +212,23 @@ public class AlgoritmoCriacao {
                 String apkName = setup.getApkName();
                 String appiumServerAddress = setup.getAppiumServerAddress();
 
-                if(platformVersion == null || platformVersion.isEmpty()){
+                if (platformVersion == null || platformVersion.isEmpty()) {
                     throw new RuntimeException("É necessário definir um valor para a propriedade 'platformVersion' no Setup do teste");
                 }
 
-                if(deviceName == null || deviceName.isEmpty()){
+                if (deviceName == null || deviceName.isEmpty()) {
                     throw new RuntimeException("É necessário definir um valor para a propriedade 'deviceName' no Setup do teste");
                 }
 
-                if(appDirectory == null || appDirectory.isEmpty()){
+                if (appDirectory == null || appDirectory.isEmpty()) {
                     throw new RuntimeException("É necessário definir um valor para a propriedade 'appDirectory' no Setup do teste");
                 }
 
-                if(apkName == null || apkName.isEmpty()){
+                if (apkName == null || apkName.isEmpty()) {
                     throw new RuntimeException("É necessário definir um valor para a propriedade 'apkName' no Setup do teste");
                 }
 
-                if(appiumServerAddress == null || appiumServerAddress.isEmpty()){
+                if (appiumServerAddress == null || appiumServerAddress.isEmpty()) {
                     throw new RuntimeException("É necessário definir um valor para a propriedade 'appiumServerAddress' no Setup do teste");
                 }
 
@@ -248,8 +256,10 @@ public class AlgoritmoCriacao {
             return fullScript;
         }
 
-        private String construirScriptAcoesVerificacoes() {
+        private Teste construirScriptAcoesVerificacoes() {
+            Teste teste = new Teste();
             String scriptCompleto = "";
+            String documentacao = "";
             for (Atividade atividade :
                     atividades) {
                 String elementName = (String) UtilitarioMetodos.invocarMetodo(atividade, "getIdentificadorElemento");
@@ -346,10 +356,12 @@ public class AlgoritmoCriacao {
                         switch (acao) {
                             case CLICAR:
                                 scriptCompleto += clickCall;
+                                documentacao += utils.gerarPassoDocumentacao(elementId, tipoOrdem, acao, false);
                                 break;
                             case PRESSIONAR:
                                 scriptCompleto += pressKeyCall;
                                 utils.addExtraMethod(TipoExtraMethods.PRESSKEY);
+                                documentacao += utils.gerarPassoDocumentacao(elementId, tipoOrdem, acao, false, utils.getSafeString(estadoTecla));
                                 break;
                             case FOCAR:
                                 if (estadoFoco == Atividade.Foco.FOCADO) {
@@ -357,6 +369,7 @@ public class AlgoritmoCriacao {
                                 }
                                 utils.addExtraMethod(TipoExtraMethods.ISFOCUSED);
                                 scriptCompleto += utils.construirComandoEmOrdem(tipoOrdem, scriptAcoes, verificaoFoco);
+                                documentacao += utils.gerarPassoDocumentacao(elementId, tipoOrdem, acao, !verificaoFoco.isEmpty());
                                 break;
                             case DESFOCAR:
                                 if (estadoDesfoque == Atividade.Foco.SEM_FOCO) {
@@ -364,6 +377,7 @@ public class AlgoritmoCriacao {
                                     utils.addExtraMethod(TipoExtraMethods.PRESSKEY);
                                 }
                                 scriptCompleto += utils.construirComandoEmOrdem(tipoOrdem, scriptAcoes, verificaoFoco);
+                                documentacao += utils.gerarPassoDocumentacao(elementId, tipoOrdem, acao, !verificaoFoco.isEmpty());
                                 break;
                             case ESCREVER:
                                 if (estadoTexto != null) {
@@ -372,13 +386,16 @@ public class AlgoritmoCriacao {
                                     }
                                 }
                                 scriptCompleto += utils.construirComandoEmOrdem(tipoOrdem, scriptAcoes, verificaoTexto);
+                                documentacao += utils.gerarPassoDocumentacao(elementId, tipoOrdem, acao, !verificaoTexto.isEmpty(), utils.getSafeString(estadoTexto));
                                 break;
                             case LIMPAR:
                                 scriptAcoes = clearCall;
                                 scriptCompleto += utils.construirComandoEmOrdem(tipoOrdem, scriptAcoes, verificaoTexto);
+                                documentacao += utils.gerarPassoDocumentacao(elementId, tipoOrdem, acao, !verificaoTexto.isEmpty());
                                 break;
                             case LER:
                                 scriptCompleto += utils.construirComandoEmOrdem(tipoOrdem, scriptAcoes, verificaoTexto);
+                                documentacao += utils.gerarPassoDocumentacao(elementId, tipoOrdem, acao, !verificaoTexto.isEmpty(), utils.getSafeString(estadoLeitura));
                                 break;
                             case SELECIONAR_COMBO:
                                 if (estadoSelecao != null) {
@@ -386,6 +403,7 @@ public class AlgoritmoCriacao {
                                     utils.addExtraMethod(TipoExtraMethods.SELECT);
                                 }
                                 scriptCompleto += utils.construirComandoEmOrdem(tipoOrdem, scriptAcoes, verificaoSelecao);
+                                documentacao += utils.gerarPassoDocumentacao(elementId, tipoOrdem, acao, !verificaoSelecao.isEmpty(), utils.getSafeString(estadoSelecao));
                                 break;
                             case SELECIONAR_LISTA:
                                 if (estadoSelecaoLista != null) {
@@ -393,30 +411,37 @@ public class AlgoritmoCriacao {
                                     utils.addExtraMethod(TipoExtraMethods.SELECT_LIST_ITEM);
                                 }
                                 scriptCompleto += utils.construirComandoEmOrdem(tipoOrdem, scriptAcoes, verificaoSelecaoLista);
+                                documentacao += utils.gerarPassoDocumentacao(elementId, tipoOrdem, acao, !verificaoSelecaoLista.isEmpty(), utils.getSafeString(estadoSelecaoLista));
                                 break;
                             case PROGREDIR:
                                 scriptAcoes = progressCall;
                                 scriptCompleto += utils.construirComandoEmOrdem(tipoOrdem, scriptAcoes, verificarProgresso);
                                 utils.addExtraMethod(TipoExtraMethods.PROGRESS);
+                                documentacao += utils.gerarPassoDocumentacao(elementId, tipoOrdem, acao, !verificarProgresso.isEmpty(), utils.getSafeString(estadoProgresso));
                                 break;
                             case MARCAR_OPCAO:
                                 scriptAcoes = clickCall;
                                 scriptCompleto += utils.construirComandoEmOrdem(tipoOrdem, scriptAcoes, verificacaoOpcaoMarcada);
+                                documentacao += utils.gerarPassoDocumentacao(elementId, tipoOrdem, acao, !verificacaoOpcaoMarcada.isEmpty());
                                 break;
                             case MARCAR_OPCAO_DESMARCAVEL:
                                 scriptAcoes = checkOptionCall;
                                 scriptCompleto += utils.construirComandoEmOrdem(tipoOrdem, scriptAcoes, verificacaoOpcaoMarcada);
+                                documentacao += utils.gerarPassoDocumentacao(elementId, tipoOrdem, acao, !verificacaoOpcaoMarcada.isEmpty(), utils.getSafeString(estadoMarcacaoOpcao));
                                 break;
                             case VISUALIZAR:
                                 scriptCompleto += utils.construirComandoEmOrdem(tipoOrdem, scriptAcoes, verificacaoVisibilidade);
                                 utils.addExtraMethod(TipoExtraMethods.ISDISPLAYED);
+                                documentacao += utils.gerarPassoDocumentacao(elementId, tipoOrdem, acao, !verificacaoVisibilidade.isEmpty(), utils.getSafeString(estadoVisibilidade));
                                 break;
                         }
                     }
                 }
                 scriptCompleto += "\n\n";
             }
-            return scriptCompleto;
+            teste.setCasoTeste(scriptCompleto);
+            teste.setDocumentacao(documentacao);
+            return teste;
         }
     }
 
@@ -657,6 +682,23 @@ public class AlgoritmoCriacao {
             }
         }
 
+
+        public String getSafeString(Integer integer) {
+            if (integer != null) {
+                return String.valueOf(integer);
+            } else {
+                return "";
+            }
+        }
+
+        public String getSafeString(Enum visibilidade) {
+            if (visibilidade != null) {
+                return visibilidade.name();
+            } else {
+                return "";
+            }
+        }
+
         private void addExtraMethod(TipoExtraMethods progress) {
             if (!tipoExtraMethods.contains(progress)) {
                 tipoExtraMethods.add(progress);
@@ -702,5 +744,140 @@ public class AlgoritmoCriacao {
             }
             return tipoOrdem;
         }
+
+        public String gerarPassoDocumentacao(String elementId, TipoOrdem tipoOrdem,
+                                             Atividade.TipoAcao acao, boolean isVerificar) {
+            return gerarPassoDocumentacao(elementId, tipoOrdem, acao, isVerificar, "");
+        }
+
+        public String gerarPassoDocumentacao(String elementId, TipoOrdem tipoOrdem,
+                                             Atividade.TipoAcao acao, boolean isVerificar, String valor) {
+            valor = valor == null ? "" : valor;
+            String reproduzir = "";
+            String verificacao = "";
+            String documentacao = "";
+            switch (acao) {
+                case CLICAR:
+                    reproduzir = "\n" + "Clicar no elemento '" + elementId + "'";
+                    if (isVerificar) {
+                        verificacao = "";
+                    }
+                    documentacao += utils.construirComandoEmOrdem(tipoOrdem, reproduzir, verificacao);
+                    break;
+                case PRESSIONAR:
+                    reproduzir = "\n" + "Pressionar a tecla '" + valor + "'";
+                    if (isVerificar) {
+                        verificacao = "";
+                    }
+                    documentacao += utils.construirComandoEmOrdem(tipoOrdem, reproduzir, verificacao);
+                    break;
+                case FOCAR:
+                    reproduzir = "\n" + "Focar no elemento '" + elementId + "'";
+                    if (isVerificar) {
+                        verificacao = "\n" + "Verificar se o elemento '" + elementId + "' está com foco";
+                    }
+                    documentacao += utils.construirComandoEmOrdem(tipoOrdem, reproduzir, verificacao);
+                    break;
+                case DESFOCAR:
+                    reproduzir = "\n" + "Tirar o foco do elemento '" + elementId + "'";
+                    if (isVerificar) {
+                        verificacao = "\n" + "Verificar se o elemento '" + elementId + "' está sem o foco";
+                    }
+                    documentacao += utils.construirComandoEmOrdem(tipoOrdem, reproduzir, verificacao);
+                    break;
+                case ESCREVER:
+                    reproduzir = "\n" + "Digitar o texto '" + valor + "' no elemento '" + elementId + "'";
+                    if (isVerificar) {
+                        verificacao = "\n" + "Verificar se o elemento '" + elementId + "' possui o texto '" + valor + "'";
+                    }
+                    documentacao += utils.construirComandoEmOrdem(tipoOrdem, reproduzir, verificacao);
+                    break;
+                case LIMPAR:
+                    reproduzir = "\n" + "Limpar o conteúdo do elemento '" + elementId + "'";
+                    if (isVerificar) {
+                        verificacao = "\n" + "Verificar se o elemento '" + elementId + "' está sem nenhum valor";
+                    }
+                    documentacao += utils.construirComandoEmOrdem(tipoOrdem, reproduzir, verificacao);
+                    break;
+                case LER:
+                    reproduzir = "";
+                    if (isVerificar) {
+                        verificacao = "\n" + "Verificar se o elemento '" + elementId + "' possui o valor '" + valor + "'";
+                    }
+                    documentacao += utils.construirComandoEmOrdem(tipoOrdem, reproduzir, verificacao);
+                    break;
+                case SELECIONAR_COMBO:
+                    reproduzir = "\n" + "Selecionar a opção '" + valor + "' no elemento '" + elementId + "'";
+                    if (isVerificar) {
+                        verificacao = "\n" + "Verificar se o elemento '" + elementId + "' possui a opção '" + valor + "' selecionada";
+                    }
+                    documentacao += utils.construirComandoEmOrdem(tipoOrdem, reproduzir, verificacao);
+                    break;
+                case SELECIONAR_LISTA:
+                    reproduzir = "\n" + "Selecionar o item '" + valor + "' no elemento '" + elementId + "'";
+                    if (isVerificar) {
+                        verificacao = "";
+                    }
+                    documentacao += utils.construirComandoEmOrdem(tipoOrdem, reproduzir, verificacao);
+                    break;
+                case PROGREDIR:
+                    reproduzir = "\n" + "Progredir até '" + valor + "' no elemento '" + elementId + "'";
+                    if (isVerificar) {
+                        verificacao = "\n" + "Verificar se o elemento '" + elementId + "' possui o progresso de '" + valor + "'";
+                    }
+                    documentacao += utils.construirComandoEmOrdem(tipoOrdem, reproduzir, verificacao);
+                    break;
+                case MARCAR_OPCAO:
+                    reproduzir = "\n" + "Marcar a opção única '" + elementId + "'";
+                    if (isVerificar) {
+                        verificacao = "\n" + "Verificar se a opção  '" + elementId + "' está 'marcada'";
+                    }
+                    documentacao += utils.construirComandoEmOrdem(tipoOrdem, reproduzir, verificacao);
+                    break;
+                case MARCAR_OPCAO_DESMARCAVEL:
+                    if (valor != null) {
+                        if (!valor.isEmpty()) {
+                            if (valor.equals("true")) {
+                                valor = "Marcar";
+                            } else {
+                                valor = "Desmarcar";
+                            }
+                        }
+                    }
+                    reproduzir = "\n" + valor + " a opção desmarcável '" + elementId + "'";
+                    if (valor != null) {
+                        if (!valor.isEmpty()) {
+                            if (valor.equals(Atividade.Marcacao.MARCADO.name())) {
+                                valor = "marcada";
+                            } else {
+                                valor = "desmarcada";
+                            }
+                        }
+                    }
+                    if (isVerificar) {
+                        verificacao = "\n" + "Verificar se a opção  '" + elementId + "' está '" + valor + "'";
+                    }
+                    documentacao += utils.construirComandoEmOrdem(tipoOrdem, reproduzir, verificacao);
+                    break;
+                case VISUALIZAR:
+                    reproduzir = "";
+                    if (isVerificar) {
+                        if (valor != null) {
+                            if (!valor.isEmpty()) {
+                                if (valor.equals(Atividade.Visibilidade.VISIVEL.name())) {
+                                    valor = "visível";
+                                } else {
+                                    valor = "oculto";
+                                }
+                            }
+                        }
+                        verificacao = "\n" + "Verificar se o elemento '" + elementId + "' está " + valor;
+                    }
+                    documentacao += utils.construirComandoEmOrdem(tipoOrdem, reproduzir, verificacao);
+                    break;
+            }
+            return documentacao + "\n";
+        }
+
     }
 }

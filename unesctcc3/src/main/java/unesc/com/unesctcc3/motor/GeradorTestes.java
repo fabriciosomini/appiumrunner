@@ -3,6 +3,7 @@ package unesc.com.unesctcc3.motor;
 import android.view.View;
 
 import unesc.com.unesctcc3.modelos.Atividade;
+import unesc.com.unesctcc3.modelos.Teste;
 import unesc.com.unesctcc3.utilitarios.ElementIdParserUtilitario;
 import unesc.com.unesctcc3.utilitarios.EstadoDispositivoUtilitario;
 import unesc.com.unesctcc3.utilitarios.UtilitarioMetodos;
@@ -53,9 +54,9 @@ public class GeradorTestes {
         algoritmoRegistro.parar(nomeTeste);
     }
 
-    public static String getTeste() {
+    public static Teste getTeste() {
         checarInicializacao();
-        return algoritmoRegistro.getScript();
+        return algoritmoRegistro.getTeste();
     }
 
     public static EstadoDispositivoUtilitario.EstadoAparelhoMovel getEstadoAparelhoMovel() {

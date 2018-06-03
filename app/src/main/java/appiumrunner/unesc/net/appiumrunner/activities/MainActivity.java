@@ -29,6 +29,7 @@ import appiumrunner.unesc.net.appiumrunner.models.Repository;
 import unesc.com.unesctcc3.modelos.Atividade;
 import unesc.com.unesctcc3.modelos.Preferencias;
 import unesc.com.unesctcc3.modelos.Setup;
+import unesc.com.unesctcc3.modelos.Teste;
 import unesc.com.unesctcc3.motor.AlgoritmoRegistro;
 import unesc.com.unesctcc3.motor.GeradorTestes;
 import unesc.com.unesctcc3.utilitarios.EstadoDispositivoUtilitario;
@@ -88,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
         copyTestBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                copyTestBtn.requestFocusFromTouch();
                 showTest();
             }
         });
@@ -239,7 +241,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void showTest() {
         GeradorTestes.terminarTeste("TestePrincipal");
-        String script = GeradorTestes.getTeste();
+        Teste teste = GeradorTestes.getTeste();
+        String script = teste.getCasoTeste();
+        String documentacao = teste.getDocumentacao();
         EstadoDispositivoUtilitario.EstadoAparelhoMovel estadoAparelhoMovel = GeradorTestes.getEstadoAparelhoMovel();
         Log.d("Teste Automatizado: \n", script);
         Popover.show(this, script);
