@@ -15,7 +15,7 @@ import unesc.com.unesctcc3.utilitarios.EstadoDispositivoUtilitario;
  * Created by fabri on 18/03/2018.
  */
 public class AlgoritmoRegistro {
-    private final Activity activity;
+    private Activity activity;
     private Setup setup;
     private Teste teste;
     private AlgoritmoCriacao algoritmoCriacao;
@@ -24,6 +24,15 @@ public class AlgoritmoRegistro {
     private Preferencias preferencias;
 
     public AlgoritmoRegistro(Activity activity, Setup setup) {
+        init(activity, setup);
+    }
+
+    public AlgoritmoRegistro(Activity activity) {
+        this(activity, null);
+    }
+
+
+    private void init(Activity activity, Setup setup) {
         this.activity = activity;
         atividades = new ArrayList<>();
         if (setup != null) {
@@ -32,10 +41,6 @@ public class AlgoritmoRegistro {
         } else {
             algoritmoCriacao = new AlgoritmoCriacao();
         }
-    }
-
-    public AlgoritmoRegistro(Activity activity) {
-        this(activity, null);
     }
 
     public void setPreferencias(Preferencias preferencias) {
@@ -59,11 +64,12 @@ public class AlgoritmoRegistro {
     }
 
     public void parar() {
-        teste = algoritmoCriacao.criar(atividades, preferencias, null);
+        parar(null);
     }
 
     public void parar(String nomeTeste) {
         teste = algoritmoCriacao.criar(atividades, preferencias, nomeTeste);
+        init(this.activity, this.setup);
     }
 
     public void registrarEstadoAparelho() {

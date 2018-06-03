@@ -16,16 +16,26 @@ import unesc.com.unesctcc3.utilitarios.MetodosUtilitario;
  * Created by fabri on 18/03/2018.
  */
 public class AlgoritmoCriacao {
-    String fullScript = "";
-    private Setup setup;
-    private String nomeTeste;
-    private Utils utils;
-    private Set<TipoExtraMethods> tipoExtraMethods;
+    private String fullScript;
     private String teardownScript;
     private ArrayList<Atividade> atividades;
     private Preferencias preferencias;
 
+    private Setup setup;
+    private Utils utils;
+    private String nomeTeste;
+    private Set<TipoExtraMethods> tipoExtraMethods;
+
     public AlgoritmoCriacao(Setup setup) {
+        init(setup);
+    }
+
+    private void init(Setup setup) {
+        fullScript = null;
+        teardownScript = null;
+        atividades = null;
+        preferencias = null;
+
         this.setup = setup;
         utils = new Utils();
         nomeTeste = utils.gerarNomeTeste();
@@ -53,6 +63,8 @@ public class AlgoritmoCriacao {
 
 
         teste.setCasoTeste(fullScript);
+        init(this.setup);
+
         return teste;
     }
 
