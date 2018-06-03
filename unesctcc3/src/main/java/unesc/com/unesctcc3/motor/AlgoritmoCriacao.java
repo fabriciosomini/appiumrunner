@@ -87,6 +87,17 @@ public class AlgoritmoCriacao {
                     + criarMetodosExtras();
 
             teste.setCasoTeste(scriptAcoes);
+            String documentacao = teste.getDocumentacao();
+            String[] lines = documentacao.split("\n");
+            documentacao = "";
+            for (int i = 1; i < lines.length; i++) {
+                String str = lines[i];
+                str = "Passo " + (i) + ": " + str + "\n";
+                documentacao += str;
+            }
+
+            teste.setDocumentacao(documentacao);
+
             return teste;
         }
 
@@ -356,12 +367,12 @@ public class AlgoritmoCriacao {
                         switch (acao) {
                             case CLICAR:
                                 scriptCompleto += clickCall;
-                                documentacao += utils.gerarPassoDocumentacao(elementId, tipoOrdem, acao, false);
+                                documentacao += utils.gerarDocumentacao(elementId, tipoOrdem, acao, false);
                                 break;
                             case PRESSIONAR:
                                 scriptCompleto += pressKeyCall;
                                 utils.addExtraMethod(TipoExtraMethods.PRESSKEY);
-                                documentacao += utils.gerarPassoDocumentacao(elementId, tipoOrdem, acao, false, utils.getSafeString(estadoTecla));
+                                documentacao += utils.gerarDocumentacao(elementId, tipoOrdem, acao, false, utils.getSafeString(estadoTecla));
                                 break;
                             case FOCAR:
                                 if (estadoFoco == Atividade.Foco.FOCADO) {
@@ -369,7 +380,7 @@ public class AlgoritmoCriacao {
                                 }
                                 utils.addExtraMethod(TipoExtraMethods.ISFOCUSED);
                                 scriptCompleto += utils.construirComandoEmOrdem(tipoOrdem, scriptAcoes, verificaoFoco);
-                                documentacao += utils.gerarPassoDocumentacao(elementId, tipoOrdem, acao, !verificaoFoco.isEmpty());
+                                documentacao += utils.gerarDocumentacao(elementId, tipoOrdem, acao, !verificaoFoco.isEmpty());
                                 break;
                             case DESFOCAR:
                                 if (estadoDesfoque == Atividade.Foco.SEM_FOCO) {
@@ -377,7 +388,7 @@ public class AlgoritmoCriacao {
                                     utils.addExtraMethod(TipoExtraMethods.PRESSKEY);
                                 }
                                 scriptCompleto += utils.construirComandoEmOrdem(tipoOrdem, scriptAcoes, verificaoFoco);
-                                documentacao += utils.gerarPassoDocumentacao(elementId, tipoOrdem, acao, !verificaoFoco.isEmpty());
+                                documentacao += utils.gerarDocumentacao(elementId, tipoOrdem, acao, !verificaoFoco.isEmpty());
                                 break;
                             case ESCREVER:
                                 if (estadoTexto != null) {
@@ -386,16 +397,16 @@ public class AlgoritmoCriacao {
                                     }
                                 }
                                 scriptCompleto += utils.construirComandoEmOrdem(tipoOrdem, scriptAcoes, verificaoTexto);
-                                documentacao += utils.gerarPassoDocumentacao(elementId, tipoOrdem, acao, !verificaoTexto.isEmpty(), utils.getSafeString(estadoTexto));
+                                documentacao += utils.gerarDocumentacao(elementId, tipoOrdem, acao, !verificaoTexto.isEmpty(), utils.getSafeString(estadoTexto));
                                 break;
                             case LIMPAR:
                                 scriptAcoes = clearCall;
                                 scriptCompleto += utils.construirComandoEmOrdem(tipoOrdem, scriptAcoes, verificaoTexto);
-                                documentacao += utils.gerarPassoDocumentacao(elementId, tipoOrdem, acao, !verificaoTexto.isEmpty());
+                                documentacao += utils.gerarDocumentacao(elementId, tipoOrdem, acao, !verificaoTexto.isEmpty());
                                 break;
                             case LER:
                                 scriptCompleto += utils.construirComandoEmOrdem(tipoOrdem, scriptAcoes, verificaoTexto);
-                                documentacao += utils.gerarPassoDocumentacao(elementId, tipoOrdem, acao, !verificaoTexto.isEmpty(), utils.getSafeString(estadoLeitura));
+                                documentacao += utils.gerarDocumentacao(elementId, tipoOrdem, acao, !verificaoTexto.isEmpty(), utils.getSafeString(estadoLeitura));
                                 break;
                             case SELECIONAR_COMBO:
                                 if (estadoSelecao != null) {
@@ -403,7 +414,7 @@ public class AlgoritmoCriacao {
                                     utils.addExtraMethod(TipoExtraMethods.SELECT);
                                 }
                                 scriptCompleto += utils.construirComandoEmOrdem(tipoOrdem, scriptAcoes, verificaoSelecao);
-                                documentacao += utils.gerarPassoDocumentacao(elementId, tipoOrdem, acao, !verificaoSelecao.isEmpty(), utils.getSafeString(estadoSelecao));
+                                documentacao += utils.gerarDocumentacao(elementId, tipoOrdem, acao, !verificaoSelecao.isEmpty(), utils.getSafeString(estadoSelecao));
                                 break;
                             case SELECIONAR_LISTA:
                                 if (estadoSelecaoLista != null) {
@@ -411,28 +422,28 @@ public class AlgoritmoCriacao {
                                     utils.addExtraMethod(TipoExtraMethods.SELECT_LIST_ITEM);
                                 }
                                 scriptCompleto += utils.construirComandoEmOrdem(tipoOrdem, scriptAcoes, verificaoSelecaoLista);
-                                documentacao += utils.gerarPassoDocumentacao(elementId, tipoOrdem, acao, !verificaoSelecaoLista.isEmpty(), utils.getSafeString(estadoSelecaoLista));
+                                documentacao += utils.gerarDocumentacao(elementId, tipoOrdem, acao, !verificaoSelecaoLista.isEmpty(), utils.getSafeString(estadoSelecaoLista));
                                 break;
                             case PROGREDIR:
                                 scriptAcoes = progressCall;
                                 scriptCompleto += utils.construirComandoEmOrdem(tipoOrdem, scriptAcoes, verificarProgresso);
                                 utils.addExtraMethod(TipoExtraMethods.PROGRESS);
-                                documentacao += utils.gerarPassoDocumentacao(elementId, tipoOrdem, acao, !verificarProgresso.isEmpty(), utils.getSafeString(estadoProgresso));
+                                documentacao += utils.gerarDocumentacao(elementId, tipoOrdem, acao, !verificarProgresso.isEmpty(), utils.getSafeString(estadoProgresso));
                                 break;
                             case MARCAR_OPCAO:
                                 scriptAcoes = clickCall;
                                 scriptCompleto += utils.construirComandoEmOrdem(tipoOrdem, scriptAcoes, verificacaoOpcaoMarcada);
-                                documentacao += utils.gerarPassoDocumentacao(elementId, tipoOrdem, acao, !verificacaoOpcaoMarcada.isEmpty());
+                                documentacao += utils.gerarDocumentacao(elementId, tipoOrdem, acao, !verificacaoOpcaoMarcada.isEmpty());
                                 break;
                             case MARCAR_OPCAO_DESMARCAVEL:
                                 scriptAcoes = checkOptionCall;
                                 scriptCompleto += utils.construirComandoEmOrdem(tipoOrdem, scriptAcoes, verificacaoOpcaoMarcada);
-                                documentacao += utils.gerarPassoDocumentacao(elementId, tipoOrdem, acao, !verificacaoOpcaoMarcada.isEmpty(), utils.getSafeString(estadoMarcacaoOpcao));
+                                documentacao += utils.gerarDocumentacao(elementId, tipoOrdem, acao, !verificacaoOpcaoMarcada.isEmpty(), utils.getSafeString(estadoMarcacaoOpcao));
                                 break;
                             case VISUALIZAR:
                                 scriptCompleto += utils.construirComandoEmOrdem(tipoOrdem, scriptAcoes, verificacaoVisibilidade);
                                 utils.addExtraMethod(TipoExtraMethods.ISDISPLAYED);
-                                documentacao += utils.gerarPassoDocumentacao(elementId, tipoOrdem, acao, !verificacaoVisibilidade.isEmpty(), utils.getSafeString(estadoVisibilidade));
+                                documentacao += utils.gerarDocumentacao(elementId, tipoOrdem, acao, !verificacaoVisibilidade.isEmpty(), utils.getSafeString(estadoVisibilidade));
                                 break;
                         }
                     }
@@ -745,13 +756,13 @@ public class AlgoritmoCriacao {
             return tipoOrdem;
         }
 
-        public String gerarPassoDocumentacao(String elementId, TipoOrdem tipoOrdem,
-                                             Atividade.TipoAcao acao, boolean isVerificar) {
-            return gerarPassoDocumentacao(elementId, tipoOrdem, acao, isVerificar, "");
+        public String gerarDocumentacao(String elementId, TipoOrdem tipoOrdem,
+                                        Atividade.TipoAcao acao, boolean isVerificar) {
+            return gerarDocumentacao(elementId, tipoOrdem, acao, isVerificar, "");
         }
 
-        public String gerarPassoDocumentacao(String elementId, TipoOrdem tipoOrdem,
-                                             Atividade.TipoAcao acao, boolean isVerificar, String valor) {
+        public String gerarDocumentacao(String elementId, TipoOrdem tipoOrdem,
+                                        Atividade.TipoAcao acao, boolean isVerificar, String valor) {
             valor = valor == null ? "" : valor;
             String reproduzir = "";
             String verificacao = "";
@@ -876,7 +887,7 @@ public class AlgoritmoCriacao {
                     documentacao += utils.construirComandoEmOrdem(tipoOrdem, reproduzir, verificacao);
                     break;
             }
-            return documentacao + "\n";
+            return documentacao;
         }
 
     }

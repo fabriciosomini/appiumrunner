@@ -149,6 +149,7 @@ public class MainActivity extends AppCompatActivity {
                     if (noItems) {
                         GeradorTestes.gerarTesteElemento(emptyText)
                                 .visibilidade(Atividade.Visibilidade.VISIVEL)
+                                .lerValor(getString(R.string.nenhum_item))
                                 .verificarValores();
                     } else {
                         GeradorTestes.gerarTesteElemento(emptyText)
@@ -203,6 +204,7 @@ public class MainActivity extends AppCompatActivity {
                     if (noItems) {
                         GeradorTestes.gerarTesteElemento(emptyText)
                                 .visibilidade(Atividade.Visibilidade.VISIVEL)
+                                .lerValor(getString(R.string.nenhum_item))
                                 .verificarValores();
                     } else {
                         GeradorTestes.gerarTesteElemento(emptyText)
