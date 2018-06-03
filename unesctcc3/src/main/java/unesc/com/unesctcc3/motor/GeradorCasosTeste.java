@@ -17,53 +17,53 @@ import unesc.com.unesctcc3.utilitarios.MetodosUtilitario;
  */
 public class GeradorCasosTeste {
     private String fullScript;
-    private String teardownScript;
     private ArrayList<Atividade> atividades;
     private Preferencias preferencias;
-
     private Setup setup;
-    private Utils utils;
+    private Utilitarios utilitarios;
     private String nomeTeste;
     private Set<TipoExtraMethods> tipoExtraMethods;
 
-    public GeradorCasosTeste(Setup setup) {
-        init(setup);
+    public GeradorCasosTeste(Setup setup, Preferencias preferencias) {
+
+        inicializar(setup, preferencias);
     }
 
-    private void init(Setup setup) {
-        fullScript = null;
-        teardownScript = null;
-        atividades = null;
-        preferencias = null;
 
+    public GeradorCasosTeste() {
+        this(null, null);
+    }
+
+
+    private void inicializar(Setup setup, Preferencias preferencias) {
+        fullScript = null;
+        atividades = null;
+        this.preferencias = preferencias == null ? new Preferencias() : preferencias;
         this.setup = setup;
-        utils = new Utils();
-        nomeTeste = utils.gerarNomeTeste();
+        utilitarios = new Utilitarios();
+        nomeTeste = utilitarios.gerarNomeTeste();
         tipoExtraMethods = new HashSet<>();
     }
 
-    public GeradorCasosTeste() {
-        this(null);
-    }
+    public Teste gerar(ArrayList<Atividade> atividades, String nomeTeste) {
 
-    public Teste criar(ArrayList<Atividade> atividades, Preferencias preferencias, String nomeTeste) {
-        this.preferencias = preferencias == null ? new Preferencias() : preferencias;
         this.nomeTeste = nomeTeste == null ? this.nomeTeste : nomeTeste;
-        ScriptBuilder scriptBuilder = new ScriptBuilder();
+        MontadorTestes montadorTestes = new MontadorTestes();
         this.atividades = atividades;
-        Teste teste = scriptBuilder.criarScript();
-        fullScript = scriptBuilder.criarSetup();
+        Teste teste = montadorTestes.montarTesteCompleto();
+        fullScript = montadorTestes.montarSetup();
         fullScript += teste.getCasoTeste();
         if (!this.preferencias.isSkipTearDownDeclaration()) {
-            teardownScript = scriptBuilder.createTeardown();
+            String teardownScript;
+            teardownScript = montadorTestes.montarTeardown();
             fullScript += teardownScript;
         }
-        fullScript = scriptBuilder.criarClasseTeste();
+        fullScript = montadorTestes.montarClasseTeste();
         fullScript = fullScript.replace("\n\n\n\n", "\n\n");
 
 
         teste.setCasoTeste(fullScript);
-        init(this.setup);
+        inicializar(this.setup, this.preferencias);
 
         return teste;
     }
@@ -79,24 +79,24 @@ public class GeradorCasosTeste {
         SELECT, SCROLL, ISFOCUSED, GET_CHILD_TEXT, CHECK, ISCHECKED, PRESSKEY, ISDISPLAYED, SELECT_LIST_ITEM, PROGRESS
     }
 
-    private class ScriptBuilder {
-        private final MethodBuilder methodBuilder;
+    private class MontadorTestes {
+        private final MontadorMetodos montadorMetodos;
         private String glogalVariablesScript;
 
-        public ScriptBuilder() {
-            methodBuilder = new MethodBuilder();
+        public MontadorTestes() {
+            montadorMetodos = new MontadorMetodos();
             glogalVariablesScript = "";
         }
 
-        private Teste criarScript() {
-            Teste teste = construirScriptAcoesVerificacoes();
+        private Teste montarTesteCompleto() {
+            Teste teste = montarCasoTeste();
             String scriptAcoes = teste.getCasoTeste();
             scriptAcoes = scriptAcoes.replace("\n", "\n\t");
             scriptAcoes = "\n\n" + "@Test"
                     + "\n" + "public void teste() throws Exception {"
                     + "\n" + scriptAcoes
                     + "\n" + "}"
-                    + criarMetodosExtras();
+                    + montarMetodosExtras();
 
             teste.setCasoTeste(scriptAcoes);
             String documentacao = teste.getDocumentacao();
@@ -114,7 +114,7 @@ public class GeradorCasosTeste {
             return teste;
         }
 
-        private String criarMetodosExtras() {
+        private String montarMetodosExtras() {
             String scriptMetodosExtras = "";
             if (preferencias != null) {
                 if (preferencias.isSkipMethodsDeclaration()) {
@@ -125,41 +125,41 @@ public class GeradorCasosTeste {
                     tipoExtraMethods) {
                 switch (extra) {
                     case PROGRESS:
-                        scriptMetodosExtras += methodBuilder.getProgressMethodDefinition();
+                        scriptMetodosExtras += montadorMetodos.getProgressMethodDefinition();
                         break;
                     case SELECT:
-                        scriptMetodosExtras += methodBuilder.getElementUsingTextAndScrollMethodDefinition();
+                        scriptMetodosExtras += montadorMetodos.getElementUsingTextAndScrollMethodDefinition();
                         break;
                     case SELECT_LIST_ITEM:
-                        scriptMetodosExtras += methodBuilder.getElementUsingParentIdAndTextAndScrollMethodDefinition();
+                        scriptMetodosExtras += montadorMetodos.getElementUsingParentIdAndTextAndScrollMethodDefinition();
                         break;
                     case SCROLL:
-                        scriptMetodosExtras += methodBuilder.getElementByIdAndScrollToMethodDefinition();
+                        scriptMetodosExtras += montadorMetodos.getElementByIdAndScrollToMethodDefinition();
                         break;
                     case ISFOCUSED:
-                        scriptMetodosExtras += methodBuilder.getElementHasFocusMethodDefinition();
+                        scriptMetodosExtras += montadorMetodos.getElementHasFocusMethodDefinition();
                         break;
                     case GET_CHILD_TEXT:
-                        scriptMetodosExtras += methodBuilder.getChildTextMethodDefinition();
+                        scriptMetodosExtras += montadorMetodos.getChildTextMethodDefinition();
                         break;
                     case CHECK:
-                        scriptMetodosExtras += methodBuilder.getCheckMethodDefinition();
+                        scriptMetodosExtras += montadorMetodos.getCheckMethodDefinition();
                         break;
                     case ISCHECKED:
-                        scriptMetodosExtras += methodBuilder.getIsOptionCheckedMethodDefinition();
+                        scriptMetodosExtras += montadorMetodos.getIsOptionCheckedMethodDefinition();
                         break;
                     case PRESSKEY:
-                        scriptMetodosExtras += methodBuilder.getPressKeyMethodDefinition();
+                        scriptMetodosExtras += montadorMetodos.getPressKeyMethodDefinition();
                         break;
                     case ISDISPLAYED:
-                        scriptMetodosExtras += methodBuilder.getVisibilityMethodDefinition();
+                        scriptMetodosExtras += montadorMetodos.getVisibilityMethodDefinition();
                         break;
                 }
             }
             return scriptMetodosExtras;
         }
 
-        private String criarClasseTeste() {
+        private String montarClasseTeste() {
             String addedImports = "";
             if (preferencias.getPackages() != null) {
                 for (String packageName : preferencias.getPackages()) {
@@ -217,18 +217,7 @@ public class GeradorCasosTeste {
             return packages + imports + classe;
         }
 
-        private String createTeardown() {
-            String teardown =
-                    "\n\n" + "@After"
-                            + "\n" + "public void tearDown() {"
-                            + "\n\t" + "if (driver != null) {"
-                            + "\n\t" + "driver.quit();"
-                            + "\n\t" + "}"
-                            + "\n" + "}";
-            return teardown;
-        }
-
-        private String criarSetup() {
+        private String montarSetup() {
             if (setup != null) {
                 String platformVersion = setup.getPlatformVersion();
                 String deviceName = setup.getDeviceName();
@@ -280,7 +269,20 @@ public class GeradorCasosTeste {
             return fullScript;
         }
 
-        private Teste construirScriptAcoesVerificacoes() {
+        private String montarTeardown() {
+            String teardown =
+                    "\n\n" + "@After"
+                            + "\n" + "public void tearDown() {"
+                            + "\n\t" + "if (driver != null) {"
+                            + "\n\t" + "driver.quit();"
+                            + "\n\t" + "}"
+                            + "\n" + "}";
+            return teardown;
+        }
+
+
+        private Teste montarCasoTeste() {
+            MontadorDocumentacao montadorDocumentacao = new MontadorDocumentacao();
             Teste teste = new Teste();
             String scriptCompleto = "";
             String documentacao = "";
@@ -300,60 +302,60 @@ public class GeradorCasosTeste {
                 Atividade.Visibilidade estadoVisibilidade = (Atividade.Visibilidade) MetodosUtilitario.invocarMetodo(atividade, "getEstadoVisibilidade");
                 Integer estadoProgresso = (Integer) MetodosUtilitario.invocarMetodo(atividade, "getEstadoProgresso");
                 List<Atividade.TipoAcao> passos = (List<Atividade.TipoAcao>) MetodosUtilitario.invocarMetodo(atividade, "getAcoes");
-                String findElementByIdCall = methodBuilder.getFindElementByIdMethod(elementId, elementName);
-                String clickCall = methodBuilder.getClickMethod(elementName);
-                String focusCall = methodBuilder.getFocusElementMethod(elementName);
-                String clearCall = methodBuilder.getClearMethod(elementName);
-                String setValueCall = methodBuilder.getSetValueMethod(elementName, utils.getSafeString(estadoTexto));
-                String scrollToCall = methodBuilder.getScrollToMethodById(elementId);
-                String progressCall = methodBuilder.getProgressMethod(elementName, estadoProgresso);
-                String selectItemCall = methodBuilder.getElementUsingTextAndScrollToItemMethod(elementName, utils.getSafeString(estadoSelecao));
-                String pickListItemCall = methodBuilder.getElementUsingParentIdAndTextAndScrollMethod(elementName, utils.getSafeString(estadoSelecaoLista));
-                String checkOptionCall = methodBuilder.getCheckMethod(elementName, estadoMarcacaoOpcao);
-                String pressKeyCall = methodBuilder.getPressKeyMethod(estadoTecla);
-                String verificacaoVisibilidade = methodBuilder.getVisibilityAssertionMethod(elementName, estadoVisibilidade);
-                String verificaoSelecao = methodBuilder.getSpinnerAssertionMethod(elementName, utils.getSafeString(estadoSelecao));
+                String findElementByIdCall = montadorMetodos.getFindElementByIdMethod(elementId, elementName);
+                String clickCall = montadorMetodos.getClickMethod(elementName);
+                String focusCall = montadorMetodos.getFocusElementMethod(elementName);
+                String clearCall = montadorMetodos.getClearMethod(elementName);
+                String setValueCall = montadorMetodos.getSetValueMethod(elementName, utilitarios.getSafeString(estadoTexto));
+                String scrollToCall = montadorMetodos.getScrollToMethodById(elementId);
+                String progressCall = montadorMetodos.getProgressMethod(elementName, estadoProgresso);
+                String selectItemCall = montadorMetodos.getElementUsingTextAndScrollToItemMethod(elementName, utilitarios.getSafeString(estadoSelecao));
+                String pickListItemCall = montadorMetodos.getElementUsingParentIdAndTextAndScrollMethod(elementName, utilitarios.getSafeString(estadoSelecaoLista));
+                String checkOptionCall = montadorMetodos.getCheckMethod(elementName, estadoMarcacaoOpcao);
+                String pressKeyCall = montadorMetodos.getPressKeyMethod(estadoTecla);
+                String verificacaoVisibilidade = montadorMetodos.getVisibilityAssertionMethod(elementName, estadoVisibilidade);
+                String verificaoSelecao = montadorMetodos.getSpinnerAssertionMethod(elementName, utilitarios.getSafeString(estadoSelecao));
                 String verificaoSelecaoLista = ""; //TODO
-                String verificarProgresso = methodBuilder.getProgressAssertionMethod(elementName, estadoProgresso);
-                String verificacaoOpcaoMarcada = estadoMarcacaoOpcao == null ? methodBuilder.getCheckAsssertionMethod(elementName, Atividade.Marcacao.MARCADO) :
-                        methodBuilder.getCheckAsssertionMethod(elementName, estadoMarcacaoOpcao);
+                String verificarProgresso = montadorMetodos.getProgressAssertionMethod(elementName, estadoProgresso);
+                String verificacaoOpcaoMarcada = estadoMarcacaoOpcao == null ? montadorMetodos.getCheckAsssertionMethod(elementName, Atividade.Marcacao.MARCADO) :
+                        montadorMetodos.getCheckAsssertionMethod(elementName, estadoMarcacaoOpcao);
                 if (passos.contains(Atividade.TipoAcao.FOCAR)
                         && passos.contains(Atividade.TipoAcao.VERIFICAR)
                         && estadoFoco != null && estadoFoco != Atividade.Foco.IGNORAR) {
-                    utils.addExtraMethod(TipoExtraMethods.ISFOCUSED);
+                    utilitarios.addExtraMethod(TipoExtraMethods.ISFOCUSED);
                 }
 
                 if (passos.contains(Atividade.TipoAcao.DESFOCAR)
                         && passos.contains(Atividade.TipoAcao.VERIFICAR)
                         && estadoDesfoque != null && estadoDesfoque != Atividade.Foco.IGNORAR) {
-                    utils.addExtraMethod(TipoExtraMethods.ISFOCUSED);
+                    utilitarios.addExtraMethod(TipoExtraMethods.ISFOCUSED);
                 }
 
                 //Marcar opção desmarcável usa o método isOptionChecked na ação e na asserção, então adicione
                 if (passos.contains(Atividade.TipoAcao.MARCAR_OPCAO_DESMARCAVEL)) {
-                    utils.addExtraMethod(TipoExtraMethods.ISCHECKED);
+                    utilitarios.addExtraMethod(TipoExtraMethods.ISCHECKED);
                 }
                 //Marcar opcao não usa o método isOptionChecked, então apenas adicione se tiver asserção
                 if (passos.contains(Atividade.TipoAcao.MARCAR_OPCAO) && passos.contains(Atividade.TipoAcao.VERIFICAR)) {
-                    utils.addExtraMethod(TipoExtraMethods.ISCHECKED);
+                    utilitarios.addExtraMethod(TipoExtraMethods.ISCHECKED);
                 }
                 if (passos.contains(Atividade.TipoAcao.SELECIONAR_COMBO)
                         && passos.contains(Atividade.TipoAcao.VERIFICAR)
                         && estadoSelecao != null) {
-                    utils.addExtraMethod(TipoExtraMethods.GET_CHILD_TEXT);
+                    utilitarios.addExtraMethod(TipoExtraMethods.GET_CHILD_TEXT);
                 }
                 if (passos.contains(Atividade.TipoAcao.ROLAR)) {
                     scriptCompleto += scrollToCall;
-                    utils.addExtraMethod(TipoExtraMethods.SCROLL);
+                    utilitarios.addExtraMethod(TipoExtraMethods.SCROLL);
                 }
                 if (passos.contains(Atividade.TipoAcao.MARCAR_OPCAO) ||
                         passos.contains(Atividade.TipoAcao.MARCAR_OPCAO_DESMARCAVEL)) {
-                    utils.addExtraMethod(TipoExtraMethods.CHECK);
+                    utilitarios.addExtraMethod(TipoExtraMethods.CHECK);
                 }
                 if (elementName != null && !glogalVariablesScript.contains(findElementByIdCall)) {
                     glogalVariablesScript += findElementByIdCall;
                 }
-                TipoOrdem tipoOrdem = utils.getOrdem(passos);
+                TipoOrdem tipoOrdem = utilitarios.getOrdem(passos);
                 for (Atividade.TipoAcao acao :
                         passos) {
                     if (acao != null) {
@@ -375,33 +377,33 @@ public class GeradorCasosTeste {
                         if (acao == Atividade.TipoAcao.LER) {
                             texto = estadoLeitura.toString();
                         }
-                        String verificaoFoco = methodBuilder.getFocusAssertionMethod(elementName, estadoFocoDesfoque);
-                        String verificaoTexto = methodBuilder.getTextAssertionMethod(elementName, texto);
+                        String verificaoFoco = montadorMetodos.getFocusAssertionMethod(elementName, estadoFocoDesfoque);
+                        String verificaoTexto = montadorMetodos.getTextAssertionMethod(elementName, texto);
                         switch (acao) {
                             case CLICAR:
                                 scriptCompleto += clickCall;
-                                documentacao += utils.gerarDocumentacao(elementId, tipoOrdem, acao, false);
+                                documentacao += montadorDocumentacao.gerarDocumentacao(elementId, tipoOrdem, acao, false);
                                 break;
                             case PRESSIONAR:
                                 scriptCompleto += pressKeyCall;
-                                utils.addExtraMethod(TipoExtraMethods.PRESSKEY);
-                                documentacao += utils.gerarDocumentacao(elementId, tipoOrdem, acao, false, utils.getSafeString(estadoTecla));
+                                utilitarios.addExtraMethod(TipoExtraMethods.PRESSKEY);
+                                documentacao += montadorDocumentacao.gerarDocumentacao(elementId, tipoOrdem, acao, false, utilitarios.getSafeString(estadoTecla));
                                 break;
                             case FOCAR:
                                 if (estadoFoco == Atividade.Foco.FOCADO) {
                                     scriptAcoes = focusCall;
                                 }
-                                utils.addExtraMethod(TipoExtraMethods.ISFOCUSED);
-                                scriptCompleto += utils.construirComandoEmOrdem(tipoOrdem, scriptAcoes, verificaoFoco);
-                                documentacao += utils.gerarDocumentacao(elementId, tipoOrdem, acao, !verificaoFoco.isEmpty());
+                                utilitarios.addExtraMethod(TipoExtraMethods.ISFOCUSED);
+                                scriptCompleto += utilitarios.montarComandosNaOrdem(tipoOrdem, scriptAcoes, verificaoFoco);
+                                documentacao += montadorDocumentacao.gerarDocumentacao(elementId, tipoOrdem, acao, !verificaoFoco.isEmpty());
                                 break;
                             case DESFOCAR:
                                 if (estadoDesfoque == Atividade.Foco.SEM_FOCO) {
-                                    scriptAcoes = methodBuilder.getPressKeyMethod(Atividade.Tecla.ENTER);
-                                    utils.addExtraMethod(TipoExtraMethods.PRESSKEY);
+                                    scriptAcoes = montadorMetodos.getPressKeyMethod(Atividade.Tecla.ENTER);
+                                    utilitarios.addExtraMethod(TipoExtraMethods.PRESSKEY);
                                 }
-                                scriptCompleto += utils.construirComandoEmOrdem(tipoOrdem, scriptAcoes, verificaoFoco);
-                                documentacao += utils.gerarDocumentacao(elementId, tipoOrdem, acao, !verificaoFoco.isEmpty());
+                                scriptCompleto += utilitarios.montarComandosNaOrdem(tipoOrdem, scriptAcoes, verificaoFoco);
+                                documentacao += montadorDocumentacao.gerarDocumentacao(elementId, tipoOrdem, acao, !verificaoFoco.isEmpty());
                                 break;
                             case ESCREVER:
                                 if (estadoTexto != null) {
@@ -409,54 +411,54 @@ public class GeradorCasosTeste {
                                         scriptAcoes = setValueCall;
                                     }
                                 }
-                                scriptCompleto += utils.construirComandoEmOrdem(tipoOrdem, scriptAcoes, verificaoTexto);
-                                documentacao += utils.gerarDocumentacao(elementId, tipoOrdem, acao, !verificaoTexto.isEmpty(), utils.getSafeString(estadoTexto));
+                                scriptCompleto += utilitarios.montarComandosNaOrdem(tipoOrdem, scriptAcoes, verificaoTexto);
+                                documentacao += montadorDocumentacao.gerarDocumentacao(elementId, tipoOrdem, acao, !verificaoTexto.isEmpty(), utilitarios.getSafeString(estadoTexto));
                                 break;
                             case LIMPAR:
                                 scriptAcoes = clearCall;
-                                scriptCompleto += utils.construirComandoEmOrdem(tipoOrdem, scriptAcoes, verificaoTexto);
-                                documentacao += utils.gerarDocumentacao(elementId, tipoOrdem, acao, !verificaoTexto.isEmpty());
+                                scriptCompleto += utilitarios.montarComandosNaOrdem(tipoOrdem, scriptAcoes, verificaoTexto);
+                                documentacao += montadorDocumentacao.gerarDocumentacao(elementId, tipoOrdem, acao, !verificaoTexto.isEmpty());
                                 break;
                             case LER:
-                                scriptCompleto += utils.construirComandoEmOrdem(tipoOrdem, scriptAcoes, verificaoTexto);
-                                documentacao += utils.gerarDocumentacao(elementId, tipoOrdem, acao, !verificaoTexto.isEmpty(), utils.getSafeString(estadoLeitura));
+                                scriptCompleto += utilitarios.montarComandosNaOrdem(tipoOrdem, scriptAcoes, verificaoTexto);
+                                documentacao += montadorDocumentacao.gerarDocumentacao(elementId, tipoOrdem, acao, !verificaoTexto.isEmpty(), utilitarios.getSafeString(estadoLeitura));
                                 break;
                             case SELECIONAR_COMBO:
                                 if (estadoSelecao != null) {
                                     scriptAcoes = selectItemCall;
-                                    utils.addExtraMethod(TipoExtraMethods.SELECT);
+                                    utilitarios.addExtraMethod(TipoExtraMethods.SELECT);
                                 }
-                                scriptCompleto += utils.construirComandoEmOrdem(tipoOrdem, scriptAcoes, verificaoSelecao);
-                                documentacao += utils.gerarDocumentacao(elementId, tipoOrdem, acao, !verificaoSelecao.isEmpty(), utils.getSafeString(estadoSelecao));
+                                scriptCompleto += utilitarios.montarComandosNaOrdem(tipoOrdem, scriptAcoes, verificaoSelecao);
+                                documentacao += montadorDocumentacao.gerarDocumentacao(elementId, tipoOrdem, acao, !verificaoSelecao.isEmpty(), utilitarios.getSafeString(estadoSelecao));
                                 break;
                             case SELECIONAR_LISTA:
                                 if (estadoSelecaoLista != null) {
                                     scriptAcoes = pickListItemCall;
-                                    utils.addExtraMethod(TipoExtraMethods.SELECT_LIST_ITEM);
+                                    utilitarios.addExtraMethod(TipoExtraMethods.SELECT_LIST_ITEM);
                                 }
-                                scriptCompleto += utils.construirComandoEmOrdem(tipoOrdem, scriptAcoes, verificaoSelecaoLista);
-                                documentacao += utils.gerarDocumentacao(elementId, tipoOrdem, acao, !verificaoSelecaoLista.isEmpty(), utils.getSafeString(estadoSelecaoLista));
+                                scriptCompleto += utilitarios.montarComandosNaOrdem(tipoOrdem, scriptAcoes, verificaoSelecaoLista);
+                                documentacao += montadorDocumentacao.gerarDocumentacao(elementId, tipoOrdem, acao, !verificaoSelecaoLista.isEmpty(), utilitarios.getSafeString(estadoSelecaoLista));
                                 break;
                             case PROGREDIR:
                                 scriptAcoes = progressCall;
-                                scriptCompleto += utils.construirComandoEmOrdem(tipoOrdem, scriptAcoes, verificarProgresso);
-                                utils.addExtraMethod(TipoExtraMethods.PROGRESS);
-                                documentacao += utils.gerarDocumentacao(elementId, tipoOrdem, acao, !verificarProgresso.isEmpty(), utils.getSafeString(estadoProgresso));
+                                scriptCompleto += utilitarios.montarComandosNaOrdem(tipoOrdem, scriptAcoes, verificarProgresso);
+                                utilitarios.addExtraMethod(TipoExtraMethods.PROGRESS);
+                                documentacao += montadorDocumentacao.gerarDocumentacao(elementId, tipoOrdem, acao, !verificarProgresso.isEmpty(), utilitarios.getSafeString(estadoProgresso));
                                 break;
                             case MARCAR_OPCAO:
                                 scriptAcoes = clickCall;
-                                scriptCompleto += utils.construirComandoEmOrdem(tipoOrdem, scriptAcoes, verificacaoOpcaoMarcada);
-                                documentacao += utils.gerarDocumentacao(elementId, tipoOrdem, acao, !verificacaoOpcaoMarcada.isEmpty());
+                                scriptCompleto += utilitarios.montarComandosNaOrdem(tipoOrdem, scriptAcoes, verificacaoOpcaoMarcada);
+                                documentacao += montadorDocumentacao.gerarDocumentacao(elementId, tipoOrdem, acao, !verificacaoOpcaoMarcada.isEmpty());
                                 break;
                             case MARCAR_OPCAO_DESMARCAVEL:
                                 scriptAcoes = checkOptionCall;
-                                scriptCompleto += utils.construirComandoEmOrdem(tipoOrdem, scriptAcoes, verificacaoOpcaoMarcada);
-                                documentacao += utils.gerarDocumentacao(elementId, tipoOrdem, acao, !verificacaoOpcaoMarcada.isEmpty(), utils.getSafeString(estadoMarcacaoOpcao));
+                                scriptCompleto += utilitarios.montarComandosNaOrdem(tipoOrdem, scriptAcoes, verificacaoOpcaoMarcada);
+                                documentacao += montadorDocumentacao.gerarDocumentacao(elementId, tipoOrdem, acao, !verificacaoOpcaoMarcada.isEmpty(), utilitarios.getSafeString(estadoMarcacaoOpcao));
                                 break;
                             case VISUALIZAR:
-                                scriptCompleto += utils.construirComandoEmOrdem(tipoOrdem, scriptAcoes, verificacaoVisibilidade);
-                                utils.addExtraMethod(TipoExtraMethods.ISDISPLAYED);
-                                documentacao += utils.gerarDocumentacao(elementId, tipoOrdem, acao, !verificacaoVisibilidade.isEmpty(), utils.getSafeString(estadoVisibilidade));
+                                scriptCompleto += utilitarios.montarComandosNaOrdem(tipoOrdem, scriptAcoes, verificacaoVisibilidade);
+                                utilitarios.addExtraMethod(TipoExtraMethods.ISDISPLAYED);
+                                documentacao += montadorDocumentacao.gerarDocumentacao(elementId, tipoOrdem, acao, !verificacaoVisibilidade.isEmpty(), utilitarios.getSafeString(estadoVisibilidade));
                                 break;
                         }
                     }
@@ -469,7 +471,7 @@ public class GeradorCasosTeste {
         }
     }
 
-    private class MethodBuilder {
+    private class MontadorMetodos {
         private String getProgressMethod(String elementName, Integer estadoProgresso) {
             String method = "\n" + "progressTo(" + elementName + ", " + estadoProgresso + ");";
             return method;
@@ -693,9 +695,146 @@ public class GeradorCasosTeste {
 
     }
 
-    private class Utils {
+    private class MontadorDocumentacao {
+        public String gerarDocumentacao(String elementId, TipoOrdem tipoOrdem,
+                                        Atividade.TipoAcao acao, boolean isVerificar) {
+            return gerarDocumentacao(elementId, tipoOrdem, acao, isVerificar, "");
+        }
+
+        public String gerarDocumentacao(String elementId, TipoOrdem tipoOrdem,
+                                        Atividade.TipoAcao acao, boolean isVerificar, String valor) {
+            valor = valor == null ? "" : valor;
+            String reproduzir = "";
+            String verificacao = "";
+            String documentacao = "";
+            switch (acao) {
+                case CLICAR:
+                    reproduzir = "\n" + "Clicar no elemento '" + elementId + "'";
+                    if (isVerificar) {
+                        verificacao = "";
+                    }
+                    documentacao += utilitarios.montarComandosNaOrdem(tipoOrdem, reproduzir, verificacao);
+                    break;
+                case PRESSIONAR:
+                    reproduzir = "\n" + "Pressionar a tecla '" + valor + "'";
+                    if (isVerificar) {
+                        verificacao = "";
+                    }
+                    documentacao += utilitarios.montarComandosNaOrdem(tipoOrdem, reproduzir, verificacao);
+                    break;
+                case FOCAR:
+                    reproduzir = "\n" + "Focar no elemento '" + elementId + "'";
+                    if (isVerificar) {
+                        verificacao = "\n" + "Verificar se o elemento '" + elementId + "' está com foco";
+                    }
+                    documentacao += utilitarios.montarComandosNaOrdem(tipoOrdem, reproduzir, verificacao);
+                    break;
+                case DESFOCAR:
+                    reproduzir = "\n" + "Tirar o foco do elemento '" + elementId + "'";
+                    if (isVerificar) {
+                        verificacao = "\n" + "Verificar se o elemento '" + elementId + "' está sem o foco";
+                    }
+                    documentacao += utilitarios.montarComandosNaOrdem(tipoOrdem, reproduzir, verificacao);
+                    break;
+                case ESCREVER:
+                    reproduzir = "\n" + "Digitar o texto '" + valor + "' no elemento '" + elementId + "'";
+                    if (isVerificar) {
+                        verificacao = "\n" + "Verificar se o elemento '" + elementId + "' possui o texto '" + valor + "'";
+                    }
+                    documentacao += utilitarios.montarComandosNaOrdem(tipoOrdem, reproduzir, verificacao);
+                    break;
+                case LIMPAR:
+                    reproduzir = "\n" + "Limpar o conteúdo do elemento '" + elementId + "'";
+                    if (isVerificar) {
+                        verificacao = "\n" + "Verificar se o elemento '" + elementId + "' está sem nenhum valor";
+                    }
+                    documentacao += utilitarios.montarComandosNaOrdem(tipoOrdem, reproduzir, verificacao);
+                    break;
+                case LER:
+                    reproduzir = "";
+                    if (isVerificar) {
+                        verificacao = "\n" + "Verificar se o elemento '" + elementId + "' possui o valor '" + valor + "'";
+                    }
+                    documentacao += utilitarios.montarComandosNaOrdem(tipoOrdem, reproduzir, verificacao);
+                    break;
+                case SELECIONAR_COMBO:
+                    reproduzir = "\n" + "Selecionar a opção '" + valor + "' no elemento '" + elementId + "'";
+                    if (isVerificar) {
+                        verificacao = "\n" + "Verificar se o elemento '" + elementId + "' possui a opção '" + valor + "' selecionada";
+                    }
+                    documentacao += utilitarios.montarComandosNaOrdem(tipoOrdem, reproduzir, verificacao);
+                    break;
+                case SELECIONAR_LISTA:
+                    reproduzir = "\n" + "Selecionar o item '" + valor + "' no elemento '" + elementId + "'";
+                    if (isVerificar) {
+                        verificacao = "";
+                    }
+                    documentacao += utilitarios.montarComandosNaOrdem(tipoOrdem, reproduzir, verificacao);
+                    break;
+                case PROGREDIR:
+                    reproduzir = "\n" + "Progredir até '" + valor + "' no elemento '" + elementId + "'";
+                    if (isVerificar) {
+                        verificacao = "\n" + "Verificar se o elemento '" + elementId + "' possui o progresso de '" + valor + "'";
+                    }
+                    documentacao += utilitarios.montarComandosNaOrdem(tipoOrdem, reproduzir, verificacao);
+                    break;
+                case MARCAR_OPCAO:
+                    reproduzir = "\n" + "Marcar a opção única '" + elementId + "'";
+                    if (isVerificar) {
+                        verificacao = "\n" + "Verificar se a opção  '" + elementId + "' está 'marcada'";
+                    }
+                    documentacao += utilitarios.montarComandosNaOrdem(tipoOrdem, reproduzir, verificacao);
+                    break;
+                case MARCAR_OPCAO_DESMARCAVEL:
+                    if (valor != null) {
+                        if (!valor.isEmpty()) {
+                            if (valor.equals("true")) {
+                                valor = "Marcar";
+                            } else {
+                                valor = "Desmarcar";
+                            }
+                        }
+                    }
+                    reproduzir = "\n" + valor + " a opção desmarcável '" + elementId + "'";
+                    if (valor != null) {
+                        if (!valor.isEmpty()) {
+                            if (valor.equals(Atividade.Marcacao.MARCADO.name())) {
+                                valor = "marcada";
+                            } else {
+                                valor = "desmarcada";
+                            }
+                        }
+                    }
+                    if (isVerificar) {
+                        verificacao = "\n" + "Verificar se a opção  '" + elementId + "' está '" + valor + "'";
+                    }
+                    documentacao += utilitarios.montarComandosNaOrdem(tipoOrdem, reproduzir, verificacao);
+                    break;
+                case VISUALIZAR:
+                    reproduzir = "";
+                    if (isVerificar) {
+                        if (valor != null) {
+                            if (!valor.isEmpty()) {
+                                if (valor.equals(Atividade.Visibilidade.VISIVEL.name())) {
+                                    valor = "visível";
+                                } else {
+                                    valor = "oculto";
+                                }
+                            }
+                        }
+                        verificacao = "\n" + "Verificar se o elemento '" + elementId + "' está " + valor;
+                    }
+                    documentacao += utilitarios.montarComandosNaOrdem(tipoOrdem, reproduzir, verificacao);
+                    break;
+            }
+            return documentacao;
+        }
+    }
+
+
+    private class Utilitarios {
         private String gerarNomeTeste() {
-            return "ClasseTesteTCC3";
+            return "CasoTesteAutomatizado";
         }
 
         private String getSafeString(StringBuilder stringBuilder) {
@@ -729,7 +868,7 @@ public class GeradorCasosTeste {
             }
         }
 
-        private String construirComandoEmOrdem(TipoOrdem tipoOrdem, String reproduzir, String verificar) {
+        private String montarComandosNaOrdem(TipoOrdem tipoOrdem, String reproduzir, String verificar) {
             switch (tipoOrdem) {
                 case REPRODUZIR:
                     return reproduzir;
@@ -767,140 +906,6 @@ public class GeradorCasosTeste {
                 }
             }
             return tipoOrdem;
-        }
-
-        public String gerarDocumentacao(String elementId, TipoOrdem tipoOrdem,
-                                        Atividade.TipoAcao acao, boolean isVerificar) {
-            return gerarDocumentacao(elementId, tipoOrdem, acao, isVerificar, "");
-        }
-
-        public String gerarDocumentacao(String elementId, TipoOrdem tipoOrdem,
-                                        Atividade.TipoAcao acao, boolean isVerificar, String valor) {
-            valor = valor == null ? "" : valor;
-            String reproduzir = "";
-            String verificacao = "";
-            String documentacao = "";
-            switch (acao) {
-                case CLICAR:
-                    reproduzir = "\n" + "Clicar no elemento '" + elementId + "'";
-                    if (isVerificar) {
-                        verificacao = "";
-                    }
-                    documentacao += utils.construirComandoEmOrdem(tipoOrdem, reproduzir, verificacao);
-                    break;
-                case PRESSIONAR:
-                    reproduzir = "\n" + "Pressionar a tecla '" + valor + "'";
-                    if (isVerificar) {
-                        verificacao = "";
-                    }
-                    documentacao += utils.construirComandoEmOrdem(tipoOrdem, reproduzir, verificacao);
-                    break;
-                case FOCAR:
-                    reproduzir = "\n" + "Focar no elemento '" + elementId + "'";
-                    if (isVerificar) {
-                        verificacao = "\n" + "Verificar se o elemento '" + elementId + "' está com foco";
-                    }
-                    documentacao += utils.construirComandoEmOrdem(tipoOrdem, reproduzir, verificacao);
-                    break;
-                case DESFOCAR:
-                    reproduzir = "\n" + "Tirar o foco do elemento '" + elementId + "'";
-                    if (isVerificar) {
-                        verificacao = "\n" + "Verificar se o elemento '" + elementId + "' está sem o foco";
-                    }
-                    documentacao += utils.construirComandoEmOrdem(tipoOrdem, reproduzir, verificacao);
-                    break;
-                case ESCREVER:
-                    reproduzir = "\n" + "Digitar o texto '" + valor + "' no elemento '" + elementId + "'";
-                    if (isVerificar) {
-                        verificacao = "\n" + "Verificar se o elemento '" + elementId + "' possui o texto '" + valor + "'";
-                    }
-                    documentacao += utils.construirComandoEmOrdem(tipoOrdem, reproduzir, verificacao);
-                    break;
-                case LIMPAR:
-                    reproduzir = "\n" + "Limpar o conteúdo do elemento '" + elementId + "'";
-                    if (isVerificar) {
-                        verificacao = "\n" + "Verificar se o elemento '" + elementId + "' está sem nenhum valor";
-                    }
-                    documentacao += utils.construirComandoEmOrdem(tipoOrdem, reproduzir, verificacao);
-                    break;
-                case LER:
-                    reproduzir = "";
-                    if (isVerificar) {
-                        verificacao = "\n" + "Verificar se o elemento '" + elementId + "' possui o valor '" + valor + "'";
-                    }
-                    documentacao += utils.construirComandoEmOrdem(tipoOrdem, reproduzir, verificacao);
-                    break;
-                case SELECIONAR_COMBO:
-                    reproduzir = "\n" + "Selecionar a opção '" + valor + "' no elemento '" + elementId + "'";
-                    if (isVerificar) {
-                        verificacao = "\n" + "Verificar se o elemento '" + elementId + "' possui a opção '" + valor + "' selecionada";
-                    }
-                    documentacao += utils.construirComandoEmOrdem(tipoOrdem, reproduzir, verificacao);
-                    break;
-                case SELECIONAR_LISTA:
-                    reproduzir = "\n" + "Selecionar o item '" + valor + "' no elemento '" + elementId + "'";
-                    if (isVerificar) {
-                        verificacao = "";
-                    }
-                    documentacao += utils.construirComandoEmOrdem(tipoOrdem, reproduzir, verificacao);
-                    break;
-                case PROGREDIR:
-                    reproduzir = "\n" + "Progredir até '" + valor + "' no elemento '" + elementId + "'";
-                    if (isVerificar) {
-                        verificacao = "\n" + "Verificar se o elemento '" + elementId + "' possui o progresso de '" + valor + "'";
-                    }
-                    documentacao += utils.construirComandoEmOrdem(tipoOrdem, reproduzir, verificacao);
-                    break;
-                case MARCAR_OPCAO:
-                    reproduzir = "\n" + "Marcar a opção única '" + elementId + "'";
-                    if (isVerificar) {
-                        verificacao = "\n" + "Verificar se a opção  '" + elementId + "' está 'marcada'";
-                    }
-                    documentacao += utils.construirComandoEmOrdem(tipoOrdem, reproduzir, verificacao);
-                    break;
-                case MARCAR_OPCAO_DESMARCAVEL:
-                    if (valor != null) {
-                        if (!valor.isEmpty()) {
-                            if (valor.equals("true")) {
-                                valor = "Marcar";
-                            } else {
-                                valor = "Desmarcar";
-                            }
-                        }
-                    }
-                    reproduzir = "\n" + valor + " a opção desmarcável '" + elementId + "'";
-                    if (valor != null) {
-                        if (!valor.isEmpty()) {
-                            if (valor.equals(Atividade.Marcacao.MARCADO.name())) {
-                                valor = "marcada";
-                            } else {
-                                valor = "desmarcada";
-                            }
-                        }
-                    }
-                    if (isVerificar) {
-                        verificacao = "\n" + "Verificar se a opção  '" + elementId + "' está '" + valor + "'";
-                    }
-                    documentacao += utils.construirComandoEmOrdem(tipoOrdem, reproduzir, verificacao);
-                    break;
-                case VISUALIZAR:
-                    reproduzir = "";
-                    if (isVerificar) {
-                        if (valor != null) {
-                            if (!valor.isEmpty()) {
-                                if (valor.equals(Atividade.Visibilidade.VISIVEL.name())) {
-                                    valor = "visível";
-                                } else {
-                                    valor = "oculto";
-                                }
-                            }
-                        }
-                        verificacao = "\n" + "Verificar se o elemento '" + elementId + "' está " + valor;
-                    }
-                    documentacao += utils.construirComandoEmOrdem(tipoOrdem, reproduzir, verificacao);
-                    break;
-            }
-            return documentacao;
         }
 
     }

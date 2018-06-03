@@ -248,7 +248,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showTest() {
-        RegistroAtividades.terminarTeste("TestePrincipal");
+        RegistroAtividades.terminarTeste();
         Teste teste = RegistroAtividades.getTeste();
         casoTeste = teste.getCasoTeste();
         documentacao = teste.getDocumentacao();
@@ -264,10 +264,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void escreverTestes(String casoTeste, String documentacao) {
         File folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-        File docFile = new File(folder, "documentacao.txt");
+        File docFile = new File(folder, "DocumentacaoTeste.txt");
         ArquivoUtilitario.writeToFile(docFile, documentacao, this);
 
-        File testeFile = new File(folder, "teste.java");
+        File testeFile = new File(folder, "CasoTesteAutomatizado.java");
         ArquivoUtilitario.writeToFile(testeFile, casoTeste, this);
 
         MessageToast.show(MainActivity.this, "Teste Finalizado!");

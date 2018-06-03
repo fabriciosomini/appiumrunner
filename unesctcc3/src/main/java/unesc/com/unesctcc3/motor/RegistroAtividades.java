@@ -47,7 +47,7 @@ public class RegistroAtividades {
         atividades = new ArrayList<>();
         if (setup != null) {
             INSTANCE.setup = setup;
-            geradorCasosTeste = new GeradorCasosTeste(setup);
+            geradorCasosTeste = new GeradorCasosTeste(INSTANCE.setup, INSTANCE.preferencias);
         } else {
             geradorCasosTeste = new GeradorCasosTeste();
         }
@@ -91,7 +91,7 @@ public class RegistroAtividades {
             throw new RuntimeException("Esta operação não pode ser realizada, " +
                     "pois não houve uma chamada para o método de inicialização.");
         }
-        teste = geradorCasosTeste.criar(atividades, preferencias, nomeTeste);
+        teste = geradorCasosTeste.gerar(atividades, nomeTeste);
         inicializar(INSTANCE.activity, INSTANCE.setup, INSTANCE.preferencias);
     }
 
