@@ -28,11 +28,11 @@ import java.util.List;
 
 import appiumrunner.unesc.net.appiumrunner.R;
 import appiumrunner.unesc.net.appiumrunner.adapters.MotoristaAdapter;
+import appiumrunner.unesc.net.appiumrunner.components.MessageToast;
 import appiumrunner.unesc.net.appiumrunner.models.Motorista;
 import appiumrunner.unesc.net.appiumrunner.models.Repository;
 import unesc.com.unesctcc3.modelos.Atividade;
 import unesc.com.unesctcc3.modelos.Preferencias;
-import unesc.com.unesctcc3.modelos.Registro;
 import unesc.com.unesctcc3.modelos.Setup;
 import unesc.com.unesctcc3.modelos.Teste;
 import unesc.com.unesctcc3.motor.RegistroAtividades;
@@ -45,7 +45,6 @@ public class MainActivity extends AppCompatActivity {
     private Button adicionarMotorista;
     private ListView listView;
     private boolean ignoreFocus;
-    private Registro registro;
     private MotoristaAdapter motoristaAdapter;
     private TextView emptyView;
     private TextView nomeEmpresa;
@@ -76,10 +75,9 @@ public class MainActivity extends AppCompatActivity {
         preferencias.skipMethodsDeclaration(true);
         preferencias.setPackages(packages);
 
-        registro = new Registro(this, setup);
         //registro.setPreferencias(preferencias);
 
-        RegistroAtividades.inicializar(registro);
+        RegistroAtividades.inicializar(this, setup);
 
         setEventosInterface();
     }
@@ -261,7 +259,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         Log.d("Teste Automatizado: \n", casoTeste);
-        //Popover.show(this, casoTeste);
+
     }
 
     private void escreverTestes(String casoTeste, String documentacao) {
@@ -271,6 +269,8 @@ public class MainActivity extends AppCompatActivity {
 
         File testeFile = new File(folder, "teste.java");
         ArquivoUtilitario.writeToFile(testeFile, casoTeste, this);
+
+        MessageToast.show(MainActivity.this, "Teste Finalizado!");
     }
 
     @Override
