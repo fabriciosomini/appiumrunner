@@ -3,14 +3,12 @@ package unesc.com.unesctcc3.modelos;
 import java.util.ArrayList;
 import java.util.List;
 
-import unesc.com.unesctcc3.motor.AlgoritmoRegistro;
-
 
 /**
  * Created by fabri on 18/03/2018.
  */
 public class Atividade extends AcaoFinal {
-    private final AlgoritmoRegistro algoritmoRegistro;
+    private final Registro registro;
     private List<TipoAcao> acoes;
     private Foco estadoFoco;
     private String identificadorElemento;
@@ -25,9 +23,9 @@ public class Atividade extends AcaoFinal {
     private Visibilidade estadoVisibilidade;
     private StringBuilder estadoSelecaoLista;
 
-    public Atividade(AlgoritmoRegistro algoritmoRegistro) {
-        super(algoritmoRegistro);
-        this.algoritmoRegistro = algoritmoRegistro;
+    public Atividade(Registro registro) {
+        super(registro);
+        this.registro = registro;
         this.acoes = new ArrayList<>();
         atividade = this;
     }

@@ -32,10 +32,10 @@ import appiumrunner.unesc.net.appiumrunner.models.Motorista;
 import appiumrunner.unesc.net.appiumrunner.models.Repository;
 import unesc.com.unesctcc3.modelos.Atividade;
 import unesc.com.unesctcc3.modelos.Preferencias;
+import unesc.com.unesctcc3.modelos.Registro;
 import unesc.com.unesctcc3.modelos.Setup;
 import unesc.com.unesctcc3.modelos.Teste;
-import unesc.com.unesctcc3.motor.AlgoritmoRegistro;
-import unesc.com.unesctcc3.motor.GeradorTestes;
+import unesc.com.unesctcc3.motor.RegistroAtividades;
 import unesc.com.unesctcc3.utilitarios.ArquivoUtilitario;
 import unesc.com.unesctcc3.utilitarios.EstadoDispositivoUtilitario;
 
@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
     private Button adicionarMotorista;
     private ListView listView;
     private boolean ignoreFocus;
-    private AlgoritmoRegistro algoritmoRegistro;
+    private Registro registro;
     private MotoristaAdapter motoristaAdapter;
     private TextView emptyView;
     private TextView nomeEmpresa;
@@ -76,10 +76,10 @@ public class MainActivity extends AppCompatActivity {
         preferencias.skipMethodsDeclaration(true);
         preferencias.setPackages(packages);
 
-        algoritmoRegistro = new AlgoritmoRegistro(this, setup);
-        //algoritmoRegistro.setPreferencias(preferencias);
+        registro = new Registro(this, setup);
+        //registro.setPreferencias(preferencias);
 
-        GeradorTestes.inicializar(algoritmoRegistro);
+        RegistroAtividades.inicializar(registro);
 
         setEventosInterface();
     }
@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if (hasFocus) {
                     if (!text.isEmpty()) {
-                        GeradorTestes.gerarTesteElemento(searchEditTxt)
+                        RegistroAtividades.registrar(searchEditTxt)
                                 .limparValor()
                                 .reproduzirAcoes();
                     }
@@ -141,12 +141,12 @@ public class MainActivity extends AppCompatActivity {
                 if (!hasFocus) {
 
                     if (text.isEmpty()) {
-                        GeradorTestes.gerarTesteElemento(searchEditTxt)
+                        RegistroAtividades.registrar(searchEditTxt)
                                 .focarCampo()
                                 .lerValor("Pesquisar")
                                 .verificarValores();
                     } else {
-                        GeradorTestes.gerarTesteElemento(searchEditTxt)
+                        RegistroAtividades.registrar(searchEditTxt)
                                 .focarCampo()
                                 .escreverValor(text)
                                 .reproduzirAcoes()
@@ -155,12 +155,12 @@ public class MainActivity extends AppCompatActivity {
 
 
                     if (noItems) {
-                        GeradorTestes.gerarTesteElemento(emptyText)
+                        RegistroAtividades.registrar(emptyText)
                                 .visibilidade(Atividade.Visibilidade.VISIVEL)
                                 .lerValor(getString(R.string.nenhum_item))
                                 .verificarValores();
                     } else {
-                        GeradorTestes.gerarTesteElemento(emptyText)
+                        RegistroAtividades.registrar(emptyText)
                                 .visibilidade(Atividade.Visibilidade.OCULTO)
                                 .verificarValores();
                     }
@@ -174,7 +174,7 @@ public class MainActivity extends AppCompatActivity {
                 //Altera o foco para o botão, solucionando o problema de não disparar o evento onFocusChange
                 ignoreFocus = true;
                 adicionarMotorista.requestFocusFromTouch();
-                GeradorTestes.gerarTesteElemento(adicionarMotorista)
+                RegistroAtividades.registrar(adicionarMotorista)
                         .rolarAteCampo()
                         .clicarCampo()
                         .reproduzirAcoes();
@@ -192,7 +192,7 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("motorista", motorista);
                 startActivity(intent);
 
-                GeradorTestes.gerarTesteElemento(listView)
+                RegistroAtividades.registrar(listView)
                         .clicarItem(motorista.getNome())
                         .reproduzirAcoes();
             }
@@ -210,12 +210,12 @@ public class MainActivity extends AppCompatActivity {
 
                 if (isResume && !searchEditTxt.getText().toString().isEmpty()) {
                     if (noItems) {
-                        GeradorTestes.gerarTesteElemento(emptyText)
+                        RegistroAtividades.registrar(emptyText)
                                 .visibilidade(Atividade.Visibilidade.VISIVEL)
                                 .lerValor(getString(R.string.nenhum_item))
                                 .verificarValores();
                     } else {
-                        GeradorTestes.gerarTesteElemento(emptyText)
+                        RegistroAtividades.registrar(emptyText)
                                 .visibilidade(Atividade.Visibilidade.OCULTO)
                                 .verificarValores();
                     }
@@ -237,7 +237,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        GeradorTestes.pressionar(Atividade.Tecla.VOLTAR);
+        RegistroAtividades.pressionar(Atividade.Tecla.VOLTAR);
     }
 
     @Override
@@ -250,11 +250,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showTest() {
-        GeradorTestes.terminarTeste("TestePrincipal");
-        Teste teste = GeradorTestes.getTeste();
+        RegistroAtividades.terminarTeste("TestePrincipal");
+        Teste teste = RegistroAtividades.getTeste();
         casoTeste = teste.getCasoTeste();
         documentacao = teste.getDocumentacao();
-        EstadoDispositivoUtilitario.EstadoAparelhoMovel estadoAparelhoMovel = GeradorTestes.getEstadoAparelhoMovel();
+        EstadoDispositivoUtilitario.EstadoAparelhoMovel estadoAparelhoMovel = RegistroAtividades.getEstadoAparelhoMovel();
 
         if (isStoragePermissionGranted()) {
             escreverTestes(casoTeste, documentacao);

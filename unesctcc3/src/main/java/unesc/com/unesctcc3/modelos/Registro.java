@@ -1,33 +1,30 @@
-package unesc.com.unesctcc3.motor;
+package unesc.com.unesctcc3.modelos;
 
 import android.app.Activity;
 
 import java.util.ArrayList;
 
-import unesc.com.unesctcc3.modelos.Atividade;
-import unesc.com.unesctcc3.modelos.Preferencias;
-import unesc.com.unesctcc3.modelos.Setup;
-import unesc.com.unesctcc3.modelos.Teste;
+import unesc.com.unesctcc3.motor.GeradorCasosTeste;
 import unesc.com.unesctcc3.utilitarios.EstadoDispositivoUtilitario;
 
 
 /**
  * Created by fabri on 18/03/2018.
  */
-public class AlgoritmoRegistro {
+public class Registro {
     private Activity activity;
     private Setup setup;
     private Teste teste;
-    private AlgoritmoCriacao algoritmoCriacao;
+    private GeradorCasosTeste geradorCasosTeste;
     private EstadoDispositivoUtilitario.EstadoAparelhoMovel estadoAparelhoMovel;
     private ArrayList<Atividade> atividades;
     private Preferencias preferencias;
 
-    public AlgoritmoRegistro(Activity activity, Setup setup) {
+    public Registro(Activity activity, Setup setup) {
         init(activity, setup);
     }
 
-    public AlgoritmoRegistro(Activity activity) {
+    public Registro(Activity activity) {
         this(activity, null);
     }
 
@@ -37,9 +34,9 @@ public class AlgoritmoRegistro {
         atividades = new ArrayList<>();
         if (setup != null) {
             this.setup = setup;
-            algoritmoCriacao = new AlgoritmoCriacao(setup);
+            geradorCasosTeste = new GeradorCasosTeste(setup);
         } else {
-            algoritmoCriacao = new AlgoritmoCriacao();
+            geradorCasosTeste = new GeradorCasosTeste();
         }
     }
 
@@ -68,7 +65,7 @@ public class AlgoritmoRegistro {
     }
 
     public void parar(String nomeTeste) {
-        teste = algoritmoCriacao.criar(atividades, preferencias, nomeTeste);
+        teste = geradorCasosTeste.criar(atividades, preferencias, nomeTeste);
         init(this.activity, this.setup);
     }
 

@@ -2,29 +2,28 @@ package unesc.com.unesctcc3.modelos;
 
 import java.util.List;
 
-import unesc.com.unesctcc3.motor.AlgoritmoRegistro;
 import unesc.com.unesctcc3.utilitarios.MetodosUtilitario;
 
 
 public class AcaoFinal {
     protected Atividade atividade;
-    AlgoritmoRegistro algoritmoRegistro;
+    Registro registro;
 
-    public AcaoFinal(AlgoritmoRegistro algoritmoRegistro) {
-        this.algoritmoRegistro = algoritmoRegistro;
+    public AcaoFinal(Registro registro) {
+        this.registro = registro;
     }
 
     public AcaoFinal reproduzirAcoes() {
         List<Atividade.TipoAcao> acoes = (List<Atividade.TipoAcao>) MetodosUtilitario.invocarMetodo(atividade, "getAcoes");
         acoes.add(Atividade.TipoAcao.REPRODUZIR);
-        algoritmoRegistro.registrar(atividade);
+        registro.registrar(atividade);
         return this;
     }
 
     public AcaoFinal verificarValores() {
         List<Atividade.TipoAcao> acoes = (List<Atividade.TipoAcao>) MetodosUtilitario.invocarMetodo(atividade, "getAcoes");
         acoes.add(Atividade.TipoAcao.VERIFICAR);
-        algoritmoRegistro.registrar(atividade);
+        registro.registrar(atividade);
         return this;
     }
 }

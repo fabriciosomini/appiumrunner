@@ -29,7 +29,7 @@ import appiumrunner.unesc.net.appiumrunner.components.MessageToast;
 import appiumrunner.unesc.net.appiumrunner.models.Motorista;
 import appiumrunner.unesc.net.appiumrunner.models.Repository;
 import unesc.com.unesctcc3.modelos.Atividade;
-import unesc.com.unesctcc3.motor.GeradorTestes;
+import unesc.com.unesctcc3.motor.RegistroAtividades;
 
 public class CadastroActivity extends AppCompatActivity {
 
@@ -92,12 +92,12 @@ public class CadastroActivity extends AppCompatActivity {
 
 
         if (motorista.getNome() != null) {
-            GeradorTestes.gerarTesteElemento(nomeMotorista)
+            RegistroAtividades.registrar(nomeMotorista)
                     .desfocarCampo()
                     .lerValor(motorista.getNome())
                     .verificarValores();
         } else {
-            GeradorTestes.gerarTesteElemento(nomeMotorista)
+            RegistroAtividades.registrar(nomeMotorista)
                     .desfocarCampo()
                     .limparValor()
                     .verificarValores();
@@ -111,13 +111,13 @@ public class CadastroActivity extends AppCompatActivity {
                 String text = nomeMotorista.getText().toString();
                 if (hasFocus && !ignoreFocus) {
                     if (!text.isEmpty()) {
-                        GeradorTestes.gerarTesteElemento(nomeMotorista)
+                        RegistroAtividades.registrar(nomeMotorista)
                                 .limparValor()
                                 .reproduzirAcoes();
                     }
                 }
                 if (!hasFocus && !ignoreFocus) {
-                    GeradorTestes.gerarTesteElemento(nomeMotorista)
+                    RegistroAtividades.registrar(nomeMotorista)
                             .focarCampo()
                             .escreverValor(text)
                             .reproduzirAcoes()
@@ -134,13 +134,13 @@ public class CadastroActivity extends AppCompatActivity {
                 String text = cpfMotorista.getText().toString();
                 if (hasFocus) {
                     if (!text.isEmpty()) {
-                        GeradorTestes.gerarTesteElemento(cpfMotorista)
+                        RegistroAtividades.registrar(cpfMotorista)
                                 .limparValor()
                                 .reproduzirAcoes();
                     }
                 }
                 if (!hasFocus) {
-                    GeradorTestes.gerarTesteElemento(cpfMotorista)
+                    RegistroAtividades.registrar(cpfMotorista)
                             .focarCampo()
                             .escreverValor(text)
                             .desfocarCampo()
@@ -153,7 +153,7 @@ public class CadastroActivity extends AppCompatActivity {
                     } else {
                         gravar = true;
                         cpfMotorista.setText(maskedText);
-                        GeradorTestes.gerarTesteElemento(cpfMotorista)
+                        RegistroAtividades.registrar(cpfMotorista)
                                 .lerValor(maskedText)
                                 .verificarValores();
                     }
@@ -165,7 +165,7 @@ public class CadastroActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 if (++estadoMotoristaSelected > 1) {
                     final String newValue = (String) estadoMotorista.getItemAtPosition(i);
-                    GeradorTestes.gerarTesteElemento(estadoMotorista)
+                    RegistroAtividades.registrar(estadoMotorista)
                             .selecionarOpcao(newValue)
                             .reproduzirAcoes()
                             .verificarValores();
@@ -206,7 +206,7 @@ public class CadastroActivity extends AppCompatActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                GeradorTestes.gerarTesteElemento(volumeCarga)
+                RegistroAtividades.registrar(volumeCarga)
                         .deslizarBarraProgresso(pos)
                         .reproduzirAcoes()
                         .verificarValores();
@@ -217,7 +217,7 @@ public class CadastroActivity extends AppCompatActivity {
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
                 tipoCarga.requestFocusFromTouch();
                 RadioButton radioButton = findViewById(radioGroup.getCheckedRadioButtonId());
-                GeradorTestes.gerarTesteElemento(radioButton)
+                RegistroAtividades.registrar(radioButton)
                         .rolarAteCampo()
                         .marcarOpcao()
                         .reproduzirAcoes()
@@ -229,7 +229,7 @@ public class CadastroActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 motoristaAtivo.requestFocusFromTouch();
                 Atividade.Marcacao marcacao = b ? Atividade.Marcacao.MARCADO : Atividade.Marcacao.DESMARCADO;
-                GeradorTestes.gerarTesteElemento(motoristaAtivo)
+                RegistroAtividades.registrar(motoristaAtivo)
                         .marcarOpcaoDesmarcavel(marcacao)
                         .rolarAteCampo()
                         .reproduzirAcoes()
@@ -241,7 +241,7 @@ public class CadastroActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 bitrem.requestFocusFromTouch();
                 Atividade.Marcacao marcacao = b ? Atividade.Marcacao.MARCADO : Atividade.Marcacao.DESMARCADO;
-                GeradorTestes.gerarTesteElemento(bitrem)
+                RegistroAtividades.registrar(bitrem)
                         .marcarOpcaoDesmarcavel(marcacao)
                         .rolarAteCampo()
                         .reproduzirAcoes()
@@ -284,7 +284,7 @@ public class CadastroActivity extends AppCompatActivity {
                     motorista.setCodigo(generateCodigo());
                 }
 
-                GeradorTestes.gerarTesteElemento(salvarBtn)
+                RegistroAtividades.registrar(salvarBtn)
                         .rolarAteCampo()
                         .clicarCampo()
                         .reproduzirAcoes();
@@ -328,7 +328,7 @@ public class CadastroActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 cancelarBtn.requestFocusFromTouch();
-                GeradorTestes.gerarTesteElemento(cancelarBtn)
+                RegistroAtividades.registrar(cancelarBtn)
                         .rolarAteCampo()
                         .clicarCampo()
                         .reproduzirAcoes();
@@ -343,7 +343,7 @@ public class CadastroActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     String deleteMessage = "Seu registro foi excluído";
-                    GeradorTestes.gerarTesteElemento(deleteBtn)
+                    RegistroAtividades.registrar(deleteBtn)
                             .rolarAteCampo()
                             .clicarCampo()
                             .reproduzirAcoes();
@@ -394,14 +394,14 @@ public class CadastroActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        GeradorTestes.pressionar(Atividade.Tecla.VOLTAR);
+        RegistroAtividades.pressionar(Atividade.Tecla.VOLTAR);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         ignoreFocus = false;
-        GeradorTestes.gerarTesteElemento(nomeMotorista)
+        RegistroAtividades.registrar(nomeMotorista)
                 .rolarAteCampo()
                 .reproduzirAcoes();
     }

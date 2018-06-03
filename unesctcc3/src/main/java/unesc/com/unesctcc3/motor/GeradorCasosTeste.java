@@ -15,7 +15,7 @@ import unesc.com.unesctcc3.utilitarios.MetodosUtilitario;
 /**
  * Created by fabri on 18/03/2018.
  */
-public class AlgoritmoCriacao {
+public class GeradorCasosTeste {
     private String fullScript;
     private String teardownScript;
     private ArrayList<Atividade> atividades;
@@ -26,7 +26,7 @@ public class AlgoritmoCriacao {
     private String nomeTeste;
     private Set<TipoExtraMethods> tipoExtraMethods;
 
-    public AlgoritmoCriacao(Setup setup) {
+    public GeradorCasosTeste(Setup setup) {
         init(setup);
     }
 
@@ -42,7 +42,7 @@ public class AlgoritmoCriacao {
         tipoExtraMethods = new HashSet<>();
     }
 
-    public AlgoritmoCriacao() {
+    public GeradorCasosTeste() {
         this(null);
     }
 
