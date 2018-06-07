@@ -92,12 +92,12 @@ public class CadastroActivity extends AppCompatActivity {
 
 
         if (motorista.getNome() != null) {
-            RegistroAtividades.vincular(nomeMotorista)
+            RegistroAtividades.vincularElemento(nomeMotorista)
                     .desfocarCampo()
                     .lerValor(motorista.getNome())
                     .verificarValores();
         } else {
-            RegistroAtividades.vincular(nomeMotorista)
+            RegistroAtividades.vincularElemento(nomeMotorista)
                     .desfocarCampo()
                     .limparValor()
                     .verificarValores();
@@ -111,13 +111,13 @@ public class CadastroActivity extends AppCompatActivity {
                 String text = nomeMotorista.getText().toString();
                 if (hasFocus && !ignoreFocus) {
                     if (!text.isEmpty()) {
-                        RegistroAtividades.vincular(nomeMotorista)
+                        RegistroAtividades.vincularElemento(nomeMotorista)
                                 .limparValor()
                                 .reproduzirAcoes();
                     }
                 }
                 if (!hasFocus && !ignoreFocus) {
-                    RegistroAtividades.vincular(nomeMotorista)
+                    RegistroAtividades.vincularElemento(nomeMotorista)
                             .focarCampo()
                             .escreverValor(text)
                             .reproduzirAcoes()
@@ -134,13 +134,13 @@ public class CadastroActivity extends AppCompatActivity {
                 String text = cpfMotorista.getText().toString();
                 if (hasFocus) {
                     if (!text.isEmpty()) {
-                        RegistroAtividades.vincular(cpfMotorista)
+                        RegistroAtividades.vincularElemento(cpfMotorista)
                                 .limparValor()
                                 .reproduzirAcoes();
                     }
                 }
                 if (!hasFocus) {
-                    RegistroAtividades.vincular(cpfMotorista)
+                    RegistroAtividades.vincularElemento(cpfMotorista)
                             .focarCampo()
                             .escreverValor(text)
                             .desfocarCampo()
@@ -153,7 +153,7 @@ public class CadastroActivity extends AppCompatActivity {
                     } else {
                         gravar = true;
                         cpfMotorista.setText(maskedText);
-                        RegistroAtividades.vincular(cpfMotorista)
+                        RegistroAtividades.vincularElemento(cpfMotorista)
                                 .lerValor(maskedText)
                                 .verificarValores();
                     }
@@ -165,7 +165,7 @@ public class CadastroActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 if (++estadoMotoristaSelected > 1) {
                     final String newValue = (String) estadoMotorista.getItemAtPosition(i);
-                    RegistroAtividades.vincular(estadoMotorista)
+                    RegistroAtividades.vincularElemento(estadoMotorista)
                             .selecionarOpcao(newValue)
                             .reproduzirAcoes()
                             .verificarValores();
@@ -206,7 +206,7 @@ public class CadastroActivity extends AppCompatActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                RegistroAtividades.vincular(volumeCarga)
+                RegistroAtividades.vincularElemento(volumeCarga)
                         .deslizarBarraProgresso(pos)
                         .reproduzirAcoes()
                         .verificarValores();
@@ -217,7 +217,7 @@ public class CadastroActivity extends AppCompatActivity {
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
                 tipoCarga.requestFocusFromTouch();
                 RadioButton radioButton = findViewById(radioGroup.getCheckedRadioButtonId());
-                RegistroAtividades.vincular(radioButton)
+                RegistroAtividades.vincularElemento(radioButton)
                         .rolarAteCampo()
                         .marcarOpcao()
                         .reproduzirAcoes()
@@ -229,7 +229,7 @@ public class CadastroActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 motoristaAtivo.requestFocusFromTouch();
                 Atividade.Marcacao marcacao = b ? Atividade.Marcacao.MARCADO : Atividade.Marcacao.DESMARCADO;
-                RegistroAtividades.vincular(motoristaAtivo)
+                RegistroAtividades.vincularElemento(motoristaAtivo)
                         .marcarOpcaoDesmarcavel(marcacao)
                         .rolarAteCampo()
                         .reproduzirAcoes()
@@ -241,7 +241,7 @@ public class CadastroActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 bitrem.requestFocusFromTouch();
                 Atividade.Marcacao marcacao = b ? Atividade.Marcacao.MARCADO : Atividade.Marcacao.DESMARCADO;
-                RegistroAtividades.vincular(bitrem)
+                RegistroAtividades.vincularElemento(bitrem)
                         .marcarOpcaoDesmarcavel(marcacao)
                         .rolarAteCampo()
                         .reproduzirAcoes()
@@ -284,7 +284,7 @@ public class CadastroActivity extends AppCompatActivity {
                     motorista.setCodigo(generateCodigo());
                 }
 
-                RegistroAtividades.vincular(salvarBtn)
+                RegistroAtividades.vincularElemento(salvarBtn)
                         .rolarAteCampo()
                         .clicarBotao()
                         .reproduzirAcoes();
@@ -328,7 +328,7 @@ public class CadastroActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 cancelarBtn.requestFocusFromTouch();
-                RegistroAtividades.vincular(cancelarBtn)
+                RegistroAtividades.vincularElemento(cancelarBtn)
                         .rolarAteCampo()
                         .clicarBotao()
                         .reproduzirAcoes();
@@ -343,7 +343,7 @@ public class CadastroActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     String deleteMessage = "Seu registro foi excluído";
-                    RegistroAtividades.vincular(deleteBtn)
+                    RegistroAtividades.vincularElemento(deleteBtn)
                             .rolarAteCampo()
                             .clicarBotao()
                             .reproduzirAcoes();
@@ -404,7 +404,7 @@ public class CadastroActivity extends AppCompatActivity {
         RegistroAtividades.registrarAcessoTela("Cadastro de Motoristas");
 
         ignoreFocus = false;
-        RegistroAtividades.vincular(nomeMotorista)
+        RegistroAtividades.vincularElemento(nomeMotorista)
                 .rolarAteCampo()
                 .reproduzirAcoes();
     }

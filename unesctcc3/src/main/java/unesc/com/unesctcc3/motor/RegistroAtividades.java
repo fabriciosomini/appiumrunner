@@ -53,15 +53,15 @@ public class RegistroAtividades {
         }
     }
 
-    public static Atividade vincular(View elemento) {
+    public static Atividade vincularElemento(View elemento) {
         if (elemento == null) {
             throw new RuntimeException("O elemento não pode ser nulo");
         }
         String id = ElementIdParserUtilitario.getStringId(elemento);
-        return vincular(id);
+        return vincularElemento(id);
     }
 
-    public static Atividade vincular(String id) {
+    public static Atividade vincularElemento(String id) {
         if (!inicializado) {
             throw new RuntimeException("Esta operação não pode ser realizada, " +
                     "pois não houve uma chamada para o método de inicialização.");

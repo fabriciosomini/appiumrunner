@@ -131,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if (hasFocus) {
                     if (!text.isEmpty()) {
-                        RegistroAtividades.vincular(searchEditTxt)
+                        RegistroAtividades.vincularElemento(searchEditTxt)
                                 .limparValor()
                                 .reproduzirAcoes();
                     }
@@ -139,12 +139,12 @@ public class MainActivity extends AppCompatActivity {
                 if (!hasFocus) {
 
                     if (text.isEmpty()) {
-                        RegistroAtividades.vincular(searchEditTxt)
+                        RegistroAtividades.vincularElemento(searchEditTxt)
                                 .focarCampo()
                                 .lerValor("Pesquisar")
                                 .verificarValores();
                     } else {
-                        RegistroAtividades.vincular(searchEditTxt)
+                        RegistroAtividades.vincularElemento(searchEditTxt)
                                 .focarCampo()
                                 .escreverValor(text)
                                 .reproduzirAcoes()
@@ -153,12 +153,12 @@ public class MainActivity extends AppCompatActivity {
 
 
                     if (noItems) {
-                        RegistroAtividades.vincular(emptyText)
+                        RegistroAtividades.vincularElemento(emptyText)
                                 .visibilidade(Atividade.Visibilidade.VISIVEL)
                                 .lerValor(getString(R.string.nenhum_item))
                                 .verificarValores();
                     } else {
-                        RegistroAtividades.vincular(emptyText)
+                        RegistroAtividades.vincularElemento(emptyText)
                                 .visibilidade(Atividade.Visibilidade.OCULTO)
                                 .verificarValores();
                     }
@@ -172,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
                 //Altera o foco para o botão, solucionando o problema de não disparar o evento onFocusChange
                 ignoreFocus = true;
                 adicionarMotorista.requestFocusFromTouch();
-                RegistroAtividades.vincular(adicionarMotorista)
+                RegistroAtividades.vincularElemento(adicionarMotorista)
                         .rolarAteCampo()
                         .clicarBotao()
                         .reproduzirAcoes();
@@ -190,7 +190,7 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("motorista", motorista);
                 startActivity(intent);
 
-                RegistroAtividades.vincular(listView)
+                RegistroAtividades.vincularElemento(listView)
                         .selecionarItemListagem(motorista.getNome())
                         .reproduzirAcoes();
             }
@@ -208,12 +208,12 @@ public class MainActivity extends AppCompatActivity {
 
                 if (isResume && !searchEditTxt.getText().toString().isEmpty()) {
                     if (noItems) {
-                        RegistroAtividades.vincular(emptyText)
+                        RegistroAtividades.vincularElemento(emptyText)
                                 .visibilidade(Atividade.Visibilidade.VISIVEL)
                                 .lerValor(getString(R.string.nenhum_item))
                                 .verificarValores();
                     } else {
-                        RegistroAtividades.vincular(emptyText)
+                        RegistroAtividades.vincularElemento(emptyText)
                                 .visibilidade(Atividade.Visibilidade.OCULTO)
                                 .verificarValores();
                     }
