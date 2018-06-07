@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Statistic">
+    <option name="excludeDotArtifactDirectory" value="true" />
+    <option name="excludedDirectories">
+      <list>
+        <option value="$PROJECT_DIR$/app" />
+        <option value="$PROJECT_DIR$/.idea" />
+        <option value="$PROJECT_DIR$/.gradle" />
+        <option value="$PROJECT_DIR$/app" />
+        <option value="$PROJECT_DIR$/captures" />
+        <option value="$PROJECT_DIR$/gradle" />
+        <option value="$PROJECT_DIR$/unesctcc3/build" />
+        <option value="$PROJECT_DIR$/unesctcc3/libs" />
+      </list>
+    </option>
+  </component>
+</project>

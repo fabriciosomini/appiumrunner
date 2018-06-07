@@ -39,7 +39,7 @@ public class Atividade extends AcaoFinal {
         return this;
     }
 
-    public Atividade clicarItem(String estadoSelecaoLista) {
+    public Atividade selecionarItemListagem(String estadoSelecaoLista) {
         this.estadoSelecaoLista = estadoSelecaoLista == null ? null : new StringBuilder(estadoSelecaoLista);
         acoes.add(TipoAcao.SELECIONAR_LISTA);
         return this;
@@ -74,7 +74,7 @@ public class Atividade extends AcaoFinal {
         return this;
     }
 
-    public Atividade clicarCampo() {
+    public Atividade clicarBotao() {
         this.estadoFoco = Foco.FOCADO;
         acoes.add(TipoAcao.CLICAR);
         return this;

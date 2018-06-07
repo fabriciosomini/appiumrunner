@@ -286,7 +286,7 @@ public class CadastroActivity extends AppCompatActivity {
 
                 RegistroAtividades.registrar(salvarBtn)
                         .rolarAteCampo()
-                        .clicarCampo()
+                        .clicarBotao()
                         .reproduzirAcoes();
 
                 if (gravar) {
@@ -330,7 +330,7 @@ public class CadastroActivity extends AppCompatActivity {
                 cancelarBtn.requestFocusFromTouch();
                 RegistroAtividades.registrar(cancelarBtn)
                         .rolarAteCampo()
-                        .clicarCampo()
+                        .clicarBotao()
                         .reproduzirAcoes();
 
                 finish();
@@ -345,7 +345,7 @@ public class CadastroActivity extends AppCompatActivity {
                     String deleteMessage = "Seu registro foi excluído";
                     RegistroAtividades.registrar(deleteBtn)
                             .rolarAteCampo()
-                            .clicarCampo()
+                            .clicarBotao()
                             .reproduzirAcoes();
                     if (Repository.remove(motorista) == 0) {
                         MessageToast.show(CadastroActivity.this, deleteMessage);

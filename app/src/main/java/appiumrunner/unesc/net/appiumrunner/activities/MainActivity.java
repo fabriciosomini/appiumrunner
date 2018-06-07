@@ -174,7 +174,7 @@ public class MainActivity extends AppCompatActivity {
                 adicionarMotorista.requestFocusFromTouch();
                 RegistroAtividades.registrar(adicionarMotorista)
                         .rolarAteCampo()
-                        .clicarCampo()
+                        .clicarBotao()
                         .reproduzirAcoes();
                 Intent intent = new Intent(getBaseContext(), CadastroActivity.class);
                 startActivity(intent);
@@ -191,7 +191,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
 
                 RegistroAtividades.registrar(listView)
-                        .clicarItem(motorista.getNome())
+                        .selecionarItemListagem(motorista.getNome())
                         .reproduzirAcoes();
             }
         });
