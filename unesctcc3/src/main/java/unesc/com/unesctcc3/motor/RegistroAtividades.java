@@ -25,6 +25,10 @@ public class RegistroAtividades {
     private static Preferencias preferencias;
     private static RegistroAtividades INSTANCE;
 
+    private RegistroAtividades getINSTANCE() {
+        return INSTANCE;
+    }
+
 
     public static void inicializar(Activity activity) {
         inicializar(activity, null, null);

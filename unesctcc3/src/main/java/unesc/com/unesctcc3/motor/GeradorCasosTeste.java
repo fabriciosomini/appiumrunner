@@ -294,7 +294,7 @@ public class GeradorCasosTeste {
                 if (elementId.startsWith("screen:")) {
                     documentacao += montadorDocumentacao.gerarDocumentacao(elementId,
                             TipoOrdem.REPRODUZIR,
-                            Atividade.TipoAcao.ACESSO_TELA,
+                            Atividade.TipoAtividade.ACESSO_TELA,
                             false);
                 } else {
                     Atividade.Tecla estadoTecla = (Atividade.Tecla) MetodosUtilitario.invocarMetodo(atividade, "getEstadoTecla");
@@ -308,7 +308,7 @@ public class GeradorCasosTeste {
                     Atividade.Foco estadoDesfoque = (Atividade.Foco) MetodosUtilitario.invocarMetodo(atividade, "getEstadoDesfoque");
                     Atividade.Visibilidade estadoVisibilidade = (Atividade.Visibilidade) MetodosUtilitario.invocarMetodo(atividade, "getEstadoVisibilidade");
                     Integer estadoProgresso = (Integer) MetodosUtilitario.invocarMetodo(atividade, "getEstadoProgresso");
-                    List<Atividade.TipoAcao> passos = (List<Atividade.TipoAcao>) MetodosUtilitario.invocarMetodo(atividade, "getAcoes");
+                    List<Atividade.TipoAtividade> tipoAtividades = (List<Atividade.TipoAtividade>) MetodosUtilitario.invocarMetodo(atividade, "getTipoAtividades");
                     String findElementByIdCall = montadorMetodos.getFindElementByIdMethod(elementId, elementName);
                     String clickCall = montadorMetodos.getClickMethod(elementName);
                     String focusCall = montadorMetodos.getFocusElementMethod(elementName);
@@ -326,62 +326,62 @@ public class GeradorCasosTeste {
                     String verificarProgresso = montadorMetodos.getProgressAssertionMethod(elementName, estadoProgresso);
                     String verificacaoOpcaoMarcada = estadoMarcacaoOpcao == null ? montadorMetodos.getCheckAsssertionMethod(elementName, Atividade.Marcacao.MARCADO) :
                             montadorMetodos.getCheckAsssertionMethod(elementName, estadoMarcacaoOpcao);
-                    if (passos.contains(Atividade.TipoAcao.FOCAR)
-                            && passos.contains(Atividade.TipoAcao.VERIFICAR)
+                    if (tipoAtividades.contains(Atividade.TipoAtividade.FOCAR)
+                            && tipoAtividades.contains(Atividade.TipoAtividade.VERIFICAR)
                             && estadoFoco != null && estadoFoco != Atividade.Foco.IGNORAR) {
                         utilitarios.addExtraMethod(TipoExtraMethods.ISFOCUSED);
                     }
 
-                    if (passos.contains(Atividade.TipoAcao.DESFOCAR)
-                            && passos.contains(Atividade.TipoAcao.VERIFICAR)
+                    if (tipoAtividades.contains(Atividade.TipoAtividade.DESFOCAR)
+                            && tipoAtividades.contains(Atividade.TipoAtividade.VERIFICAR)
                             && estadoDesfoque != null && estadoDesfoque != Atividade.Foco.IGNORAR) {
                         utilitarios.addExtraMethod(TipoExtraMethods.ISFOCUSED);
                     }
 
                     //Marcar opção desmarcável usa o método isOptionChecked na ação e na asserção, então adicione
-                    if (passos.contains(Atividade.TipoAcao.MARCAR_OPCAO_DESMARCAVEL)) {
+                    if (tipoAtividades.contains(Atividade.TipoAtividade.MARCAR_OPCAO_DESMARCAVEL)) {
                         utilitarios.addExtraMethod(TipoExtraMethods.ISCHECKED);
                     }
                     //Marcar opcao não usa o método isOptionChecked, então apenas adicione se tiver asserção
-                    if (passos.contains(Atividade.TipoAcao.MARCAR_OPCAO) && passos.contains(Atividade.TipoAcao.VERIFICAR)) {
+                    if (tipoAtividades.contains(Atividade.TipoAtividade.MARCAR_OPCAO) && tipoAtividades.contains(Atividade.TipoAtividade.VERIFICAR)) {
                         utilitarios.addExtraMethod(TipoExtraMethods.ISCHECKED);
                     }
-                    if (passos.contains(Atividade.TipoAcao.SELECIONAR_COMBO)
-                            && passos.contains(Atividade.TipoAcao.VERIFICAR)
+                    if (tipoAtividades.contains(Atividade.TipoAtividade.SELECIONAR_COMBO)
+                            && tipoAtividades.contains(Atividade.TipoAtividade.VERIFICAR)
                             && estadoSelecao != null) {
                         utilitarios.addExtraMethod(TipoExtraMethods.GET_CHILD_TEXT);
                     }
-                    if (passos.contains(Atividade.TipoAcao.ROLAR)) {
+                    if (tipoAtividades.contains(Atividade.TipoAtividade.ROLAR)) {
                         scriptCompleto += scrollToCall;
                         utilitarios.addExtraMethod(TipoExtraMethods.SCROLL);
                     }
-                    if (passos.contains(Atividade.TipoAcao.MARCAR_OPCAO) ||
-                            passos.contains(Atividade.TipoAcao.MARCAR_OPCAO_DESMARCAVEL)) {
+                    if (tipoAtividades.contains(Atividade.TipoAtividade.MARCAR_OPCAO) ||
+                            tipoAtividades.contains(Atividade.TipoAtividade.MARCAR_OPCAO_DESMARCAVEL)) {
                         utilitarios.addExtraMethod(TipoExtraMethods.CHECK);
                     }
                     if (elementName != null && !glogalVariablesScript.contains(findElementByIdCall)) {
                         glogalVariablesScript += findElementByIdCall;
                     }
-                    TipoOrdem tipoOrdem = utilitarios.getOrdem(passos);
-                    for (Atividade.TipoAcao acao :
-                            passos) {
+                    TipoOrdem tipoOrdem = utilitarios.getOrdem(tipoAtividades);
+                    for (Atividade.TipoAtividade acao :
+                            tipoAtividades) {
                         if (acao != null) {
                             String scriptAcoes = "";
                             Atividade.Foco estadoFocoDesfoque = null;
                             String texto = "";
-                            if (acao == Atividade.TipoAcao.FOCAR) {
+                            if (acao == Atividade.TipoAtividade.FOCAR) {
                                 estadoFocoDesfoque = Atividade.Foco.FOCADO;
                             }
-                            if (acao == Atividade.TipoAcao.DESFOCAR) {
+                            if (acao == Atividade.TipoAtividade.DESFOCAR) {
                                 estadoFocoDesfoque = Atividade.Foco.SEM_FOCO;
                             }
-                            if (acao == Atividade.TipoAcao.ESCREVER) {
+                            if (acao == Atividade.TipoAtividade.ESCREVER) {
                                 texto = estadoTexto.toString();
                             }
-                            if (acao == Atividade.TipoAcao.LIMPAR) {
+                            if (acao == Atividade.TipoAtividade.LIMPAR) {
                                 texto = estadoTextoLimpo.toString();
                             }
-                            if (acao == Atividade.TipoAcao.LER) {
+                            if (acao == Atividade.TipoAtividade.LER) {
                                 texto = estadoLeitura.toString();
                             }
                             String verificaoFoco = montadorMetodos.getFocusAssertionMethod(elementName, estadoFocoDesfoque);
@@ -705,12 +705,12 @@ public class GeradorCasosTeste {
 
     private class MontadorDocumentacao {
         public String gerarDocumentacao(String elementId, TipoOrdem tipoOrdem,
-                                        Atividade.TipoAcao acao, boolean isVerificar) {
+                                        Atividade.TipoAtividade acao, boolean isVerificar) {
             return gerarDocumentacao(elementId, tipoOrdem, acao, isVerificar, "");
         }
 
         public String gerarDocumentacao(String elementId, TipoOrdem tipoOrdem,
-                                        Atividade.TipoAcao acao, boolean isVerificar, String valor) {
+                                        Atividade.TipoAtividade acao, boolean isVerificar, String valor) {
 
             valor = valor == null ? "" : valor;
             String reproduzir = "";
@@ -898,11 +898,11 @@ public class GeradorCasosTeste {
             return null;
         }
 
-        private TipoOrdem getOrdem(List<Atividade.TipoAcao> passos) {
+        private TipoOrdem getOrdem(List<Atividade.TipoAtividade> passos) {
             TipoOrdem tipoOrdem = TipoOrdem.NENHUM;
-            for (Atividade.TipoAcao acao :
+            for (Atividade.TipoAtividade acao :
                     passos) {
-                if (acao == Atividade.TipoAcao.REPRODUZIR) {
+                if (acao == Atividade.TipoAtividade.REPRODUZIR) {
                     if (tipoOrdem == TipoOrdem.NENHUM) {
                         tipoOrdem = TipoOrdem.REPRODUZIR;
                     }
@@ -910,7 +910,7 @@ public class GeradorCasosTeste {
                         tipoOrdem = TipoOrdem.VERIFICAR_DEPOIS_REPRODUZIR;
                     }
                 }
-                if (acao == Atividade.TipoAcao.VERIFICAR) {
+                if (acao == Atividade.TipoAtividade.VERIFICAR) {
                     if (tipoOrdem == TipoOrdem.NENHUM) {
                         tipoOrdem = TipoOrdem.VERIFICAR;
                     }

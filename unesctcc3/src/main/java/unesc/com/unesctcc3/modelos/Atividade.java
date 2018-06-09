@@ -9,10 +9,10 @@ import unesc.com.unesctcc3.motor.RegistroAtividades;
 /**
  * Created by fabri on 18/03/2018.
  */
-public class Atividade extends AcaoFinal {
+public class Atividade extends AtividadeEncerramento {
 
     private final RegistroAtividades registroAtividades;
-    private List<TipoAcao> acoes;
+    private List<TipoAtividade> tipoAtividades;
     private Foco estadoFoco;
     private String identificadorElemento;
     private StringBuilder estadoTexto;
@@ -29,95 +29,95 @@ public class Atividade extends AcaoFinal {
     public Atividade(RegistroAtividades registroAtividades) {
         super(registroAtividades);
         this.registroAtividades = registroAtividades;
-        this.acoes = new ArrayList<>();
+        this.tipoAtividades = new ArrayList<>();
         atividade = this;
     }
 
     public Atividade selecionarOpcao(String estadoSelecao) {
         this.estadoSelecao = estadoSelecao == null ? null : new StringBuilder(estadoSelecao);
-        acoes.add(TipoAcao.SELECIONAR_COMBO);
+        tipoAtividades.add(TipoAtividade.SELECIONAR_COMBO);
         return this;
     }
 
     public Atividade selecionarItemListagem(String estadoSelecaoLista) {
         this.estadoSelecaoLista = estadoSelecaoLista == null ? null : new StringBuilder(estadoSelecaoLista);
-        acoes.add(TipoAcao.SELECIONAR_LISTA);
+        tipoAtividades.add(TipoAtividade.SELECIONAR_LISTA);
         return this;
     }
 
     public Atividade focarCampo() {
         this.estadoFoco = Foco.FOCADO;
-        acoes.add(TipoAcao.FOCAR);
+        tipoAtividades.add(TipoAtividade.FOCAR);
         return this;
     }
 
     public Atividade limparValor() {
         this.estadoTextoLimpo = new StringBuilder("");
-        acoes.add(TipoAcao.LIMPAR);
+        tipoAtividades.add(TipoAtividade.LIMPAR);
         return this;
     }
 
     public Atividade escreverValor(String estadoTexto) {
         this.estadoTexto = estadoTexto == null ? null : new StringBuilder(estadoTexto);
-        acoes.add(TipoAcao.ESCREVER);
+        tipoAtividades.add(TipoAtividade.ESCREVER);
         return this;
     }
 
     public Atividade lerValor(String estadoLeitura) {
         this.estadoLeitura = estadoLeitura == null ? null : new StringBuilder(estadoLeitura);
-        acoes.add(TipoAcao.LER);
+        tipoAtividades.add(TipoAtividade.LER);
         return this;
     }
 
     public Atividade rolarAteCampo() {
-        acoes.add(TipoAcao.ROLAR);
+        tipoAtividades.add(TipoAtividade.ROLAR);
         return this;
     }
 
     public Atividade clicarBotao() {
         this.estadoFoco = Foco.FOCADO;
-        acoes.add(TipoAcao.CLICAR);
+        tipoAtividades.add(TipoAtividade.CLICAR);
         return this;
     }
 
     public Atividade desfocarCampo() {
         this.estadoDesfoque = Foco.SEM_FOCO;
-        acoes.add(TipoAcao.DESFOCAR);
+        tipoAtividades.add(TipoAtividade.DESFOCAR);
         return this;
     }
 
     public Atividade deslizarBarraProgresso(int estadoProgresso) {
         this.estadoProgresso = new Integer(estadoProgresso);
-        acoes.add(TipoAcao.PROGREDIR);
+        tipoAtividades.add(TipoAtividade.PROGREDIR);
         return this;
     }
 
     public Atividade marcarOpcaoDesmarcavel(Atividade.Marcacao marcacao) {
         this.estadoMarcacaoOpcao = marcacao;
-        acoes.add(TipoAcao.MARCAR_OPCAO_DESMARCAVEL);
+        tipoAtividades.add(TipoAtividade.MARCAR_OPCAO_DESMARCAVEL);
         return this;
     }
 
     public Atividade marcarOpcao() {
-        acoes.add(TipoAcao.MARCAR_OPCAO);
+        tipoAtividades.add(TipoAtividade.MARCAR_OPCAO);
         return this;
     }
 
     public Atividade pressionarTeclas(Tecla tecla) {
         this.estadoTecla = tecla;
-        acoes.add(TipoAcao.PRESSIONAR);
+        tipoAtividades.add(TipoAtividade.PRESSIONAR);
         return this;
     }
 
     public Atividade visibilidade(Visibilidade estadoVisibilidade) {
         this.estadoVisibilidade = estadoVisibilidade;
-        acoes.add(TipoAcao.VISUALIZAR);
+        tipoAtividades.add(TipoAtividade.VISUALIZAR);
         return this;
     }
 
     //-------------------------------------------
-    private List<TipoAcao> getAcoes() {
-        return acoes;
+    private List<TipoAtividade> getTipoAtividades() {
+        return tipoAtividades;
     }
 
     public Tecla getEstadoTecla() {
@@ -185,7 +185,7 @@ public class Atividade extends AcaoFinal {
         IGNORAR
     }
 
-    public enum TipoAcao {
+    public enum TipoAtividade {
         FOCAR,
         ESCREVER,
         VERIFICAR,
