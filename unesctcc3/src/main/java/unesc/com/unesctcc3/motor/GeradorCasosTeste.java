@@ -16,44 +16,39 @@ import unesc.com.unesctcc3.utilitarios.MetodosUtilitario;
  * Created by fabri on 18/03/2018.
  */
 public class GeradorCasosTeste {
-    private String fullScript;
-    private ArrayList<Atividade> atividades;
-    private Preferencias preferencias;
-    private Setup setup;
-    private Utilitarios utilitarios;
-    private String nomeTeste;
-    private Set<TipoExtraMethods> tipoExtraMethods;
+    private static GeradorCasosTeste geradorCasosTeste;
+    private static String fullScript;
+    private static ArrayList<Atividade> atividades;
+    private static Preferencias preferencias;
+    private static Setup setup;
+    private static Utilitarios utilitarios;
+    private static String nomeTeste;
+    private static Set<TipoExtraMethods> tipoExtraMethods;
+    private static MontadorTestes montadorTestes;
 
-    public GeradorCasosTeste(Setup setup, Preferencias preferencias) {
-
-        inicializar(setup, preferencias);
+    private GeradorCasosTeste() {
+        utilitarios = new Utilitarios();
+        montadorTestes = new MontadorTestes();
     }
 
-
-    public GeradorCasosTeste() {
-        this(null, null);
-    }
-
-
-    private void inicializar(Setup setup, Preferencias preferencias) {
+    public static void inicializar(Setup setup, Preferencias preferencias) {
+        geradorCasosTeste = new GeradorCasosTeste();
         fullScript = null;
         atividades = null;
-        this.preferencias = preferencias == null ? new Preferencias() : preferencias;
-        this.setup = setup;
-        utilitarios = new Utilitarios();
+        GeradorCasosTeste.preferencias = preferencias == null ? new Preferencias() : preferencias;
+        GeradorCasosTeste.setup = setup;
         nomeTeste = utilitarios.gerarNomeTeste();
         tipoExtraMethods = new HashSet<>();
     }
 
-    public Teste gerar(ArrayList<Atividade> atividades, String nomeTeste) {
+    public static Teste gerar(ArrayList<Atividade> atividades, String nomeTeste) {
 
-        this.nomeTeste = nomeTeste == null ? this.nomeTeste : nomeTeste;
-        MontadorTestes montadorTestes = new MontadorTestes();
-        this.atividades = atividades;
+        GeradorCasosTeste.nomeTeste = nomeTeste == null ? GeradorCasosTeste.nomeTeste : nomeTeste;
+        GeradorCasosTeste.atividades = atividades;
         Teste teste = montadorTestes.montarTesteCompleto();
         fullScript = montadorTestes.montarSetup();
         fullScript += teste.getCasoTeste();
-        if (!this.preferencias.isSkipTearDownDeclaration()) {
+        if (!GeradorCasosTeste.preferencias.isSkipTearDownDeclaration()) {
             String teardownScript;
             teardownScript = montadorTestes.montarTeardown();
             fullScript += teardownScript;
@@ -63,7 +58,7 @@ public class GeradorCasosTeste {
 
 
         teste.setCasoTeste(fullScript);
-        inicializar(this.setup, this.preferencias);
+        inicializar(GeradorCasosTeste.setup, GeradorCasosTeste.preferencias);
 
         return teste;
     }

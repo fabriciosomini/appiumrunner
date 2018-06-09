@@ -10,8 +10,9 @@ import java.io.File;
 
 public class EstadoDispositivoUtilitario {
     private static Activity activity;
+    private static EstadoAparelhoMovel estadoAparelhoMovel;
 
-    public static EstadoAparelhoMovel getInfo(Activity activity) {
+    public static EstadoAparelhoMovel getEstadoAparelhoMovel(Activity activity) {
         if (activity == null) {
             return null;
         }
@@ -91,6 +92,7 @@ public class EstadoDispositivoUtilitario {
             return 0;
         }
     }
+
 
     public static class EstadoAparelhoMovel {
         private long availableRamMemorySize;

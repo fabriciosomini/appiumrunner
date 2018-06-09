@@ -24,7 +24,6 @@ import android.widget.TextView;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 
 import appiumrunner.unesc.net.appiumrunner.R;
 import appiumrunner.unesc.net.appiumrunner.adapters.MotoristaAdapter;
@@ -35,6 +34,7 @@ import unesc.com.unesctcc3.modelos.Atividade;
 import unesc.com.unesctcc3.modelos.Preferencias;
 import unesc.com.unesctcc3.modelos.Setup;
 import unesc.com.unesctcc3.modelos.Teste;
+import unesc.com.unesctcc3.motor.GeradorCasosTeste;
 import unesc.com.unesctcc3.motor.RegistroAtividades;
 import unesc.com.unesctcc3.utilitarios.ArquivoUtilitario;
 import unesc.com.unesctcc3.utilitarios.EstadoDispositivoUtilitario;
@@ -65,19 +65,10 @@ public class MainActivity extends AppCompatActivity {
         setup.setAppiumServerAddress("http://127.0.0.1:4723/wd/hub");
         setup.setAppPath(".\\build\\outputs\\apk\\debug\\", "app-debug.apk");
 
-        List<String> packages = new ArrayList<>();
-        packages.add("com.gooogle");
-        packages.add("net.test");
-        packages.add("org.pop.try");
-
         Preferencias preferencias = new Preferencias();
-        preferencias.setExtendedClass("TesteBase", true);
-        preferencias.skipMethodsDeclaration(true);
-        preferencias.setPackages(packages);
 
-        //registro.setPreferencias(preferencias);
-
-        RegistroAtividades.inicializar(this, setup);
+        RegistroAtividades.inicializar();
+        GeradorCasosTeste.inicializar(setup, preferencias);
 
         setEventosInterface();
     }
@@ -250,17 +241,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showTest() {
-        RegistroAtividades.terminarTeste();
-        Teste teste = RegistroAtividades.getTeste();
+
+        ArrayList<Atividade> listaAtividades = RegistroAtividades.getListaAtividades();
+        Teste teste = GeradorCasosTeste.gerar(listaAtividades, "CasoTesteAutomatizado");
         casoTeste = teste.getCasoTeste();
         documentacao = teste.getDocumentacao();
-        EstadoDispositivoUtilitario.EstadoAparelhoMovel estadoAparelhoMovel = RegistroAtividades.getEstadoAparelhoMovel();
+        EstadoDispositivoUtilitario.EstadoAparelhoMovel estadoAparelhoMovel =
+                EstadoDispositivoUtilitario.getEstadoAparelhoMovel(this);
 
         if (isStoragePermissionGranted()) {
             escreverTestes(casoTeste, documentacao);
         }
 
         Log.d("Teste Automatizado: \n", casoTeste);
+
+        RegistroAtividades.inicializar();
 
     }
 
