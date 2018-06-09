@@ -22,28 +22,10 @@ public class RegistroAtividades {
     }
 
     public static Atividade vincularElemento(View elemento) {
-        if (elemento == null) {
-            throw new RuntimeException("O elemento não pode ser nulo");
-        }
-        String id = ElementIdParserUtilitario.getStringId(elemento);
-        return vincularElemento(id);
-    }
-
-    public static Atividade vincularElemento(String id) {
-        if (!inicializado) {
-            throw new RuntimeException("Esta operação não pode ser realizada, " +
-                    "pois não houve uma chamada para o método de inicialização.");
-        }
-        if (id == null || id.isEmpty()) {
-            throw new RuntimeException("O identificador do elemento é requerido");
-        }
-
-        if (!id.matches("^[a-zA-Z_$][a-zA-Z_$0-9]*$")) {
-            throw new RuntimeException("O identificador especificado não é valido: '" + id + "'");
-        }
-
+        String identificador = ElementIdParserUtilitario.getStringId(elemento);
         Atividade atividade = new Atividade(INSTANCE);
-        MetodosUtilitario.invocarMetodo(atividade, "setIdentificadorElemento", String.class, id);
+        MetodosUtilitario.invocarMetodo(atividade, "setIdentificadorElemento",
+                String.class, identificador);
         return atividade;
     }
 
@@ -53,12 +35,7 @@ public class RegistroAtividades {
         adicionarAtividade(atividade);
     }
 
-
     public static void pressionar(Atividade.Tecla tecla) {
-        if (!inicializado) {
-            throw new RuntimeException("Esta operação não pode ser realizada, " +
-                    "pois não houve uma chamada para o método de inicialização.");
-        }
         Atividade atividade = new Atividade(INSTANCE);
         atividade.pressionarTeclas(tecla).reproduzirAcoes();
     }
