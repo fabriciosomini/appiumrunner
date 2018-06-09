@@ -9,7 +9,7 @@ import unesc.com.unesctcc3.motor.RegistroAtividades;
 /**
  * Created by fabri on 18/03/2018.
  */
-public class Atividade extends AtividadeEncerramento {
+public class Atividade extends Encerramento {
 
     private final RegistroAtividades registroAtividades;
     private List<TipoAtividade> tipoAtividades;
