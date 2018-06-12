@@ -1,7 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: "com.jfrog.bintray"
-version = "6.09.22.18"
+version = "6.12.01.33"
 android {
     compileSdkVersion 26
     defaultConfig {
