@@ -1,0 +1,22 @@
+﻿Passos para construção e execução do projeto:
+
+1 - Instalar e configurar a IDE Android Studio para carregar o projeto de aplicação móvel
+2 - Instalar e configurar o emulador nativo do Android Studio para emulação de um aparelho móvel Android
+3 - Instalar e configurar a ferramenta de automação Appium
+
+Pasos para aplicação da pesquisa
+1 - Localizar a ultima versão lançada da biblioteca de testes na url: https://bintray.com/fabriciosomini/UnescAppiumRunner
+2 - Adicionar a importação da biblioteca de testes no arquivo build.gradle do projeto da aplicação móvel de testes
+3 - Realizar a especificação dos métodos de registro de atividades utilizando os eventos nativos da plataforma Android
+4 - Construir a aplicação móvel
+
+Passos para testes e análises
+1 - Realizar a construção do projeto da aplicação móvel de testes usando o Android Studio
+2 - Instalar a aplicaçao móvel de testes no disposito móvel emulado
+3 - Realizar a construção do APK da aplicação móvel de testes
+4 - Executar a aplicação móvel de testes
+5 - Executar atividades na aplicação
+6 - Gerar o caso de teste clicando no botão de COPIAR na de consulta
+7 - Localizar o caso de teste na pasta de Downloads do dispositivo móvel
+8 - Utilizar o Android studio para realizar a execução do caso de teste automatizado
+9 - O teste será executado por meio da ferramenta Appium

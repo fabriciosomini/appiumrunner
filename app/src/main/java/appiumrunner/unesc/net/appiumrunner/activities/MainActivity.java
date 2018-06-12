@@ -24,6 +24,7 @@ import android.widget.TextView;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Random;
 
 import appiumrunner.unesc.net.appiumrunner.R;
 import appiumrunner.unesc.net.appiumrunner.adapters.MotoristaAdapter;
@@ -71,6 +72,57 @@ public class MainActivity extends AppCompatActivity {
         GeradorCasosTeste.inicializar(setup, preferencias);
 
         setEventosInterface();
+
+        carregarDadosEmMemoria();
+    }
+
+    private void carregarDadosEmMemoria() {
+
+        gerarRegistro("Fabricio Somini", "717.056.040-21",
+                "Santa Catarina - SC", 25,
+                Motorista.TipoCarga.ALIMENTICIA, true, true);
+
+        gerarRegistro("Franciso Todari", "465.620.900-75",
+                "Paraná - PR", 7,
+                Motorista.TipoCarga.ALIMENTICIA, true, false);
+
+
+        gerarRegistro("Igor Silva", "059.967.430-00",
+                "Rio de Janeiro - RJ", 88,
+                Motorista.TipoCarga.PERIGOSA, true, true);
+
+
+        gerarRegistro("Jessica Gonçalves", "902.354.440-49",
+                "Rio Grande do Sul - RS", 0,
+                Motorista.TipoCarga.PERIGOSA, false, true);
+
+        gerarRegistro("Sara Almeida", "954.092.470-78",
+                "Mato Grosso - MT", 66,
+                Motorista.TipoCarga.VIVA, true, true);
+
+
+    }
+
+    void gerarRegistro(String nomeMotoristaValor, String cpfMotoristaValor, String estadoOrigemValor,
+                       int volumeCargaValor, Motorista.TipoCarga tipoCargaValor, boolean bitremValor, boolean ativo) {
+
+        Motorista motorista = new Motorista();
+        motorista.setNome(nomeMotoristaValor);
+        motorista.setCpf(cpfMotoristaValor);
+        motorista.setEstado(estadoOrigemValor);
+        motorista.setVolumeCarga(volumeCargaValor);
+        motorista.setTipoCarga(tipoCargaValor);
+        motorista.setBitrem(bitremValor);
+        motorista.setAtivo(ativo);
+
+        Random randomno = new Random();
+        long value = randomno.nextLong();
+
+        if (motorista.getCodigo() == 0) {
+            motorista.setCodigo(value);
+        }
+
+        Repository.addOrUptate(motorista);
     }
 
     private void setEventosInterface() {
