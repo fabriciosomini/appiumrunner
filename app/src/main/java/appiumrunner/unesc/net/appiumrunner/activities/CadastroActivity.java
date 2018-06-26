@@ -49,6 +49,7 @@ public class CadastroActivity extends AppCompatActivity {
     private Motorista motorista;
     private ImageButton deleteBtn;
     private boolean gravar;
+    private View parentView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +62,9 @@ public class CadastroActivity extends AppCompatActivity {
 
     private void setEventosInterface() {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
         gravar = true;
+        parentView = findViewById(android.R.id.content);
         nomeEmpresa = findViewById(R.id.nome_empresa);
         nomeMotorista = findViewById(R.id.nomeMotorista);
         cpfMotorista = findViewById(R.id.cpfMotorista);
@@ -90,32 +93,13 @@ public class CadastroActivity extends AppCompatActivity {
 
         motorista = motorista == null ? new Motorista() : motorista;
 
-
-        if (motorista.getNome() != null) {
-            RegistroAtividades.vincularElemento(nomeMotorista)
-                    .desfocarCampo()
-                    .lerValor(motorista.getNome())
-                    .verificarValores();
-        } else {
-            RegistroAtividades.vincularElemento(nomeMotorista)
-                    .desfocarCampo()
-                    .limparValor()
-                    .verificarValores();
-        }
-
         nomeMotorista.setFocusable(true);
         nomeMotorista.setFocusableInTouchMode(true);
         nomeMotorista.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
                 String text = nomeMotorista.getText().toString();
-                if (hasFocus && !ignoreFocus) {
-                    if (!text.isEmpty()) {
-                        RegistroAtividades.vincularElemento(nomeMotorista)
-                                .limparValor()
-                                .reproduzirAcoes();
-                    }
-                }
+
                 if (!hasFocus && !ignoreFocus) {
                     RegistroAtividades.vincularElemento(nomeMotorista)
                             .focarCampo()
@@ -132,13 +116,7 @@ public class CadastroActivity extends AppCompatActivity {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
                 String text = cpfMotorista.getText().toString();
-                if (hasFocus) {
-                    if (!text.isEmpty()) {
-                        RegistroAtividades.vincularElemento(cpfMotorista)
-                                .limparValor()
-                                .reproduzirAcoes();
-                    }
-                }
+
                 if (!hasFocus) {
                     RegistroAtividades.vincularElemento(cpfMotorista)
                             .focarCampo()
@@ -394,6 +372,9 @@ public class CadastroActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        if(parentView !=null){
+         parentView.requestFocusFromTouch();
+        }
         RegistroAtividades.pressionar(Atividade.Tecla.VOLTAR);
     }
 
