@@ -285,6 +285,7 @@ public class GeradorCasosTeste {
             for (Atividade atividade :
                     atividades) {
                 String elementName = (String) MetodosUtilitario.invocarMetodo(atividade, "getIdentificadorElemento");
+                elementName = elementName == null? "" : elementName;
                 String elementId = elementName;
                 if (elementId.startsWith("screen:")) {
                     documentacao += montadorDocumentacao.gerarDocumentacao(elementId,
